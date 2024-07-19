@@ -2415,502 +2415,1161 @@ vegetables = {
             }
         },
         "Onion": {
-    'Macronutrients': {
-        "Carbohydrates": {'value': 9.34, 'unit': 'g'},
-        "Proteins": {'value': 1.1, 'unit': 'g'},
-        "Fats": {'value': 0.1, 'unit': 'g'}
-    },
-    'Vitamins': {
-        "Vitamin A": {'value': 0, 'unit': 'µg'},
-        "Vitamin B1": {'value': 0.046, 'unit': 'mg'},
-        "Vitamin B2": {'value': 0.027, 'unit': 'mg'},
-        "Vitamin B3": {'value': 0.116, 'unit': 'mg'},
-        "Vitamin B5": {'value': 0.123, 'unit': 'mg'},
-        "Vitamin B6": {'value': 0.12, 'unit': 'mg'},
-        "Vitamin B7": {'value': 0.8, 'unit': 'µg'},
-        "Vitamin B9": {'value': 19, 'unit': 'µg'},
-        "Vitamin B12": {'value': 0, 'unit': 'µg'},
-        "Vitamin C": {'value': 7.4, 'unit': 'mg'},
-        "Vitamin D": {'value': 0, 'unit': 'µg'},
-        "Vitamin E": {'value': 0.02, 'unit': 'mg'},
-        "Vitamin K": {'value': 0.4, 'unit': 'µg'}
-    },
-    'Minerals': {
-        "Calcium": {'value': 23, 'unit': 'mg'},
-        "Iron": {'value': 0.21, 'unit': 'mg'},
-        "Magnesium": {'value': 10, 'unit': 'mg'},
-        "Phosphorus": {'value': 29, 'unit': 'mg'},
-        "Potassium": {'value': 146, 'unit': 'mg'},
-        "Sodium": {'value': 4, 'unit': 'mg'},
-        "Zinc": {'value': 0.17, 'unit': 'mg'},
-        "Copper": {'value': 0.039, 'unit': 'mg'},
-        "Manganese": {'value': 0.129, 'unit': 'mg'},
-        "Selenium": {'value': 0.5, 'unit': 'µg'},
-        "Iodine": {'value': 1, 'unit': 'µg'}
-    },
-    'Amino Acids': {
-        "Alanine": {'value': 0.03, 'unit': 'g'},
-        "Arginine": {'value': 0.043, 'unit': 'g'},
-        "Asparagine": {'value': 0.037, 'unit': 'g'},
-        "Aspartic Acid": {'value': 0.083, 'unit': 'g'},
-        "Cysteine": {'value': 0.008, 'unit': 'g'},
-        "Glutamic Acid": {'value': 0.1, 'unit': 'g'},
-        "Glutamine": {'value': 0.037, 'unit': 'g'},
-        "Glycine": {'value': 0.029, 'unit': 'g'},
-        "Histidine": {'value': 0.011, 'unit': 'g'},
-        "Isoleucine": {'value': 0.03, 'unit': 'g'},
-        "Leucine": {'value': 0.035, 'unit': 'g'},
-        "Lysine": {'value': 0.037, 'unit': 'g'},
-        "Methionine": {'value': 0.008, 'unit': 'g'},
-        "Phenylalanine": {'value': 0.027, 'unit': 'g'},
-        "Proline": {'value': 0.03, 'unit': 'g'},
-        "Serine": {'value': 0.038, 'unit': 'g'},
-        "Threonine": {'value': 0.027, 'unit': 'g'},
-        "Tryptophan": {'value': 0.008, 'unit': 'g'},
-        "Tyrosine": {'value': 0.018, 'unit': 'g'},
-        "Valine": {'value': 0.034, 'unit': 'g'}
-    },
-    'Fatty Acids': {
-        "Saturated Fatty Acids": {'value': 0.029, 'unit': 'g'},
-        "Monounsaturated Fatty Acids": {'value': 0.013, 'unit': 'g'},
-        "Polyunsaturated Fatty Acids": {'value': 0.017, 'unit': 'g'},
-        "Omega-3 Fatty Acids": {'value': 0.003, 'unit': 'g'},
-        "Omega-6 Fatty Acids": {'value': 0.014, 'unit': 'g'},
-        "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
-    },
-    'Phytochemicals': {
-        "Flavonoids": {'value': 2.0, 'unit': 'mg'},
-        "Carotenoids": {'value': 1, 'unit': 'µg'},
-        "Polyphenols": {'value': 2.5, 'unit': 'mg'},
-        "Glucosinolates": {'value': 0.5, 'unit': 'mg'},
-        "Phytosterols": {'value': 15, 'unit': 'mg'}
-    },
-    'Sugars': {
-        "Glucose": {'value': 4.95, 'unit': 'g'},
-        "Fructose": {'value': 4.95, 'unit': 'g'},
-        "Sucrose": {'value': 0.99, 'unit': 'g'}
-    },
-    'Organic Acids': {
-        "Citric Acid": {'value': 2, 'unit': 'mg'},
-        "Lactic Acid": {'value': 1, 'unit': 'mg'}
-    },
-    'Other': {
-        "Fiber": {'value': 1.7, 'unit': 'g'},
-        "Cholesterol": {'value': 0, 'unit': 'mg'},
-        "Antioxidants": {'value': 2.5, 'unit': 'mg'},
-        "Probiotics": {'value': 0, 'unit': 'CFU'},
-        "Prebiotics": {'value': 3, 'unit': 'g'},
-        "Water": {'value': 89.11, 'unit': 'ml'},
-        "Alcohol": {'value': 0, 'unit': 'g'},
-        "Caffeine": {'value': 0, 'unit': 'mg'},
-        "Theobromine": {'value': 0, 'unit': 'mg'},
-        "Tannins": {'value': 2, 'unit': 'mg'},
-        "Lectins": {'value': 0.1, 'unit': 'mg'},
-        "Phytic Acid": {'value': 0, 'unit': 'mg'},
-        "Oxalates": {'value': 1, 'unit': 'mg'}
-    }
-},
+            'Macronutrients': {
+                "Carbohydrates": {'value': 9.34, 'unit': 'g'},
+                "Proteins": {'value': 1.1, 'unit': 'g'},
+                "Fats": {'value': 0.1, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 0, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.046, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.027, 'unit': 'mg'},
+                "Vitamin B3": {'value': 0.116, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.123, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.12, 'unit': 'mg'},
+                "Vitamin B7": {'value': 0.8, 'unit': 'µg'},
+                "Vitamin B9": {'value': 19, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 7.4, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.02, 'unit': 'mg'},
+                "Vitamin K": {'value': 0.4, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 23, 'unit': 'mg'},
+                "Iron": {'value': 0.21, 'unit': 'mg'},
+                "Magnesium": {'value': 10, 'unit': 'mg'},
+                "Phosphorus": {'value': 29, 'unit': 'mg'},
+                "Potassium": {'value': 146, 'unit': 'mg'},
+                "Sodium": {'value': 4, 'unit': 'mg'},
+                "Zinc": {'value': 0.17, 'unit': 'mg'},
+                "Copper": {'value': 0.039, 'unit': 'mg'},
+                "Manganese": {'value': 0.129, 'unit': 'mg'},
+                "Selenium": {'value': 0.5, 'unit': 'µg'},
+                "Iodine": {'value': 1, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.03, 'unit': 'g'},
+                "Arginine": {'value': 0.043, 'unit': 'g'},
+                "Asparagine": {'value': 0.037, 'unit': 'g'},
+                "Aspartic Acid": {'value': 0.083, 'unit': 'g'},
+                "Cysteine": {'value': 0.008, 'unit': 'g'},
+                "Glutamic Acid": {'value': 0.1, 'unit': 'g'},
+                "Glutamine": {'value': 0.037, 'unit': 'g'},
+                "Glycine": {'value': 0.029, 'unit': 'g'},
+                "Histidine": {'value': 0.011, 'unit': 'g'},
+                "Isoleucine": {'value': 0.03, 'unit': 'g'},
+                "Leucine": {'value': 0.035, 'unit': 'g'},
+                "Lysine": {'value': 0.037, 'unit': 'g'},
+                "Methionine": {'value': 0.008, 'unit': 'g'},
+                "Phenylalanine": {'value': 0.027, 'unit': 'g'},
+                "Proline": {'value': 0.03, 'unit': 'g'},
+                "Serine": {'value': 0.038, 'unit': 'g'},
+                "Threonine": {'value': 0.027, 'unit': 'g'},
+                "Tryptophan": {'value': 0.008, 'unit': 'g'},
+                "Tyrosine": {'value': 0.018, 'unit': 'g'},
+                "Valine": {'value': 0.034, 'unit': 'g'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.029, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.013, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.017, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.003, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.014, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 2.0, 'unit': 'mg'},
+                "Carotenoids": {'value': 1, 'unit': 'µg'},
+                "Polyphenols": {'value': 2.5, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0.5, 'unit': 'mg'},
+                "Phytosterols": {'value': 15, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 4.95, 'unit': 'g'},
+                "Fructose": {'value': 4.95, 'unit': 'g'},
+                "Sucrose": {'value': 0.99, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 2, 'unit': 'mg'},
+                "Lactic Acid": {'value': 1, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 1.7, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 2.5, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 3, 'unit': 'g'},
+                "Water": {'value': 89.11, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 2, 'unit': 'mg'},
+                "Lectins": {'value': 0.1, 'unit': 'mg'},
+                "Phytic Acid": {'value': 0, 'unit': 'mg'},
+                "Oxalates": {'value': 1, 'unit': 'mg'}
+            }
+        },
         "Chives": {
-    'Macronutrients': {
-        "Carbohydrates": {'value': 4.35, 'unit': 'g'},
-        "Proteins": {'value': 3.27, 'unit': 'g'},
-        "Fats": {'value': 0.73, 'unit': 'g'}
-    },
-    'Vitamins': {
-        "Vitamin A": {'value': 218, 'unit': 'µg'},
-        "Vitamin B1": {'value': 0.078, 'unit': 'mg'},
-        "Vitamin B2": {'value': 0.115, 'unit': 'mg'},
-        "Vitamin B3": {'value': 0.647, 'unit': 'mg'},
-        "Vitamin B5": {'value': 0.324, 'unit': 'mg'},
-        "Vitamin B6": {'value': 0.138, 'unit': 'mg'},
-        "Vitamin B7": {'value': 1, 'unit': 'µg'},
-        "Vitamin B9": {'value': 105, 'unit': 'µg'},
-        "Vitamin B12": {'value': 0, 'unit': 'µg'},
-        "Vitamin C": {'value': 58.1, 'unit': 'mg'},
-        "Vitamin D": {'value': 0, 'unit': 'µg'},
-        "Vitamin E": {'value': 0.21, 'unit': 'mg'},
-        "Vitamin K": {'value': 212.7, 'unit': 'µg'}
-    },
-    'Minerals': {
-        "Calcium": {'value': 92, 'unit': 'mg'},
-        "Iron": {'value': 1.6, 'unit': 'mg'},
-        "Magnesium": {'value': 42, 'unit': 'mg'},
-        "Phosphorus": {'value': 58, 'unit': 'mg'},
-        "Potassium": {'value': 296, 'unit': 'mg'},
-        "Sodium": {'value': 3, 'unit': 'mg'},
-        "Zinc": {'value': 0.56, 'unit': 'mg'},
-        "Copper": {'value': 0.157, 'unit': 'mg'},
-        "Manganese": {'value': 0.373, 'unit': 'mg'},
-        "Selenium": {'value': 0.9, 'unit': 'µg'},
-        "Iodine": {'value': 1, 'unit': 'µg'}
-    },
-    'Amino Acids': {
-        "Alanine": {'value': 0.15, 'unit': 'g'},
-        "Arginine": {'value': 0.175, 'unit': 'g'},
-        "Asparagine": {'value': 0.096, 'unit': 'g'},
-        "Aspartic Acid": {'value': 0.202, 'unit': 'g'},
-        "Cysteine": {'value': 0.021, 'unit': 'g'},
-        "Glutamic Acid": {'value': 0.203, 'unit': 'g'},
-        "Glutamine": {'value': 0.096, 'unit': 'g'},
-        "Glycine": {'value': 0.099, 'unit': 'g'},
-        "Histidine": {'value': 0.044, 'unit': 'g'},
-        "Isoleucine": {'value': 0.093, 'unit': 'g'},
-        "Leucine": {'value': 0.139, 'unit': 'g'},
-        "Lysine": {'value': 0.106, 'unit': 'g'},
-        "Methionine": {'value': 0.035, 'unit': 'g'},
-        "Phenylalanine": {'value': 0.1, 'unit': 'g'},
-        "Proline": {'value': 0.084, 'unit': 'g'},
-        "Serine": {'value': 0.106, 'unit': 'g'},
-        "Threonine": {'value': 0.072, 'unit': 'g'},
-        "Tryptophan": {'value': 0.02, 'unit': 'g'},
-        "Tyrosine": {'value': 0.043, 'unit': 'g'},
-        "Valine": {'value': 0.116, 'unit': 'g'}
-    },
-    'Fatty Acids': {
-        "Saturated Fatty Acids": {'value': 0.121, 'unit': 'g'},
-        "Monounsaturated Fatty Acids": {'value': 0.111, 'unit': 'g'},
-        "Polyunsaturated Fatty Acids": {'value': 0.227, 'unit': 'g'},
-        "Omega-3 Fatty Acids": {'value': 0.12, 'unit': 'g'},
-        "Omega-6 Fatty Acids": {'value': 0.105, 'unit': 'g'},
-        "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
-    },
-    'Phytochemicals': {
-        "Flavonoids": {'value': 4.5, 'unit': 'mg'},
-        "Carotenoids": {'value': 4, 'unit': 'µg'},
-        "Polyphenols": {'value': 3, 'unit': 'mg'},
-        "Glucosinolates": {'value': 0, 'unit': 'mg'},
-        "Phytosterols": {'value': 12, 'unit': 'mg'}
-    },
-    'Sugars': {
-        "Glucose": {'value': 0.67, 'unit': 'g'},
-        "Fructose": {'value': 0.53, 'unit': 'g'},
-        "Sucrose": {'value': 0.1, 'unit': 'g'}
-    },
-    'Organic Acids': {
-        "Citric Acid": {'value': 1, 'unit': 'mg'},
-        "Lactic Acid": {'value': 1, 'unit': 'mg'}
-    },
-    'Other': {
-        "Fiber": {'value': 2.5, 'unit': 'g'},
-        "Cholesterol": {'value': 0, 'unit': 'mg'},
-        "Antioxidants": {'value': 4, 'unit': 'mg'},
-        "Probiotics": {'value': 0, 'unit': 'CFU'},
-        "Prebiotics": {'value': 4, 'unit': 'g'},
-        "Water": {'value': 89.11, 'unit': 'ml'},
-        "Alcohol": {'value': 0, 'unit': 'g'},
-        "Caffeine": {'value': 0, 'unit': 'mg'},
-        "Theobromine": {'value': 0, 'unit': 'mg'},
-        "Tannins": {'value': 1, 'unit': 'mg'},
-        "Lectins": {'value': 0.1, 'unit': 'mg'},
-        "Phytic Acid": {'value': 0, 'unit': 'mg'},
-        "Oxalates": {'value': 1, 'unit': 'mg'}
-    }
-},
+            'Macronutrients': {
+                "Carbohydrates": {'value': 4.35, 'unit': 'g'},
+                "Proteins": {'value': 3.27, 'unit': 'g'},
+                "Fats": {'value': 0.73, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 218, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.078, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.115, 'unit': 'mg'},
+                "Vitamin B3": {'value': 0.647, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.324, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.138, 'unit': 'mg'},
+                "Vitamin B7": {'value': 1, 'unit': 'µg'},
+                "Vitamin B9": {'value': 105, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 58.1, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.21, 'unit': 'mg'},
+                "Vitamin K": {'value': 212.7, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 92, 'unit': 'mg'},
+                "Iron": {'value': 1.6, 'unit': 'mg'},
+                "Magnesium": {'value': 42, 'unit': 'mg'},
+                "Phosphorus": {'value': 58, 'unit': 'mg'},
+                "Potassium": {'value': 296, 'unit': 'mg'},
+                "Sodium": {'value': 3, 'unit': 'mg'},
+                "Zinc": {'value': 0.56, 'unit': 'mg'},
+                "Copper": {'value': 0.157, 'unit': 'mg'},
+                "Manganese": {'value': 0.373, 'unit': 'mg'},
+                "Selenium": {'value': 0.9, 'unit': 'µg'},
+                "Iodine": {'value': 1, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.15, 'unit': 'g'},
+                "Arginine": {'value': 0.175, 'unit': 'g'},
+                "Asparagine": {'value': 0.096, 'unit': 'g'},
+                "Aspartic Acid": {'value': 0.202, 'unit': 'g'},
+                "Cysteine": {'value': 0.021, 'unit': 'g'},
+                "Glutamic Acid": {'value': 0.203, 'unit': 'g'},
+                "Glutamine": {'value': 0.096, 'unit': 'g'},
+                "Glycine": {'value': 0.099, 'unit': 'g'},
+                "Histidine": {'value': 0.044, 'unit': 'g'},
+                "Isoleucine": {'value': 0.093, 'unit': 'g'},
+                "Leucine": {'value': 0.139, 'unit': 'g'},
+                "Lysine": {'value': 0.106, 'unit': 'g'},
+                "Methionine": {'value': 0.035, 'unit': 'g'},
+                "Phenylalanine": {'value': 0.1, 'unit': 'g'},
+                "Proline": {'value': 0.084, 'unit': 'g'},
+                "Serine": {'value': 0.106, 'unit': 'g'},
+                "Threonine": {'value': 0.072, 'unit': 'g'},
+                "Tryptophan": {'value': 0.02, 'unit': 'g'},
+                "Tyrosine": {'value': 0.043, 'unit': 'g'},
+                "Valine": {'value': 0.116, 'unit': 'g'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.121, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.111, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.227, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.12, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.105, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 4.5, 'unit': 'mg'},
+                "Carotenoids": {'value': 4, 'unit': 'µg'},
+                "Polyphenols": {'value': 3, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0, 'unit': 'mg'},
+                "Phytosterols": {'value': 12, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.67, 'unit': 'g'},
+                "Fructose": {'value': 0.53, 'unit': 'g'},
+                "Sucrose": {'value': 0.1, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 1, 'unit': 'mg'},
+                "Lactic Acid": {'value': 1, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 2.5, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 4, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 4, 'unit': 'g'},
+                "Water": {'value': 89.11, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 1, 'unit': 'mg'},
+                "Lectins": {'value': 0.1, 'unit': 'mg'},
+                "Phytic Acid": {'value': 0, 'unit': 'mg'},
+                "Oxalates": {'value': 1, 'unit': 'mg'}
+            }
+        },
     },
     "Stems": {
         "Celery": {
-    'Celery': {
-        'Macronutrients': {
-            "Carbohydrates": {'value': 3, 'unit': 'g'},
-            "Proteins": {'value': 0.7, 'unit': 'g'},
-            "Fats": {'value': 0.2, 'unit': 'g'}
+            'Macronutrients': {
+                "Carbohydrates": {'value': 3, 'unit': 'g'},
+                "Proteins": {'value': 0.7, 'unit': 'g'},
+                "Fats": {'value': 0.2, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 22, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.02, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.06, 'unit': 'mg'},
+                "Vitamin B3": {'value': 0.32, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.246, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.074, 'unit': 'mg'},
+                "Vitamin B7": {'value': 0.5, 'unit': 'µg'},
+                "Vitamin B9": {'value': 36, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 3.1, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.27, 'unit': 'mg'},
+                "Vitamin K": {'value': 29.3, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 40, 'unit': 'mg'},
+                "Iron": {'value': 0.2, 'unit': 'mg'},
+                "Magnesium": {'value': 11, 'unit': 'mg'},
+                "Phosphorus": {'value': 24, 'unit': 'mg'},
+                "Potassium": {'value': 260, 'unit': 'mg'},
+                "Sodium": {'value': 80, 'unit': 'mg'},
+                "Zinc": {'value': 0.13, 'unit': 'mg'},
+                "Copper": {'value': 35, 'unit': 'µg'},
+                "Manganese": {'value': 0.103, 'unit': 'mg'},
+                "Selenium": {'value': 0.4, 'unit': 'µg'},
+                "Iodine": {'value': 0.4, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.041, 'unit': 'mg'},
+                "Arginine": {'value': 0.03, 'unit': 'mg'},
+                "Asparagine": {'value': 0.1, 'unit': 'mg'},
+                "Aspartic Acid": {'value': 0.2, 'unit': 'mg'},
+                "Cysteine": {'value': 0.005, 'unit': 'mg'},
+                "Glutamic Acid": {'value': 0.02, 'unit': 'mg'},
+                "Glutamine": {'value': 0.15, 'unit': 'mg'},
+                "Glycine": {'value': 0.01, 'unit': 'mg'},
+                "Histidine": {'value': 0.012, 'unit': 'mg'},
+                "Isoleucine": {'value': 0.024, 'unit': 'mg'},
+                "Leucine": {'value': 0.036, 'unit': 'mg'},
+                "Lysine": {'value': 0.041, 'unit': 'mg'},
+                "Methionine": {'value': 0.01, 'unit': 'mg'},
+                "Phenylalanine": {'value': 0.022, 'unit': 'mg'},
+                "Proline": {'value': 0.014, 'unit': 'mg'},
+                "Serine": {'value': 0.016, 'unit': 'mg'},
+                "Threonine": {'value': 0.023, 'unit': 'mg'},
+                "Tryptophan": {'value': 0.012, 'unit': 'mg'},
+                "Tyrosine": {'value': 0.01, 'unit': 'mg'},
+                "Valine": {'value': 0.03, 'unit': 'mg'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.042, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.037, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.079, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.003, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.076, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 0.1, 'unit': 'mg'},
+                "Carotenoids": {'value': 28, 'unit': 'µg'},
+                "Polyphenols": {'value': 2, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0.5, 'unit': 'mg'},
+                "Phytosterols": {'value': 1.3, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 1.34, 'unit': 'g'},
+                "Fructose": {'value': 0.74, 'unit': 'g'},
+                "Sucrose": {'value': 0.05, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 4, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0.5, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 1.6, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 2, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 1.6, 'unit': 'g'},
+                "Water": {'value': 95, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 0.5, 'unit': 'mg'},
+                "Lectins": {'value': 0.05, 'unit': 'mg'},
+                "Phytic Acid": {'value': 0.05, 'unit': 'mg'},
+                "Oxalates": {'value': 50, 'unit': 'mg'}
+            }
         },
-        'Vitamins': {
-            "Vitamin A": {'value': 22, 'unit': 'µg'},
-            "Vitamin B1": {'value': 0.02, 'unit': 'mg'},
-            "Vitamin B2": {'value': 0.06, 'unit': 'mg'},
-            "Vitamin B3": {'value': 0.32, 'unit': 'mg'},
-            "Vitamin B5": {'value': 0.246, 'unit': 'mg'},
-            "Vitamin B6": {'value': 0.074, 'unit': 'mg'},
-            "Vitamin B7": {'value': 0.5, 'unit': 'µg'},
-            "Vitamin B9": {'value': 36, 'unit': 'µg'},
-            "Vitamin B12": {'value': 0, 'unit': 'µg'},
-            "Vitamin C": {'value': 3.1, 'unit': 'mg'},
-            "Vitamin D": {'value': 0, 'unit': 'µg'},
-            "Vitamin E": {'value': 0.27, 'unit': 'mg'},
-            "Vitamin K": {'value': 29.3, 'unit': 'µg'}
-        },
-        'Minerals': {
-            "Calcium": {'value': 40, 'unit': 'mg'},
-            "Iron": {'value': 0.2, 'unit': 'mg'},
-            "Magnesium": {'value': 11, 'unit': 'mg'},
-            "Phosphorus": {'value': 24, 'unit': 'mg'},
-            "Potassium": {'value': 260, 'unit': 'mg'},
-            "Sodium": {'value': 80, 'unit': 'mg'},
-            "Zinc": {'value': 0.13, 'unit': 'mg'},
-            "Copper": {'value': 35, 'unit': 'µg'},
-            "Manganese": {'value': 0.103, 'unit': 'mg'},
-            "Selenium": {'value': 0.4, 'unit': 'µg'},
-            "Iodine": {'value': 0.4, 'unit': 'µg'}
-        },
-        'Amino Acids': {
-            "Alanine": {'value': 0.041, 'unit': 'mg'},
-            "Arginine": {'value': 0.03, 'unit': 'mg'},
-            "Asparagine": {'value': 0.1, 'unit': 'mg'},
-            "Aspartic Acid": {'value': 0.2, 'unit': 'mg'},
-            "Cysteine": {'value': 0.005, 'unit': 'mg'},
-            "Glutamic Acid": {'value': 0.02, 'unit': 'mg'},
-            "Glutamine": {'value': 0.15, 'unit': 'mg'},
-            "Glycine": {'value': 0.01, 'unit': 'mg'},
-            "Histidine": {'value': 0.012, 'unit': 'mg'},
-            "Isoleucine": {'value': 0.024, 'unit': 'mg'},
-            "Leucine": {'value': 0.036, 'unit': 'mg'},
-            "Lysine": {'value': 0.041, 'unit': 'mg'},
-            "Methionine": {'value': 0.01, 'unit': 'mg'},
-            "Phenylalanine": {'value': 0.022, 'unit': 'mg'},
-            "Proline": {'value': 0.014, 'unit': 'mg'},
-            "Serine": {'value': 0.016, 'unit': 'mg'},
-            "Threonine": {'value': 0.023, 'unit': 'mg'},
-            "Tryptophan": {'value': 0.012, 'unit': 'mg'},
-            "Tyrosine": {'value': 0.01, 'unit': 'mg'},
-            "Valine": {'value': 0.03, 'unit': 'mg'}
-        },
-        'Fatty Acids': {
-            "Saturated Fatty Acids": {'value': 0.042, 'unit': 'g'},
-            "Monounsaturated Fatty Acids": {'value': 0.037, 'unit': 'g'},
-            "Polyunsaturated Fatty Acids": {'value': 0.079, 'unit': 'g'},
-            "Omega-3 Fatty Acids": {'value': 0.003, 'unit': 'g'},
-            "Omega-6 Fatty Acids": {'value': 0.076, 'unit': 'g'},
-            "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
-        },
-        'Phytochemicals': {
-            "Flavonoids": {'value': 0.1, 'unit': 'mg'},
-            "Carotenoids": {'value': 28, 'unit': 'µg'},
-            "Polyphenols": {'value': 2, 'unit': 'mg'},
-            "Glucosinolates": {'value': 0.5, 'unit': 'mg'},
-            "Phytosterols": {'value': 1.3, 'unit': 'mg'}
-        },
-        'Sugars': {
-            "Glucose": {'value': 1.34, 'unit': 'g'},
-            "Fructose": {'value': 0.74, 'unit': 'g'},
-            "Sucrose": {'value': 0.05, 'unit': 'g'}
-        },
-        'Organic Acids': {
-            "Citric Acid": {'value': 4, 'unit': 'mg'},
-            "Lactic Acid": {'value': 0.5, 'unit': 'mg'}
-        },
-        'Other': {
-            "Fiber": {'value': 1.6, 'unit': 'g'},
-            "Cholesterol": {'value': 0, 'unit': 'mg'},
-            "Antioxidants": {'value': 2, 'unit': 'mg'},
-            "Probiotics": {'value': 0, 'unit': 'CFU'},
-            "Prebiotics": {'value': 1.6, 'unit': 'g'},
-            "Water": {'value': 95, 'unit': 'ml'},
-            "Alcohol": {'value': 0, 'unit': 'g'},
-            "Caffeine": {'value': 0, 'unit': 'mg'},
-            "Theobromine": {'value': 0, 'unit': 'mg'},
-            "Tannins": {'value': 0.5, 'unit': 'mg'},
-            "Lectins": {'value': 0.05, 'unit': 'mg'},
-            "Phytic Acid": {'value': 0.05, 'unit': 'mg'},
-            "Oxalates": {'value': 50, 'unit': 'mg'}
-        }
-    }
-},
         "Asparagus": {
-    'Asparagus': {
-        'Macronutrients': {
-            "Carbohydrates": {'value': 3.9, 'unit': 'g'},
-            "Proteins": {'value': 2.2, 'unit': 'g'},
-            "Fats": {'value': 0.1, 'unit': 'g'}
+            'Macronutrients': {
+                "Carbohydrates": {'value': 3.9, 'unit': 'g'},
+                "Proteins": {'value': 2.2, 'unit': 'g'},
+                "Fats": {'value': 0.1, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 756, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.143, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.141, 'unit': 'mg'},
+                "Vitamin B3": {'value': 1.14, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.274, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.091, 'unit': 'mg'},
+                "Vitamin B7": {'value': 2.5, 'unit': 'µg'},
+                "Vitamin B9": {'value': 52, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 5.6, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 1.1, 'unit': 'mg'},
+                "Vitamin K": {'value': 41.6, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 24, 'unit': 'mg'},
+                "Iron": {'value': 2.14, 'unit': 'mg'},
+                "Magnesium": {'value': 14, 'unit': 'mg'},
+                "Phosphorus": {'value': 52, 'unit': 'mg'},
+                "Potassium": {'value': 202, 'unit': 'mg'},
+                "Sodium": {'value': 2, 'unit': 'mg'},
+                "Zinc": {'value': 0.54, 'unit': 'mg'},
+                "Copper": {'value': 0.189, 'unit': 'µg'},
+                "Manganese": {'value': 0.158, 'unit': 'mg'},
+                "Selenium": {'value': 2.3, 'unit': 'µg'},
+                "Iodine": {'value': 1, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.104, 'unit': 'mg'},
+                "Arginine": {'value': 0.171, 'unit': 'mg'},
+                "Asparagine": {'value': 0.4, 'unit': 'mg'},
+                "Aspartic Acid": {'value': 0.3, 'unit': 'mg'},
+                "Cysteine": {'value': 0.005, 'unit': 'mg'},
+                "Glutamic Acid": {'value': 0.3, 'unit': 'mg'},
+                "Glutamine": {'value': 0.35, 'unit': 'mg'},
+                "Glycine": {'value': 0.05, 'unit': 'mg'},
+                "Histidine": {'value': 0.027, 'unit': 'mg'},
+                "Isoleucine": {'value': 0.059, 'unit': 'mg'},
+                "Leucine": {'value': 0.084, 'unit': 'mg'},
+                "Lysine": {'value': 0.084, 'unit': 'mg'},
+                "Methionine": {'value': 0.02, 'unit': 'mg'},
+                "Phenylalanine": {'value': 0.048, 'unit': 'mg'},
+                "Proline": {'value': 0.035, 'unit': 'mg'},
+                "Serine": {'value': 0.036, 'unit': 'mg'},
+                "Threonine": {'value': 0.044, 'unit': 'mg'},
+                "Tryptophan": {'value': 0.03, 'unit': 'mg'},
+                "Tyrosine": {'value': 0.022, 'unit': 'mg'},
+                "Valine": {'value': 0.052, 'unit': 'mg'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.042, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.037, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.079, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.003, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.076, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 0.2, 'unit': 'mg'},
+                "Carotenoids": {'value': 100, 'unit': 'µg'},
+                "Polyphenols": {'value': 5, 'unit': 'mg'},
+                "Glucosinolates": {'value': 1, 'unit': 'mg'},
+                "Phytosterols": {'value': 1.8, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 1.8, 'unit': 'g'},
+                "Fructose": {'value': 0.8, 'unit': 'g'},
+                "Sucrose": {'value': 0.2, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 4, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0.5, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 2.1, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 3, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 2.1, 'unit': 'g'},
+                "Water": {'value': 92.8, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 1, 'unit': 'mg'},
+                "Lectins": {'value': 0.2, 'unit': 'mg'},
+                "Phytic Acid": {'value': 0.1, 'unit': 'mg'},
+                "Oxalates": {'value': 10, 'unit': 'mg'}
+            }
         },
-        'Vitamins': {
-            "Vitamin A": {'value': 756, 'unit': 'µg'},
-            "Vitamin B1": {'value': 0.143, 'unit': 'mg'},
-            "Vitamin B2": {'value': 0.141, 'unit': 'mg'},
-            "Vitamin B3": {'value': 1.14, 'unit': 'mg'},
-            "Vitamin B5": {'value': 0.274, 'unit': 'mg'},
-            "Vitamin B6": {'value': 0.091, 'unit': 'mg'},
-            "Vitamin B7": {'value': 2.5, 'unit': 'µg'},
-            "Vitamin B9": {'value': 52, 'unit': 'µg'},
-            "Vitamin B12": {'value': 0, 'unit': 'µg'},
-            "Vitamin C": {'value': 5.6, 'unit': 'mg'},
-            "Vitamin D": {'value': 0, 'unit': 'µg'},
-            "Vitamin E": {'value': 1.1, 'unit': 'mg'},
-            "Vitamin K": {'value': 41.6, 'unit': 'µg'}
-        },
-        'Minerals': {
-            "Calcium": {'value': 24, 'unit': 'mg'},
-            "Iron": {'value': 2.14, 'unit': 'mg'},
-            "Magnesium": {'value': 14, 'unit': 'mg'},
-            "Phosphorus": {'value': 52, 'unit': 'mg'},
-            "Potassium": {'value': 202, 'unit': 'mg'},
-            "Sodium": {'value': 2, 'unit': 'mg'},
-            "Zinc": {'value': 0.54, 'unit': 'mg'},
-            "Copper": {'value': 0.189, 'unit': 'µg'},
-            "Manganese": {'value': 0.158, 'unit': 'mg'},
-            "Selenium": {'value': 2.3, 'unit': 'µg'},
-            "Iodine": {'value': 1, 'unit': 'µg'}
-        },
-        'Amino Acids': {
-            "Alanine": {'value': 0.104, 'unit': 'mg'},
-            "Arginine": {'value': 0.171, 'unit': 'mg'},
-            "Asparagine": {'value': 0.4, 'unit': 'mg'},
-            "Aspartic Acid": {'value': 0.3, 'unit': 'mg'},
-            "Cysteine": {'value': 0.005, 'unit': 'mg'},
-            "Glutamic Acid": {'value': 0.3, 'unit': 'mg'},
-            "Glutamine": {'value': 0.35, 'unit': 'mg'},
-            "Glycine": {'value': 0.05, 'unit': 'mg'},
-            "Histidine": {'value': 0.027, 'unit': 'mg'},
-            "Isoleucine": {'value': 0.059, 'unit': 'mg'},
-            "Leucine": {'value': 0.084, 'unit': 'mg'},
-            "Lysine": {'value': 0.084, 'unit': 'mg'},
-            "Methionine": {'value': 0.02, 'unit': 'mg'},
-            "Phenylalanine": {'value': 0.048, 'unit': 'mg'},
-            "Proline": {'value': 0.035, 'unit': 'mg'},
-            "Serine": {'value': 0.036, 'unit': 'mg'},
-            "Threonine": {'value': 0.044, 'unit': 'mg'},
-            "Tryptophan": {'value': 0.03, 'unit': 'mg'},
-            "Tyrosine": {'value': 0.022, 'unit': 'mg'},
-            "Valine": {'value': 0.052, 'unit': 'mg'}
-        },
-        'Fatty Acids': {
-            "Saturated Fatty Acids": {'value': 0.042, 'unit': 'g'},
-            "Monounsaturated Fatty Acids": {'value': 0.037, 'unit': 'g'},
-            "Polyunsaturated Fatty Acids": {'value': 0.079, 'unit': 'g'},
-            "Omega-3 Fatty Acids": {'value': 0.003, 'unit': 'g'},
-            "Omega-6 Fatty Acids": {'value': 0.076, 'unit': 'g'},
-            "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
-        },
-        'Phytochemicals': {
-            "Flavonoids": {'value': 0.2, 'unit': 'mg'},
-            "Carotenoids": {'value': 100, 'unit': 'µg'},
-            "Polyphenols": {'value': 5, 'unit': 'mg'},
-            "Glucosinolates": {'value': 1, 'unit': 'mg'},
-            "Phytosterols": {'value': 1.8, 'unit': 'mg'}
-        },
-        'Sugars': {
-            "Glucose": {'value': 1.8, 'unit': 'g'},
-            "Fructose": {'value': 0.8, 'unit': 'g'},
-            "Sucrose": {'value': 0.2, 'unit': 'g'}
-        },
-        'Organic Acids': {
-            "Citric Acid": {'value': 4, 'unit': 'mg'},
-            "Lactic Acid": {'value': 0.5, 'unit': 'mg'}
-        },
-        'Other': {
-            "Fiber": {'value': 2.1, 'unit': 'g'},
-            "Cholesterol": {'value': 0, 'unit': 'mg'},
-            "Antioxidants": {'value': 3, 'unit': 'mg'},
-            "Probiotics": {'value': 0, 'unit': 'CFU'},
-            "Prebiotics": {'value': 2.1, 'unit': 'g'},
-            "Water": {'value': 92.8, 'unit': 'ml'},
-            "Alcohol": {'value': 0, 'unit': 'g'},
-            "Caffeine": {'value': 0, 'unit': 'mg'},
-            "Theobromine": {'value': 0, 'unit': 'mg'},
-            "Tannins": {'value': 1, 'unit': 'mg'},
-            "Lectins": {'value': 0.2, 'unit': 'mg'},
-            "Phytic Acid": {'value': 0.1, 'unit': 'mg'},
-            "Oxalates": {'value': 10, 'unit': 'mg'}
-        }
-    }
-},
         "Fennel": {
-    'Fennel': {
-        'Macronutrients': {
-            "Carbohydrates": {'value': 7.3, 'unit': 'g'},
-            "Proteins": {'value': 1.2, 'unit': 'g'},
-            "Fats": {'value': 0.2, 'unit': 'g'}
+            'Macronutrients': {
+                "Carbohydrates": {'value': 7.3, 'unit': 'g'},
+                "Proteins": {'value': 1.2, 'unit': 'g'},
+                "Fats": {'value': 0.2, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 838, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.01, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.032, 'unit': 'mg'},
+                "Vitamin B3": {'value': 0.64, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.232, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.047, 'unit': 'mg'},
+                "Vitamin B7": {'value': 0.5, 'unit': 'µg'},
+                "Vitamin B9": {'value': 27, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 12, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.58, 'unit': 'mg'},
+                "Vitamin K": {'value': 62.8, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 49, 'unit': 'mg'},
+                "Iron": {'value': 0.73, 'unit': 'mg'},
+                "Magnesium": {'value': 17, 'unit': 'mg'},
+                "Phosphorus": {'value': 50, 'unit': 'mg'},
+                "Potassium": {'value': 414, 'unit': 'mg'},
+                "Sodium": {'value': 52, 'unit': 'mg'},
+                "Zinc": {'value': 0.2, 'unit': 'mg'},
+                "Copper": {'value': 66, 'unit': 'µg'},
+                "Manganese": {'value': 0.191, 'unit': 'mg'},
+                "Selenium": {'value': 0.7, 'unit': 'µg'},
+                "Iodine": {'value': 0.7, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.037, 'unit': 'mg'},
+                "Arginine": {'value': 0.04, 'unit': 'mg'},
+                "Asparagine": {'value': 0.2, 'unit': 'mg'},
+                "Aspartic Acid": {'value': 0.2, 'unit': 'mg'},
+                "Cysteine": {'value': 0.01, 'unit': 'mg'},
+                "Glutamic Acid": {'value': 0.02, 'unit': 'mg'},
+                "Glutamine": {'value': 0.25, 'unit': 'mg'},
+                "Glycine": {'value': 0.01, 'unit': 'mg'},
+                "Histidine": {'value': 0.012, 'unit': 'mg'},
+                "Isoleucine": {'value': 0.03, 'unit': 'mg'},
+                "Leucine": {'value': 0.06, 'unit': 'mg'},
+                "Lysine": {'value': 0.05, 'unit': 'mg'},
+                "Methionine": {'value': 0.01, 'unit': 'mg'},
+                "Phenylalanine": {'value': 0.04, 'unit': 'mg'},
+                "Proline": {'value': 0.014, 'unit': 'mg'},
+                "Serine": {'value': 0.016, 'unit': 'mg'},
+                "Threonine": {'value': 0.023, 'unit': 'mg'},
+                "Tryptophan": {'value': 0.02, 'unit': 'mg'},
+                "Tyrosine": {'value': 0.016, 'unit': 'mg'},
+                "Valine": {'value': 0.04, 'unit': 'mg'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.027, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.017, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.068, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.001, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.067, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 0.2, 'unit': 'mg'},
+                "Carotenoids": {'value': 100, 'unit': 'µg'},
+                "Polyphenols": {'value': 5, 'unit': 'mg'},
+                "Glucosinolates": {'value': 1, 'unit': 'mg'},
+                "Phytosterols": {'value': 1.8, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 3.6, 'unit': 'g'},
+                "Fructose": {'value': 2.7, 'unit': 'g'},
+                "Sucrose": {'value': 0.8, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 4, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0.5, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 3.1, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 3, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 3.1, 'unit': 'g'},
+                "Water": {'value': 90.2, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 1, 'unit': 'mg'},
+                "Lectins": {'value': 0.2, 'unit': 'mg'},
+                "Phytic Acid": {'value': 0.1, 'unit': 'mg'},
+                "Oxalates": {'value': 10, 'unit': 'mg'}
+            }
         },
-        'Vitamins': {
-            "Vitamin A": {'value': 838, 'unit': 'µg'},
-            "Vitamin B1": {'value': 0.01, 'unit': 'mg'},
-            "Vitamin B2": {'value': 0.032, 'unit': 'mg'},
-            "Vitamin B3": {'value': 0.64, 'unit': 'mg'},
-            "Vitamin B5": {'value': 0.232, 'unit': 'mg'},
-            "Vitamin B6": {'value': 0.047, 'unit': 'mg'},
-            "Vitamin B7": {'value': 0.5, 'unit': 'µg'},
-            "Vitamin B9": {'value': 27, 'unit': 'µg'},
-            "Vitamin B12": {'value': 0, 'unit': 'µg'},
-            "Vitamin C": {'value': 12, 'unit': 'mg'},
-            "Vitamin D": {'value': 0, 'unit': 'µg'},
-            "Vitamin E": {'value': 0.58, 'unit': 'mg'},
-            "Vitamin K": {'value': 62.8, 'unit': 'µg'}
-        },
-        'Minerals': {
-            "Calcium": {'value': 49, 'unit': 'mg'},
-            "Iron": {'value': 0.73, 'unit': 'mg'},
-            "Magnesium": {'value': 17, 'unit': 'mg'},
-            "Phosphorus": {'value': 50, 'unit': 'mg'},
-            "Potassium": {'value': 414, 'unit': 'mg'},
-            "Sodium": {'value': 52, 'unit': 'mg'},
-            "Zinc": {'value': 0.2, 'unit': 'mg'},
-            "Copper": {'value': 66, 'unit': 'µg'},
-            "Manganese": {'value': 0.191, 'unit': 'mg'},
-            "Selenium": {'value': 0.7, 'unit': 'µg'},
-            "Iodine": {'value': 0.7, 'unit': 'µg'}
-        },
-        'Amino Acids': {
-            "Alanine": {'value': 0.037, 'unit': 'mg'},
-            "Arginine": {'value': 0.04, 'unit': 'mg'},
-            "Asparagine": {'value': 0.2, 'unit': 'mg'},
-            "Aspartic Acid": {'value': 0.2, 'unit': 'mg'},
-            "Cysteine": {'value': 0.01, 'unit': 'mg'},
-            "Glutamic Acid": {'value': 0.02, 'unit': 'mg'},
-            "Glutamine": {'value': 0.25, 'unit': 'mg'},
-            "Glycine": {'value': 0.01, 'unit': 'mg'},
-            "Histidine": {'value': 0.012, 'unit': 'mg'},
-            "Isoleucine": {'value': 0.03, 'unit': 'mg'},
-            "Leucine": {'value': 0.06, 'unit': 'mg'},
-            "Lysine": {'value': 0.05, 'unit': 'mg'},
-            "Methionine": {'value': 0.01, 'unit': 'mg'},
-            "Phenylalanine": {'value': 0.04, 'unit': 'mg'},
-            "Proline": {'value': 0.014, 'unit': 'mg'},
-            "Serine": {'value': 0.016, 'unit': 'mg'},
-            "Threonine": {'value': 0.023, 'unit': 'mg'},
-            "Tryptophan": {'value': 0.02, 'unit': 'mg'},
-            "Tyrosine": {'value': 0.016, 'unit': 'mg'},
-            "Valine": {'value': 0.04, 'unit': 'mg'}
-        },
-        'Fatty Acids': {
-            "Saturated Fatty Acids": {'value': 0.027, 'unit': 'g'},
-            "Monounsaturated Fatty Acids": {'value': 0.017, 'unit': 'g'},
-            "Polyunsaturated Fatty Acids": {'value': 0.068, 'unit': 'g'},
-            "Omega-3 Fatty Acids": {'value': 0.001, 'unit': 'g'},
-            "Omega-6 Fatty Acids": {'value': 0.067, 'unit': 'g'},
-            "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
-        },
-        'Phytochemicals': {
-            "Flavonoids": {'value': 0.2, 'unit': 'mg'},
-            "Carotenoids": {'value': 100, 'unit': 'µg'},
-            "Polyphenols": {'value': 5, 'unit': 'mg'},
-            "Glucosinolates": {'value': 1, 'unit': 'mg'},
-            "Phytosterols": {'value': 1.8, 'unit': 'mg'}
-        },
-        'Sugars': {
-            "Glucose": {'value': 3.6, 'unit': 'g'},
-            "Fructose": {'value': 2.7, 'unit': 'g'},
-            "Sucrose": {'value': 0.8, 'unit': 'g'}
-        },
-        'Organic Acids': {
-            "Citric Acid": {'value': 4, 'unit': 'mg'},
-            "Lactic Acid": {'value': 0.5, 'unit': 'mg'}
-        },
-        'Other': {
-            "Fiber": {'value': 3.1, 'unit': 'g'},
-            "Cholesterol": {'value': 0, 'unit': 'mg'},
-            "Antioxidants": {'value': 3, 'unit': 'mg'},
-            "Probiotics": {'value': 0, 'unit': 'CFU'},
-            "Prebiotics": {'value': 3.1, 'unit': 'g'},
-            "Water": {'value': 90.2, 'unit': 'ml'},
-            "Alcohol": {'value': 0, 'unit': 'g'},
-            "Caffeine": {'value': 0, 'unit': 'mg'},
-            "Theobromine": {'value': 0, 'unit': 'mg'},
-            "Tannins": {'value': 1, 'unit': 'mg'},
-            "Lectins": {'value': 0.2, 'unit': 'mg'},
-            "Phytic Acid": {'value': 0.1, 'unit': 'mg'},
-            "Oxalates": {'value': 10, 'unit': 'mg'}
-        }
-    }
-},
     },
     "Herbs": {
-        "Basil": None,
-        "Cilantro": None,
-        "Parsley": None,
-        "Mint": None,
-        "Thyme": None,
-        "Rosemary": None,
-        "Oregano": None,
+        "Basil": {
+            'Macronutrients': {
+                "Carbohydrates": {'value': 2.65, 'unit': 'g'},
+                "Proteins": {'value': 3.15, 'unit': 'g'},
+                "Fats": {'value': 0.64, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 2630, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.034, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.076, 'unit': 'mg'},
+                "Vitamin B3": {'value': 0.727, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.223, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.091, 'unit': 'mg'},
+                "Vitamin B7": {'value': 0, 'unit': 'µg'},
+                "Vitamin B9": {'value': 68, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 18.0, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.64, 'unit': 'mg'},
+                "Vitamin K": {'value': 621.0, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 177, 'unit': 'mg'},
+                "Iron": {'value': 3.17, 'unit': 'mg'},
+                "Magnesium": {'value': 64, 'unit': 'mg'},
+                "Phosphorus": {'value': 34, 'unit': 'mg'},
+                "Potassium": {'value': 295, 'unit': 'mg'},
+                "Sodium": {'value': 4, 'unit': 'mg'},
+                "Zinc": {'value': 0.81, 'unit': 'mg'},
+                "Copper": {'value': 0.155, 'unit': 'µg'},
+                "Manganese": {'value': 1.21, 'unit': 'mg'},
+                "Selenium": {'value': 0.7, 'unit': 'µg'},
+                "Iodine": {'value': 0, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.0, 'unit': 'mg'},
+                "Arginine": {'value': 0.0, 'unit': 'mg'},
+                "Asparagine": {'value': 0.0, 'unit': 'mg'},
+                "Aspartic Acid": {'value': 0.0, 'unit': 'mg'},
+                "Cysteine": {'value': 0.0, 'unit': 'mg'},
+                "Glutamic Acid": {'value': 0.0, 'unit': 'mg'},
+                "Glutamine": {'value': 0.0, 'unit': 'mg'},
+                "Glycine": {'value': 0.0, 'unit': 'mg'},
+                "Histidine": {'value': 0.0, 'unit': 'mg'},
+                "Isoleucine": {'value': 0.0, 'unit': 'mg'},
+                "Leucine": {'value': 0.0, 'unit': 'mg'},
+                "Lysine": {'value': 0.0, 'unit': 'mg'},
+                "Methionine": {'value': 0.0, 'unit': 'mg'},
+                "Phenylalanine": {'value': 0.0, 'unit': 'mg'},
+                "Proline": {'value': 0.0, 'unit': 'mg'},
+                "Serine": {'value': 0.0, 'unit': 'mg'},
+                "Threonine": {'value': 0.0, 'unit': 'mg'},
+                "Tryptophan": {'value': 0.0, 'unit': 'mg'},
+                "Tyrosine": {'value': 0.0, 'unit': 'mg'},
+                "Valine": {'value': 0.0, 'unit': 'mg'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.09, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.13, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.23, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.0, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.23, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0.0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 0.0, 'unit': 'mg'},
+                "Carotenoids": {'value': 0.0, 'unit': 'µg'},
+                "Polyphenols": {'value': 0.0, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0.0, 'unit': 'mg'},
+                "Phytosterols": {'value': 0.0, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.0, 'unit': 'g'},
+                "Fructose": {'value': 0.0, 'unit': 'g'},
+                "Sucrose": {'value': 0.0, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 0.0, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0.0, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 1.6, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 0.0, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 0.0, 'unit': 'g'},
+                "Water": {'value': 92.0, 'unit': 'ml'},
+                "Alcohol": {'value': 0.0, 'unit': 'g'},
+                "Caffeine": {'value': 0.0, 'unit': 'mg'},
+                "Theobromine": {'value': 0.0, 'unit': 'mg'},
+                "Tannins": {'value': 0.0, 'unit': 'mg'},
+                "Lectins": {'value': 0.0, 'unit': 'mg'},
+                "Phytic Acid": {'value': 0.0, 'unit': 'mg'},
+                "Oxalates": {'value': 0.0, 'unit': 'mg'}
+            }
+        },
+        "Cilantro": {
+            'Macronutrients': {
+                "Carbohydrates": {'value': 3.67, 'unit': 'g'},
+                "Proteins": {'value': 2.13, 'unit': 'g'},
+                "Fats": {'value': 0.52, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 6748, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.067, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.290, 'unit': 'mg'},
+                "Vitamin B3": {'value': 1.500, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.547, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.070, 'unit': 'mg'},
+                "Vitamin B7": {'value': 0, 'unit': 'µg'},
+                "Vitamin B9": {'value': 62, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 27.0, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 2.50, 'unit': 'mg'},
+                "Vitamin K": {'value': 310.0, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 67, 'unit': 'mg'},
+                "Iron": {'value': 1.77, 'unit': 'mg'},
+                "Magnesium": {'value': 26, 'unit': 'mg'},
+                "Phosphorus": {'value': 48, 'unit': 'mg'},
+                "Potassium": {'value': 521, 'unit': 'mg'},
+                "Sodium": {'value': 2, 'unit': 'mg'},
+                "Zinc": {'value': 0.29, 'unit': 'mg'},
+                "Copper": {'value': 0.110, 'unit': 'µg'},
+                "Manganese": {'value': 0.404, 'unit': 'mg'},
+                "Selenium": {'value': 0.0, 'unit': 'µg'},
+                "Iodine": {'value': 0, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.0, 'unit': 'mg'},
+                "Arginine": {'value': 0.0, 'unit': 'mg'},
+                "Asparagine": {'value': 0.0, 'unit': 'mg'},
+                "Aspartic Acid": {'value': 0.0, 'unit': 'mg'},
+                "Cysteine": {'value': 0.0, 'unit': 'mg'},
+                "Glutamic Acid": {'value': 0.0, 'unit': 'mg'},
+                "Glutamine": {'value': 0.0, 'unit': 'mg'},
+                "Glycine": {'value': 0.0, 'unit': 'mg'},
+                "Histidine": {'value': 0.0, 'unit': 'mg'},
+                "Isoleucine": {'value': 0.0, 'unit': 'mg'},
+                "Leucine": {'value': 0.0, 'unit': 'mg'},
+                "Lysine": {'value': 0.0, 'unit': 'mg'},
+                "Methionine": {'value': 0.0, 'unit': 'mg'},
+                "Phenylalanine": {'value': 0.0, 'unit': 'mg'},
+                "Proline": {'value': 0.0, 'unit': 'mg'},
+                "Serine": {'value': 0.0, 'unit': 'mg'},
+                "Threonine": {'value': 0.0, 'unit': 'mg'},
+                "Tryptophan": {'value': 0.0, 'unit': 'mg'},
+                "Tyrosine": {'value': 0.0, 'unit': 'mg'},
+                "Valine": {'value': 0.0, 'unit': 'mg'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.14, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.13, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.24, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.0, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.24, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0.0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 0.0, 'unit': 'mg'},
+                "Carotenoids": {'value': 0.0, 'unit': 'µg'},
+                "Polyphenols": {'value': 0.0, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0.0, 'unit': 'mg'},
+                "Phytosterols": {'value': 0.0, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.0, 'unit': 'g'},
+                "Fructose": {'value': 0.0, 'unit': 'g'},
+                "Sucrose": {'value': 0.0, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 0.0, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0.0, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 2.8, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 0.0, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 0.0, 'unit': 'g'},
+                "Water": {'value': 92.0, 'unit': 'ml'},
+                "Alcohol": {'value': 0.0, 'unit': 'g'},
+                "Caffeine": {'value': 0.0, 'unit': 'mg'},
+                "Theobromine": {'value': 0.0, 'unit': 'mg'},
+                "Tannins": {'value': 0.0, 'unit': 'mg'},
+                "Lectins": {'value': 0.0, 'unit': 'mg'},
+                "Phytic Acid": {'value': 0.0, 'unit': 'mg'},
+                "Oxalates": {'value': 0.0, 'unit': 'mg'}
+            }
+        },
+        "Parsley": {
+            'Macronutrients': {
+                "Carbohydrates": {'value': 6.3, 'unit': 'g'},
+                "Proteins": {'value': 2.97, 'unit': 'g'},
+                "Fats": {'value': 0.79, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 8424, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.09, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.16, 'unit': 'mg'},
+                "Vitamin B3": {'value': 1.31, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.40, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.09, 'unit': 'mg'},
+                "Vitamin B7": {'value': 6, 'unit': 'µg'},
+                "Vitamin B9": {'value': 152, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 133, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.75, 'unit': 'mg'},
+                "Vitamin K": {'value': 1640, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 138, 'unit': 'mg'},
+                "Iron": {'value': 6.2, 'unit': 'mg'},
+                "Magnesium": {'value': 50, 'unit': 'mg'},
+                "Phosphorus": {'value': 58, 'unit': 'mg'},
+                "Potassium": {'value': 554, 'unit': 'mg'},
+                "Sodium": {'value': 56, 'unit': 'mg'},
+                "Zinc": {'value': 1.07, 'unit': 'mg'},
+                "Copper": {'value': 149, 'unit': 'µg'},
+                "Manganese": {'value': 1.51, 'unit': 'mg'},
+                "Selenium": {'value': 0.1, 'unit': 'µg'},
+                "Iodine": {'value': 0, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.15, 'unit': 'g'},
+                "Arginine": {'value': 0.18, 'unit': 'g'},
+                "Asparagine": {'value': 0.27, 'unit': 'g'},
+                "Aspartic Acid": {'value': 0.38, 'unit': 'g'},
+                "Cysteine": {'value': 0.05, 'unit': 'g'},
+                "Glutamic Acid": {'value': 0.43, 'unit': 'g'},
+                "Glutamine": {'value': 0.32, 'unit': 'g'},
+                "Glycine": {'value': 0.15, 'unit': 'g'},
+                "Histidine": {'value': 0.05, 'unit': 'g'},
+                "Isoleucine": {'value': 0.11, 'unit': 'g'},
+                "Leucine": {'value': 0.17, 'unit': 'g'},
+                "Lysine": {'value': 0.14, 'unit': 'g'},
+                "Methionine": {'value': 0.04, 'unit': 'g'},
+                "Phenylalanine": {'value': 0.13, 'unit': 'g'},
+                "Proline": {'value': 0.12, 'unit': 'g'},
+                "Serine": {'value': 0.14, 'unit': 'g'},
+                "Threonine": {'value': 0.09, 'unit': 'g'},
+                "Tryptophan": {'value': 0.02, 'unit': 'g'},
+                "Tyrosine": {'value': 0.06, 'unit': 'g'},
+                "Valine": {'value': 0.13, 'unit': 'g'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.13, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.39, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.36, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.09, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.27, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 104, 'unit': 'mg'},
+                "Carotenoids": {'value': 10226, 'unit': 'µg'},
+                "Polyphenols": {'value': 26.1, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0, 'unit': 'mg'},
+                "Phytosterols": {'value': 32, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.85, 'unit': 'g'},
+                "Fructose": {'value': 0.61, 'unit': 'g'},
+                "Sucrose": {'value': 0.04, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 4, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 3.3, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 114, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 3.3, 'unit': 'g'},
+                "Water": {'value': 87.71, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 6.4, 'unit': 'mg'},
+                "Lectins": {'value': 4.3, 'unit': 'mg'},
+                "Phytic Acid": {'value': 1.2, 'unit': 'mg'},
+                "Oxalates": {'value': 10, 'unit': 'mg'}
+            }
+        },
+        "Mint": {
+            'Macronutrients': {
+                "Carbohydrates": {'value': 14.89, 'unit': 'g'},
+                "Proteins": {'value': 3.75, 'unit': 'g'},
+                "Fats": {'value': 0.94, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 2124, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.08, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.26, 'unit': 'mg'},
+                "Vitamin B3": {'value': 1.71, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.25, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.16, 'unit': 'mg'},
+                "Vitamin B7": {'value': 6, 'unit': 'µg'},
+                "Vitamin B9": {'value': 114, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 31.8, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.87, 'unit': 'mg'},
+                "Vitamin K": {'value': 424.8, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 199, 'unit': 'mg'},
+                "Iron": {'value': 5.08, 'unit': 'mg'},
+                "Magnesium": {'value': 63, 'unit': 'mg'},
+                "Phosphorus": {'value': 60, 'unit': 'mg'},
+                "Potassium": {'value': 458, 'unit': 'mg'},
+                "Sodium": {'value': 31, 'unit': 'mg'},
+                "Zinc": {'value': 1.09, 'unit': 'mg'},
+                "Copper": {'value': 329, 'unit': 'µg'},
+                "Manganese": {'value': 1.18, 'unit': 'mg'},
+                "Selenium": {'value': 0.6, 'unit': 'µg'},
+                "Iodine": {'value': 0, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.19, 'unit': 'g'},
+                "Arginine": {'value': 0.19, 'unit': 'g'},
+                "Asparagine": {'value': 0.30, 'unit': 'g'},
+                "Aspartic Acid": {'value': 0.34, 'unit': 'g'},
+                "Cysteine": {'value': 0.08, 'unit': 'g'},
+                "Glutamic Acid": {'value': 0.44, 'unit': 'g'},
+                "Glutamine": {'value': 0.35, 'unit': 'g'},
+                "Glycine": {'value': 0.18, 'unit': 'g'},
+                "Histidine": {'value': 0.05, 'unit': 'g'},
+                "Isoleucine": {'value': 0.12, 'unit': 'g'},
+                "Leucine": {'value': 0.18, 'unit': 'g'},
+                "Lysine": {'value': 0.16, 'unit': 'g'},
+                "Methionine": {'value': 0.06, 'unit': 'g'},
+                "Phenylalanine": {'value': 0.14, 'unit': 'g'},
+                "Proline": {'value': 0.14, 'unit': 'g'},
+                "Serine": {'value': 0.14, 'unit': 'g'},
+                "Threonine": {'value': 0.09, 'unit': 'g'},
+                "Tryptophan": {'value': 0.04, 'unit': 'g'},
+                "Tyrosine": {'value': 0.08, 'unit': 'g'},
+                "Valine": {'value': 0.12, 'unit': 'g'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.24, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.23, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.48, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.32, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.16, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 140, 'unit': 'mg'},
+                "Carotenoids": {'value': 2093, 'unit': 'µg'},
+                "Polyphenols": {'value': 30.4, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0, 'unit': 'mg'},
+                "Phytosterols": {'value': 20, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.49, 'unit': 'g'},
+                "Fructose": {'value': 0.53, 'unit': 'g'},
+                "Sucrose": {'value': 0.04, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 4.1, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 8.0, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 142, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 8.0, 'unit': 'g'},
+                "Water": {'value': 78.65, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 8.4, 'unit': 'mg'},
+                "Lectins": {'value': 5.3, 'unit': 'mg'},
+                "Phytic Acid": {'value': 1.5, 'unit': 'mg'},
+                "Oxalates": {'value': 12, 'unit': 'mg'}
+            }
+        },
+        "Thyme":  {
+            'Macronutrients': {
+                "Carbohydrates": {'value': 24.45, 'unit': 'g'},
+                "Proteins": {'value': 5.56, 'unit': 'g'},
+                "Fats": {'value': 1.68, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 4751, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.51, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.48, 'unit': 'mg'},
+                "Vitamin B3": {'value': 1.82, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.41, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.35, 'unit': 'mg'},
+                "Vitamin B7": {'value': 7, 'unit': 'µg'},
+                "Vitamin B9": {'value': 45, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 160.1, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.42, 'unit': 'mg'},
+                "Vitamin K": {'value': 1714.5, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 405, 'unit': 'mg'},
+                "Iron": {'value': 17.45, 'unit': 'mg'},
+                "Magnesium": {'value': 160, 'unit': 'mg'},
+                "Phosphorus": {'value': 106, 'unit': 'mg'},
+                "Potassium": {'value': 609, 'unit': 'mg'},
+                "Sodium": {'value': 55, 'unit': 'mg'},
+                "Zinc": {'value': 1.81, 'unit': 'mg'},
+                "Copper": {'value': 555, 'unit': 'µg'},
+                "Manganese": {'value': 1.71, 'unit': 'mg'},
+                "Selenium": {'value': 4.6, 'unit': 'µg'},
+                "Iodine": {'value': 0, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.27, 'unit': 'g'},
+                "Arginine": {'value': 0.27, 'unit': 'g'},
+                "Asparagine": {'value': 0.37, 'unit': 'g'},
+                "Aspartic Acid": {'value': 0.49, 'unit': 'g'},
+                "Cysteine": {'value': 0.11, 'unit': 'g'},
+                "Glutamic Acid": {'value': 0.57, 'unit': 'g'},
+                "Glutamine": {'value': 0.45, 'unit': 'g'},
+                "Glycine": {'value': 0.25, 'unit': 'g'},
+                "Histidine": {'value': 0.09, 'unit': 'g'},
+                "Isoleucine": {'value': 0.15, 'unit': 'g'},
+                "Leucine": {'value': 0.22, 'unit': 'g'},
+                "Lysine": {'value': 0.18, 'unit': 'g'},
+                "Methionine": {'value': 0.07, 'unit': 'g'},
+                "Phenylalanine": {'value': 0.17, 'unit': 'g'},
+                "Proline": {'value': 0.23, 'unit': 'g'},
+                "Serine": {'value': 0.20, 'unit': 'g'},
+                "Threonine": {'value': 0.14, 'unit': 'g'},
+                "Tryptophan": {'value': 0.05, 'unit': 'g'},
+                "Tyrosine": {'value': 0.10, 'unit': 'g'},
+                "Valine": {'value': 0.16, 'unit': 'g'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.35, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.24, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.42, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.19, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.23, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 125, 'unit': 'mg'},
+                "Carotenoids": {'value': 3845, 'unit': 'µg'},
+                "Polyphenols": {'value': 28.6, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0, 'unit': 'mg'},
+                "Phytosterols": {'value': 30, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.67, 'unit': 'g'},
+                "Fructose": {'value': 0.35, 'unit': 'g'},
+                "Sucrose": {'value': 0.13, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 5.5, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 14.6, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 130, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 14.6, 'unit': 'g'},
+                "Water": {'value': 66.14, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 11.1, 'unit': 'mg'},
+                "Lectins": {'value': 7.2, 'unit': 'mg'},
+                "Phytic Acid": {'value': 1.8, 'unit': 'mg'},
+                "Oxalates": {'value': 10, 'unit': 'mg'}
+            }
+        },
+        "Rosemary": {
+            'Macronutrients': {
+                "Carbohydrates": {'value': 20.7, 'unit': 'g'},
+                "Proteins": {'value': 3.31, 'unit': 'g'},
+                "Fats": {'value': 5.9, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 217, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.08, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.28, 'unit': 'mg'},
+                "Vitamin B3": {'value': 0.77, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.16, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.13, 'unit': 'mg'},
+                "Vitamin B7": {'value': 5, 'unit': 'µg'},
+                "Vitamin B9": {'value': 73, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 21.8, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 1.6, 'unit': 'mg'},
+                "Vitamin K": {'value': 37.8, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 317, 'unit': 'mg'},
+                "Iron": {'value': 6.8, 'unit': 'mg'},
+                "Magnesium": {'value': 91, 'unit': 'mg'},
+                "Phosphorus": {'value': 34, 'unit': 'mg'},
+                "Potassium": {'value': 668, 'unit': 'mg'},
+                "Sodium": {'value': 10, 'unit': 'mg'},
+                "Zinc": {'value': 0.92, 'unit': 'mg'},
+                "Copper": {'value': 230, 'unit': 'µg'},
+                "Manganese": {'value': 1.30, 'unit': 'mg'},
+                "Selenium": {'value': 0.6, 'unit': 'µg'},
+                "Iodine": {'value': 0, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.25, 'unit': 'g'},
+                "Arginine": {'value': 0.21, 'unit': 'g'},
+                "Asparagine": {'value': 0.27, 'unit': 'g'},
+                "Aspartic Acid": {'value': 0.38, 'unit': 'g'},
+                "Cysteine": {'value': 0.07, 'unit': 'g'},
+                "Glutamic Acid": {'value': 0.44, 'unit': 'g'},
+                "Glutamine": {'value': 0.36, 'unit': 'g'},
+                "Glycine": {'value': 0.20, 'unit': 'g'},
+                "Histidine": {'value': 0.07, 'unit': 'g'},
+                "Isoleucine": {'value': 0.13, 'unit': 'g'},
+                "Leucine": {'value': 0.22, 'unit': 'g'},
+                "Lysine": {'value': 0.16, 'unit': 'g'},
+                "Methionine": {'value': 0.06, 'unit': 'g'},
+                "Phenylalanine": {'value': 0.15, 'unit': 'g'},
+                "Proline": {'value': 0.22, 'unit': 'g'},
+                "Serine": {'value': 0.16, 'unit': 'g'},
+                "Threonine": {'value': 0.11, 'unit': 'g'},
+                "Tryptophan": {'value': 0.05, 'unit': 'g'},
+                "Tyrosine": {'value': 0.09, 'unit': 'g'},
+                "Valine": {'value': 0.13, 'unit': 'g'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 0.82, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 0.82, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 0.83, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.10, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 0.73, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 50, 'unit': 'mg'},
+                "Carotenoids": {'value': 1370, 'unit': 'µg'},
+                "Polyphenols": {'value': 15.7, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0, 'unit': 'mg'},
+                "Phytosterols": {'value': 25, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.35, 'unit': 'g'},
+                "Fructose": {'value': 0.47, 'unit': 'g'},
+                "Sucrose": {'value': 0.06, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 6.0, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 14.0, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 50, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 14.0, 'unit': 'g'},
+                "Water": {'value': 66.0, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 5.0, 'unit': 'mg'},
+                "Lectins": {'value': 4.0, 'unit': 'mg'},
+                "Phytic Acid": {'value': 2.0, 'unit': 'mg'},
+                "Oxalates": {'value': 8.0, 'unit': 'mg'}
+            }
+        },
+        "Oregano": {
+            'Macronutrients': {
+                "Carbohydrates": {'value': 68.9, 'unit': 'g'},
+                "Proteins": {'value': 9.0, 'unit': 'g'},
+                "Fats": {'value': 4.3, 'unit': 'g'}
+            },
+            'Vitamins': {
+                "Vitamin A": {'value': 3000, 'unit': 'µg'},
+                "Vitamin B1": {'value': 0.11, 'unit': 'mg'},
+                "Vitamin B2": {'value': 0.18, 'unit': 'mg'},
+                "Vitamin B3": {'value': 0.70, 'unit': 'mg'},
+                "Vitamin B5": {'value': 0.22, 'unit': 'mg'},
+                "Vitamin B6": {'value': 0.24, 'unit': 'mg'},
+                "Vitamin B7": {'value': 10, 'unit': 'µg'},
+                "Vitamin B9": {'value': 123, 'unit': 'µg'},
+                "Vitamin B12": {'value': 0, 'unit': 'µg'},
+                "Vitamin C": {'value': 3.8, 'unit': 'mg'},
+                "Vitamin D": {'value': 0, 'unit': 'µg'},
+                "Vitamin E": {'value': 0.5, 'unit': 'mg'},
+                "Vitamin K": {'value': 1260, 'unit': 'µg'}
+            },
+            'Minerals': {
+                "Calcium": {'value': 1590, 'unit': 'mg'},
+                "Iron": {'value': 41.8, 'unit': 'mg'},
+                "Magnesium": {'value': 270, 'unit': 'mg'},
+                "Phosphorus": {'value': 80, 'unit': 'mg'},
+                "Potassium": {'value': 1260, 'unit': 'mg'},
+                "Sodium": {'value': 15, 'unit': 'mg'},
+                "Zinc": {'value': 4.35, 'unit': 'mg'},
+                "Copper": {'value': 780, 'unit': 'µg'},
+                "Manganese": {'value': 1.45, 'unit': 'mg'},
+                "Selenium": {'value': 0.9, 'unit': 'µg'},
+                "Iodine": {'value': 0, 'unit': 'µg'}
+            },
+            'Amino Acids': {
+                "Alanine": {'value': 0.35, 'unit': 'g'},
+                "Arginine": {'value': 0.33, 'unit': 'g'},
+                "Asparagine": {'value': 0.48, 'unit': 'g'},
+                "Aspartic Acid": {'value': 0.54, 'unit': 'g'},
+                "Cysteine": {'value': 0.08, 'unit': 'g'},
+                "Glutamic Acid": {'value': 0.56, 'unit': 'g'},
+                "Glutamine": {'value': 0.40, 'unit': 'g'},
+                "Glycine": {'value': 0.30, 'unit': 'g'},
+                "Histidine": {'value': 0.10, 'unit': 'g'},
+                "Isoleucine": {'value': 0.18, 'unit': 'g'},
+                "Leucine": {'value': 0.28, 'unit': 'g'},
+                "Lysine": {'value': 0.23, 'unit': 'g'},
+                "Methionine": {'value': 0.07, 'unit': 'g'},
+                "Phenylalanine": {'value': 0.22, 'unit': 'g'},
+                "Proline": {'value': 0.27, 'unit': 'g'},
+                "Serine": {'value': 0.21, 'unit': 'g'},
+                "Threonine": {'value': 0.15, 'unit': 'g'},
+                "Tryptophan": {'value': 0.06, 'unit': 'g'},
+                "Tyrosine": {'value': 0.11, 'unit': 'g'},
+                "Valine": {'value': 0.19, 'unit': 'g'}
+            },
+            'Fatty Acids': {
+                "Saturated Fatty Acids": {'value': 1.60, 'unit': 'g'},
+                "Monounsaturated Fatty Acids": {'value': 1.12, 'unit': 'g'},
+                "Polyunsaturated Fatty Acids": {'value': 1.23, 'unit': 'g'},
+                "Omega-3 Fatty Acids": {'value': 0.12, 'unit': 'g'},
+                "Omega-6 Fatty Acids": {'value': 1.11, 'unit': 'g'},
+                "Trans Fatty Acids": {'value': 0, 'unit': 'g'}
+            },
+            'Phytochemicals': {
+                "Flavonoids": {'value': 200, 'unit': 'mg'},
+                "Carotenoids": {'value': 2050, 'unit': 'µg'},
+                "Polyphenols": {'value': 31.5, 'unit': 'mg'},
+                "Glucosinolates": {'value': 0, 'unit': 'mg'},
+                "Phytosterols": {'value': 45, 'unit': 'mg'}
+            },
+            'Sugars': {
+                "Glucose": {'value': 0.28, 'unit': 'g'},
+                "Fructose": {'value': 0.30, 'unit': 'g'},
+                "Sucrose": {'value': 0.12, 'unit': 'g'}
+            },
+            'Organic Acids': {
+                "Citric Acid": {'value': 8.0, 'unit': 'mg'},
+                "Lactic Acid": {'value': 0, 'unit': 'mg'}
+            },
+            'Other': {
+                "Fiber": {'value': 42.0, 'unit': 'g'},
+                "Cholesterol": {'value': 0, 'unit': 'mg'},
+                "Antioxidants": {'value': 100, 'unit': 'mg'},
+                "Probiotics": {'value': 0, 'unit': 'CFU'},
+                "Prebiotics": {'value': 42.0, 'unit': 'g'},
+                "Water": {'value': 7.0, 'unit': 'ml'},
+                "Alcohol": {'value': 0, 'unit': 'g'},
+                "Caffeine": {'value': 0, 'unit': 'mg'},
+                "Theobromine": {'value': 0, 'unit': 'mg'},
+                "Tannins": {'value': 4.0, 'unit': 'mg'},
+                "Lectins": {'value': 2.5, 'unit': 'mg'},
+                "Phytic Acid": {'value': 1.5, 'unit': 'mg'},
+                "Oxalates": {'value': 15.0, 'unit': 'mg'}
+            }
+        },
     },
     "Tuberous": {
         "Ginger": {
