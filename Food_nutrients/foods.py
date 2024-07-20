@@ -1,4 +1,4 @@
-foods = {
+food_items = {
     "Baked": {
         "Pastries": {
             'Macronutrients': {
