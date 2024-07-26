@@ -60,7 +60,7 @@ food_categories = {
 
 
 # Biochemicals in edibles
-biochemicals_in_edibles = {
+nutreints = {
     'Macronutrients': [
         "Carbohydrates",
         "Proteins",
