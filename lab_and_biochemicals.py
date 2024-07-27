@@ -1238,79 +1238,79 @@ biochemichals_fruits = {
 
 biochemichals_vegetables = {
   "Blood Glucose": {
-    "increasing": ["Potatoes", "Sweet Potatoes", "Yams", "Cassava", "Beets"],
-    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"]
+    "increasing": ["Carrots", "Sweet Potatoes", "Beets", "Potatoes", "Yams", "Cassava", "Butternut Squash", "Green Peas", "Chickpeas", "Lentils", "Kidney Beans"],
+    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Horseradish", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"]
   },
   "Hemoglobin A1c": {
-    "increasing": ["Potatoes", "Sweet Potatoes", "Yams", "Cassava", "Beets"],
-    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"]
+    "increasing": ["Carrots", "Sweet Potatoes", "Beets", "Potatoes", "Yams", "Cassava", "Butternut Squash", "Green Peas", "Chickpeas", "Lentils", "Kidney Beans"],
+    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Horseradish", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"]
   },
   "Glycated Albumin": {
-    "increasing": ["Potatoes", "Sweet Potatoes", "Yams", "Cassava", "Beets"],
-    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"]
+    "increasing": ["Carrots", "Sweet Potatoes", "Beets", "Potatoes", "Yams", "Cassava", "Butternut Squash", "Green Peas", "Chickpeas", "Lentils", "Kidney Beans"],
+    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Horseradish", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"]
   },
   "Total Cholesterol": {
-    "increasing": ["Beets", "Potatoes", "Sweet Potatoes", "Yams", "Cassava"],
-    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"]
+    "increasing": [],
+    "decreasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Lettuce", "Garlic", "Onion", "Tomatoes", "Eggplants", "Celery", "Asparagus", "Basil", "Cilantro", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "LDL Cholesterol": {
-    "increasing": ["Beets", "Potatoes", "Sweet Potatoes", "Yams", "Cassava"],
-    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"]
+    "increasing": [],
+    "decreasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Lettuce", "Garlic", "Onion", "Tomatoes", "Eggplants", "Celery", "Asparagus", "Basil", "Cilantro", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "HDL Cholesterol": {
-    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"],
-    "decreasing": ["Beets", "Potatoes", "Sweet Potatoes", "Yams", "Cassava"]
+    "increasing": ["Garlic", "Onion", "Tomatoes"],
+    "decreasing": []
   },
   "Triglycerides": {
-    "increasing": ["Potatoes", "Sweet Potatoes", "Yams", "Cassava", "Beets"],
-    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"]
+    "increasing": ["Potatoes", "Sweet Potatoes", "Yams", "Cassava"],
+    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Carrots", "Beets", "Radishes", "Butternut Squash", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Horseradish", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"]
   },
   "Apolipoprotein A1": {
-    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"],
-    "decreasing": ["Beets", "Potatoes", "Sweet Potatoes", "Yams", "Cassava"]
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Carrots", "Sweet Potatoes", "Beets", "Radishes", "Potatoes", "Yams", "Cassava", "Butternut Squash", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Horseradish", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"],
+    "decreasing": []
   },
   "Apolipoprotein B": {
-    "increasing": ["Beets", "Potatoes", "Sweet Potatoes", "Yams", "Cassava"],
-    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Pumpkin", "Cucumber","Tomatoes", "Asparagus", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Bean Sprouts", "Broccoli Sprouts"]
+    "increasing": [],
+    "decreasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Carrots", "Sweet Potatoes", "Beets", "Radishes", "Butternut Squash", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Horseradish", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"]
   },
   "Vitamin D": {
-    "increasing": [],
+    "increasing": ["Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms"],
     "decreasing": []
   },
   "Vitamin C": {
-    "increasing": ["Bell Peppers", "Broccoli", "Cauliflower", "Kale", "Spinach", "Tomatoes"],
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Carrots", "Sweet Potatoes", "Beets", "Radishes", "Potatoes", "Yams", "Butternut Squash", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Horseradish", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"],
     "decreasing": []
   },
   "Vitamin K": {
-    "increasing": ["Kale", "Spinach", "Broccoli", "Green Peas"],
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Carrots", "Beets", "Butternut Squash", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"],
     "decreasing": []
   },
   "Vitamin B6 (Pyridoxine)": {
-    "increasing": ["Spinach", "Kale", "Green Peas", "Bell Peppers", "Garlic"],
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Carrots", "Sweet Potatoes", "Beets", "Radishes", "Potatoes", "Yams", "Butternut Squash", "Zucchini", "Pumpkin", "Cucumber", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"],
     "decreasing": []
   },
   "Vitamin B1 (Thiamine)": {
-    "increasing": ["Green Peas", "Lentils", "Kidney Beans"],
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Carrots", "Sweet Potatoes", "Beets", "Radishes", "Potatoes", "Yams", "Butternut Squash", "Zucchini", "Pumpkin", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"],
     "decreasing": []
   },
   "Vitamin B2 (Riboflavin)": {
-    "increasing": ["Spinach", "Asparagus", "Broccoli", "Kale", "Lettuce", "Green Peas", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms"],
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Carrots", "Sweet Potatoes", "Beets", "Radishes", "Potatoes", "Yams", "Butternut Squash", "Zucchini", "Pumpkin", "Tomatoes", "Bell Peppers", "Eggplants", "Garlic", "Onion", "Chives", "Celery", "Asparagus", "Fennel", "Basil", "Cilantro", "Parsley", "Mint", "Thyme", "Rosemary", "Oregano", "Ginger", "Turmeric", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Alfalfa Sprouts", "Bean Sprouts", "Broccoli Sprouts"],
     "decreasing": []
   },
   "Vitamin B3 (Niacin)": {
-    "increasing": ["Green Peas", "Spinach", "Asparagus", "Bell Peppers", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms"],
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Sweet Potatoes", "Potatoes", "Butternut Squash", "Pumpkin", "Bell Peppers", "Mushrooms (Button, Shiitake, Portobello, Oyster)", "Asparagus"],
     "decreasing": []
   },
   "Vitamin B5 (Pantothenic Acid)": {
-    "increasing": ["Spinach", "Broccoli", "Avocado", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Sweet Potatoes", "Green Peas"],
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Sweet Potatoes", "Potatoes", "Butternut Squash", "Mushrooms (Button, Shiitake, Portobello, Oyster)", "Avocado"],
     "decreasing": []
   },
   "Vitamin B7 (Biotin)": {
-    "increasing": ["Spinach", "Broccoli", "Sweet Potatoes", "Button Mushrooms", "Shiitake Mushrooms", "Portobello Mushrooms", "Oyster Mushrooms", "Cauliflower", "Green Peas"],
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Carrots", "Sweet Potatoes", "Onions", "Tomatoes"],
     "decreasing": []
   },
   "Vitamin B9 (Folate)": {
-    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Green Peas"],
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Cauliflower", "Cabbage", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Asparagus", "Bell Peppers", "Tomatoes", "Carrots", "Squash", "Brussels Sprouts"],
     "decreasing": []
   },
   "Vitamin B12 (Cobalamin)": {
@@ -1318,206 +1318,159 @@ biochemichals_vegetables = {
     "decreasing": []
   },
   "Vitamin A": {
-    "increasing": ["Carrots", "Sweet Potatoes", "Butternut Squash", "Spinach", "Kale"],
+    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Carrots", "Sweet Potatoes", "Butternut Squash", "Pumpkin", "Bell Peppers", "Tomatoes", "Asparagus", "Cilantro", "Parsley"],
     "decreasing": []
-  },
-  "Vitamin D": {
-    "increasing": [],
-    "decreasing": []
-  },
-  "Vitamin C": {
-    "increasing": ["Bell Peppers", "Broccoli", "Cauliflower", "Kale", "Spinach", "Tomatoes"],
-    "decreasing": []
-  },
-  "Vitamin K": {
-    "increasing": ["Kale", "Spinach", "Broccoli", "Green Peas"],
-    "decreasing": ["Cauliflower", "Potatoes", "Sweet Potatoes"]
-  },
-  "Vitamin B6 (Pyridoxine)": {
-    "increasing": ["Spinach", "Kale", "Green Peas", "Bell Peppers", "Garlic"],
-    "decreasing": []
-  },
-  "Vitamin B1 (Thiamine)": {
-    "increasing": ["Green Peas", "Lentils", "Kidney Beans"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
-  },
-  "Vitamin B2 (Riboflavin)": {
-    "increasing": ["Spinach", "Asparagus", "Broccoli", ],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Beets"]
-  },
-  "Vitamin B3 (Niacin)": {
-    "increasing": ["Green Peas", "Spinach"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
-  },
-  "Vitamin B5 (Pantothenic Acid)": {
-    "increasing": ["Spinach"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Beets"]
-  },
-  "Vitamin B7 (Biotin)": {
-    "increasing": ["Spinach", "Broccoli", ],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
-  },
-  "Vitamin B9 (Folate)": {
-    "increasing": ["Spinach", "Kale", "Lettuce", "Broccoli", "Green Peas"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
-  },
-  "Vitamin B12 (Cobalamin)": {
-    "increasing": [],
-    "decreasing": []
-  },
-  "Vitamin A": {
-    "increasing": ["Carrots", "Sweet Potatoes", "Butternut Squash", "Spinach", "Kale"],
-    "decreasing": ["Potatoes", "Cauliflower", "Zucchini"]
   },
   "Creatinine": {
-    "increasing": ["Beets", "Potatoes", "Sweet Potatoes"],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Cauliflower"]
+    "increasing": ["Spinach", "Kale", "Beets", "Sweet Potatoes", "Lentils", "Chickpeas", "Kidney Beans", "Cauliflower", "Broccoli"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Asparagus", "Tomatoes", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Uric Acid": {
-    "increasing": ["Beets", "Spinach", "Green Peas"],
-    "decreasing": ["Celery", "Cucumber", "Bell Peppers", "Chickpeas"]
+    "increasing": ["Spinach", "Cauliflower", "Mushrooms", "Asparagus", "Beets", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Tomatoes", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Blood Urea Nitrogen": {
-    "increasing": ["Beets", "Potatoes", "Sweet Potatoes"],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Cauliflower"]
+    "increasing": ["Spinach", "Kale", "Beets", "Lentils", "Chickpeas", "Kidney Beans", "Cauliflower", "Broccoli", "Sweet Potatoes"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Asparagus", "Tomatoes", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Cystatin C": {
-    "increasing": ["Potatoes", "Beets"],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Green Peas"]
+    "increasing": ["Spinach", "Kale", "Beets", "Lentils", "Chickpeas", "Kidney Beans", "Cauliflower", "Broccoli"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Asparagus", "Tomatoes", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Sodium": {
-    "increasing": ["Beets", "Celery"],
-    "decreasing": ["Cucumber", "Tomatoes", "Bell Peppers", "Spinach"]
+    "increasing": [],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Asparagus", "Tomatoes", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Potassium": {
-    "increasing": ["Spinach", "Sweet Potatoes", "Potatoes", "Green Peas"],
-    "decreasing": ["Cauliflower", "Cucumber", "Bell Peppers"]
+    "increasing": ["Spinach", "Kale", "Sweet Potatoes", "Beets", "Tomatoes", "Potatoes", "Butternut Squash", "Zucchini", "Pumpkin"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Radishes"]
   },
   "Calcium": {
-    "increasing": ["Broccoli", "Kale", "Spinach"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Beets"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Collard Greens", "Green Peas", "Sweet Potatoes", "Butternut Squash"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Magnesium": {
-    "increasing": ["Spinach", "Kale", "Pumpkin", "Beets"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Butternut Squash"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Butternut Squash", "Sweet Potatoes"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini", "Pumpkin"]
   },
   "Phosphate": {
-    "increasing": ["Beets", "Potatoes", "Sweet Potatoes"],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Cauliflower"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Beets", "Sweet Potatoes", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini", "Pumpkin"]
   },
   "Chloride": {
-    "increasing": ["Celery", "Beets"],
-    "decreasing": ["Cucumber", "Spinach", "Tomatoes"]
+    "increasing": ["Spinach", "Kale", "Celery", "Tomatoes"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini", "Pumpkin"]
   },
   "Bicarbonate": {
-    "increasing": ["Spinach", "Beets", "Potatoes"],
-    "decreasing": ["Celery", "Cucumber", "Bell Peppers"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Sweet Potatoes", "Butternut Squash"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini"]
   },
   "Iron": {
-    "increasing": ["Spinach", "Beets", "Green Peas", "Broccoli"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Cauliflower"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Lentils", "Chickpeas", "Beets"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini", "Pumpkin"]
   },
   "Globulin": {
-    "increasing": ["Lentils", "Chickpeas", "Kidney Beans", "Green Peas", "Spinach", "Kale"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Cassava", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Albumin": {
-    "increasing": ["Lentils", "Chickpeas", "Kidney Beans", "Spinach", "Kale"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Total Protein": {
-    "increasing": ["Lentils", "Chickpeas", "Kidney Beans", "Green Peas", "Spinach", "Kale"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Cassava", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Albumin/Globulin Ratio": {
-    "increasing": ["Lentils", "Chickpeas", "Kidney Beans", "Spinach", "Kale"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Cassava", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "C-Reactive Protein": {
-    "increasing": ["Potatoes", "Sweet Potatoes", "Cassava", "Yams"],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Bell Peppers"]
+    "increasing": ["Spinach", "Kale", "Beets", "Radishes", "Tomatoes", "Bell Peppers"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Zucchini", "Pumpkin", "Cabbage", "Parsley", "Mint"]
   },
   "Haptoglobin": {
-    "increasing": ["Lentils", "Chickpeas", "Kidney Beans", "Green Peas", "Spinach"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini", "Pumpkin", "Cabbage"]
   },
   "Transferrin": {
-    "increasing": ["Spinach", "Kale", "Green Peas", "Lentils", "Chickpeas"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Cassava"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Beets", "Lentils", "Chickpeas", "Kidney Beans"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini"]
   },
   "C-Peptide": {
-    "increasing": ["Lentils", "Chickpeas", "Green Peas", "Spinach", "Kale"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Sweet Potatoes"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini"]
   },
   "Testosterone": {
-    "increasing": ["Spinach", "Kale", "Garlic"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Garlic", "Ginger"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers"]
   },
   "Estrogen": {
-    "increasing": ["Spinach", "Kale", "Broccoli", "Bell Peppers"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Sweet Potatoes", "Butternut Squash"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini"]
   },
   "Progesterone": {
-    "increasing": ["Spinach", "Kale", "Lentils", "Chickpeas"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Cassava"]
+    "increasing": ["Spinach", "Kale", "Sweet Potatoes", "Butternut Squash", "Carrots"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini"]
   },
   "Cortisol": {
-    "increasing": ["Potatoes", "Sweet Potatoes", "Yams"],
-    "decreasing": ["Spinach", "Kale", "Green Peas", "Broccoli"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Sweet Potatoes", "Garlic"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers", "Zucchini"]
   },
   "Aldosterone": {
-    "increasing": ["Spinach", "Kale", "Lentils", "Chickpeas"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Sweet Potatoes", "Beets"],
+    "decreasing": ["Cucumber", "Lettuce", "Celery", "Bell Peppers"]
   },
   "Thyroid-Stimulating Hormone (TSH)": {
-    "increasing": ["Spinach", "Kale", "Broccoli", "Green Peas"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Sweet Potatoes", "Butternut Squash"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini"]
   },
   "Free Thyroxine (Free T4)": {
-    "increasing": ["Spinach", "Kale", "Broccoli", "Green Peas"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Sweet Potatoes", "Butternut Squash"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini"]
   },
   "Free Triiodothyronine (Free T3)": {
-    "increasing": ["Spinach", "Kale", "Broccoli", "Green Peas"],
-    "decreasing": ["Potatoes", "Sweet Potatoes", "Yams"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Sweet Potatoes", "Garlic"],
+    "decreasing": ["Cucumber", "Lettuce", "Bell Peppers", "Zucchini"]
   },
   "Aspartate Aminotransferase": {
-    "increasing": [],
-    "decreasing": ["Broccoli", "Spinach", "Kale", "Asparagus", "Garlic"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Alanine Aminotransferase": {
-    "increasing": [],
-    "decreasing": ["Broccoli", "Spinach", "Kale", "Garlic", "Onion"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Alkaline Phosphatase": {
-    "increasing": [],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Asparagus", "Garlic"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Gamma-Glutamyl Transferase": {
-    "increasing": [],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Garlic", "Onion"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Bilirubin": {
-    "increasing": [],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Garlic", "Beets"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Lactate Dehydrogenase": {
-    "increasing": [],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Garlic", "Beets"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Prothrombin Time": {
-    "increasing": [],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Asparagus"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Partial Thromboplastin Time": {
-    "increasing": [],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Green Peas", "Asparagus"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   },
   "Fibrinogen": {
-    "increasing": [],
-    "decreasing": ["Spinach", "Kale", "Broccoli", "Garlic", "Green Peas"]
+    "increasing": ["Spinach", "Kale", "Broccoli", "Cauliflower", "Green Peas", "Lentils", "Chickpeas", "Kidney Beans", "Beets", "Radishes", "Garlic", "Onion"],
+    "decreasing": ["Sweet Potatoes", "Pumpkin", "Zucchini", "Cucumber", "Tomatoes", "Bell Peppers", "Celery", "Parsley", "Mint", "Ginger", "Turmeric"]
   }
 }
+
 
 biochemicals_seeds = {
     "Blood Glucose": {
