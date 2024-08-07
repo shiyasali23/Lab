@@ -44,7 +44,7 @@ class Condition(BaseModel):
         return self.name
 
 class Biochemical(BaseModel):
-    name = models.CharField(max_length=255, db_index=True)
+    name = models.CharField(max_length=255, db_index=True, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='biochemicals', null=True, blank=True, db_index=True)
     female_min = models.FloatField()
     female_max = models.FloatField()
@@ -64,7 +64,7 @@ class Biochemical(BaseModel):
         return self.name
 
 class Food(BaseModel):
-    name = models.CharField(max_length=255, db_index=True)
+    name = models.CharField(max_length=255, db_index=True,unique=True)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='foods', null=True, blank=True, db_index=True)
 
     class Meta:
@@ -104,7 +104,8 @@ class FoodNutrient(BaseModel):
         ]
 
     def __str__(self):
-        return f"{self.food} - {self.nutrient} - {self.value}"
+        return f"{self.food} - {self.nutrient}"
+
 
 class Weight(BaseModel):
     weight = models.FloatField(db_index=True)
@@ -114,12 +115,14 @@ class Weight(BaseModel):
 
     class Meta:
         indexes = [
-            Index(fields=['weight']),
+            Index(fields=['biochemical']),
             Index(fields=['nutrient']),
             Index(fields=['food']),
-            Index(fields=['biochemical']),
+            Index(fields=['weight']),
         ]
+        ordering = ['-weight']
 
     def __str__(self):
-        return f'Weight: {self.weight} (ID: {self.id})'
+        return f'{self.biochemical} - {self.nutrient} - {self.food} - {self.weight}'
+
 

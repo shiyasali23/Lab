@@ -60,18 +60,22 @@ class NutrientSerializer(serializers.ModelSerializer):
 
 
 class FoodNutrientSerializer(serializers.ModelSerializer):
-    nutrient = NutrientSerializer(read_only=True)
-    nutrient_id = serializers.PrimaryKeyRelatedField(
-        queryset=Nutrient.objects.all(), source='nutrient', write_only=True
-    )
-    food = FoodSerializer(read_only=True)
-    food_id = serializers.PrimaryKeyRelatedField(
-        queryset=Food.objects.all(), source='food', write_only=True
-    )
+    nutrient_name = serializers.SerializerMethodField()
+    food_name = serializers.SerializerMethodField()
 
     class Meta:
         model = FoodNutrient
-        fields = '__all__'
+        fields = ['nutrient_name', 'food_name','value']  # Only include the fields you want
+
+    def get_nutrient_name(self, obj):
+        return obj.nutrient.name if obj.nutrient else None
+
+    def get_food_name(self, obj):
+        return obj.food.name if obj.food else None
+
+
+
+
 
 
 class WeightSerializer(serializers.ModelSerializer):

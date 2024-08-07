@@ -1,4 +1,4 @@
-from .models import Category, SubCategory, Biochemical, Condition, Food, Nutrient, Weight
+from .models import Category, SubCategory, Biochemical, Condition, Food, Nutrient,FoodNutrient, Weight
 from .serializers import CategorySerializer, SubCategorySerializer, BiochemicalSerializer, ConditionSerializer, FoodSerializer, NutrientSerializer,FoodNutrientSerializer, WeightSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -116,11 +116,12 @@ def nutrient_detail(request, pk):
 
 @api_view(['GET', 'POST'])
 def food_nutrient_list(request):
-    return generic_list_view(request, Nutrient, FoodNutrientSerializer)
+    return generic_list_view(request, FoodNutrient, FoodNutrientSerializer)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def food_nutrient_detail(request, pk):
-    return generic_detail_view(request, Nutrient, FoodNutrientSerializer, pk)
+    return generic_detail_view(request, FoodNutrient, FoodNutrientSerializer, pk)
 
 @api_view(['GET', 'POST'])
 def weight_list(request):

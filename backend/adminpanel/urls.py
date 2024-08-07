@@ -27,8 +27,8 @@ urlpatterns = [
     path('nutrients/<int:pk>/', views.nutrient_detail, name='nutrient-detail'),
     
     # Food Nutrient URLs
-    path('nutrients/', views.food_nutrient_list, name='food_nutrient-list'),
-    path('nutrients/<int:pk>/', views.food_nutrient_detail, name='food_nutrient-detail'),
+    path('food_nutrients/', views.food_nutrient_list, name='food_nutrients-list'),
+    path('food_nutrients/<int:pk>/', views.food_nutrient_detail, name='food_nutrients-detail'),
 
     # Weight URLs
     path('weights/', views.weight_list, name='weight-list'),
