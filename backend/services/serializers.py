@@ -4,22 +4,17 @@ from adminpanel.serializers import BiochemicalSerializer, FoodSerializer
 from adminpanel.models import Biochemical, Food
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     class Meta:
         model = User
-        fields = ['id', 'email', 'name', 'phone_number', 'city', 'address', 'job', 
-                  'date_of_birth', 'height', 'weight', 'gender', 'is_active']
-        extra_kwargs = {
-            'password': {'write_only': True},
-            'email': {'read_only': True} 
-        }
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone_number', 'city', 'address', 'job', 
+                  'date_of_birth', 'height', 'weight', 'gender', 'password']
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        user = User.objects.create_user(**validated_data)
-        if password:
-            user.set_password(password)
-            user.save()
+        password = validated_data.pop('password')
+        user = User.objects.create_user(password=password, **validated_data)
         return user
+
 
 
 

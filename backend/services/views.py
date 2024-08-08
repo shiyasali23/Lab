@@ -1,190 +1,135 @@
+from .models import User, Biometrics, FoodScore
+from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import User, Biometrics, FoodScore, Biochemical, Food
-from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer, BiochemicalSerializer, FoodSerializer
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from django.views.decorators.csrf import csrf_exempt
 
-# User Views
+import logging
+import traceback
+
+logger = logging.getLogger(__name__)
+
+def handle_error(context, exception):
+    error_msg = str(exception)
+    traceback_msg = traceback.format_exc()
+    logger.error(f"Unhandled error in {context}: {error_msg}\n{traceback_msg}")
+    return {'error': error_msg}
+
+def generic_list_view(request, model, serializer_class):
+    try:
+        if request.method == 'GET':
+            objects = model.objects.all()
+            serializer = serializer_class(objects, many=True)
+            data = [{key: value for key, value in item.items() if key not in ('category', 'subcategory', 'created')} for item in serializer.data]
+            return Response(data)
+
+        elif request.method == 'POST':
+            if isinstance(request.data, list):
+                serializer = serializer_class(data=request.data, many=True)
+            else:
+                serializer = serializer_class(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                logger.error(f"Error in POST request for {model.__name__}: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response(handle_error('generic_list_view', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def generic_detail_view(request, model, serializer_class, pk):
+    try:
+        obj = model.objects.get(pk=pk)
+    except model.DoesNotExist:
+        error_msg = f"{model.__name__} with pk {pk} does not exist"
+        logger.error(error_msg)
+        return Response({'error': error_msg}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        if request.method == 'GET':
+            serializer = serializer_class(obj)
+            return Response(serializer.data)
+
+        elif request.method == 'PUT':
+            serializer = serializer_class(obj, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                logger.error(f"Error in PUT request for {model.__name__} with pk {pk}: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        elif request.method == 'DELETE':
+            obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+    except Exception as e:
+        return Response(handle_error('generic_detail_view', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+########################################################################################################
+
 @api_view(['GET', 'POST'])
 def user_list(request):
-    if request.method == 'GET':
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return generic_list_view(request, User, UserSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def user_detail(request, pk):
-    try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    return generic_detail_view(request, User, UserSerializer, pk)
 
-    if request.method == 'GET':
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = UserSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-# Biometrics Views
 @api_view(['GET', 'POST'])
 def biometrics_list(request):
-    if request.method == 'GET':
-        biometrics = Biometrics.objects.all()
-        serializer = BiometricsSerializer(biometrics, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == 'POST':
-        serializer = BiometricsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return generic_list_view(request, Biometrics, BiometricsSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def biometrics_detail(request, pk):
-    try:
-        biometrics = Biometrics.objects.get(pk=pk)
-    except Biometrics.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    return generic_detail_view(request, Biometrics, BiometricsSerializer, pk)
 
-    if request.method == 'GET':
-        serializer = BiometricsSerializer(biometrics)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = BiometricsSerializer(biometrics, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        biometrics.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-# FoodScore Views
 @api_view(['GET', 'POST'])
-def food_score_list(request):
-    if request.method == 'GET':
-        food_scores = FoodScore.objects.all()
-        serializer = FoodScoreSerializer(food_scores, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == 'POST':
-        serializer = FoodScoreSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def foodscore_list(request):
+    return generic_list_view(request, FoodScore, FoodScoreSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def food_score_detail(request, pk):
-    try:
-        food_score = FoodScore.objects.get(pk=pk)
-    except FoodScore.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+def foodscore_detail(request, pk):
+    return generic_detail_view(request, FoodScore, FoodScoreSerializer, pk)
 
-    if request.method == 'GET':
-        serializer = FoodScoreSerializer(food_score)
-        return Response(serializer.data)
+@api_view(['POST'])
+@csrf_exempt
+def signup(request):
+    if request.method == 'POST':
+        try:
+            serializer = UserSerializer(data=request.data)
+            if serializer.is_valid():
+                user = serializer.save()
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'token': token.key,
+                    'user': UserSerializer(user).data
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(handle_error('signup', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    elif request.method == 'PUT':
-        serializer = FoodScoreSerializer(food_score, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        food_score.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-# Biochemical Views
-@api_view(['GET', 'POST'])
-def biochemical_list(request):
-    if request.method == 'GET':
-        biochemicals = Biochemical.objects.all()
-        serializer = BiochemicalSerializer(biochemicals, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == 'POST':
-        serializer = BiochemicalSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def biochemical_detail(request, pk):
-    try:
-        biochemical = Biochemical.objects.get(pk=pk)
-    except Biochemical.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = BiochemicalSerializer(biochemical)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = BiochemicalSerializer(biochemical, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        biochemical.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-# Food Views
-@api_view(['GET', 'POST'])
-def food_list(request):
-    if request.method == 'GET':
-        foods = Food.objects.all()
-        serializer = FoodSerializer(foods, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == 'POST':
-        serializer = FoodSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def food_detail(request, pk):
-    try:
-        food = Food.objects.get(pk=pk)
-    except Food.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = FoodSerializer(food)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = FoodSerializer(food, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        food.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@api_view(['POST'])
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        try:
+            email = request.data.get('email')
+            password = request.data.get('password')
+            user = authenticate(email=email, password=password)
+            if user is not None:
+                if user.is_active:
+                    token, created = Token.objects.get_or_create(user=user)
+                    return Response({
+                        'token': token.key,
+                        'user': UserSerializer(user).data
+                    })
+                else:
+                    return Response({'error': 'This account is inactive.'}, status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response(handle_error('login', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)

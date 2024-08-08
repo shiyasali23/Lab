@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Index
 from adminpanel.models import Food, Biochemical
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.conf import settings
 
 class BaseModel(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -33,8 +34,8 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     GENDER_CHOICES = [
-        ('M', 'Male'),
-        ('F', 'Female'),
+        ('male', 'male'),
+        ('female', 'female'),
     ]
 
     email = models.EmailField(unique=True, db_index=True)
@@ -47,7 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     date_of_birth = models.DateField()
     height = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'date_of_birth', 'gender']
@@ -58,13 +59,17 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     objects = CustomUserManager()
 
     class Meta:
+        db_table = 'services_user'
         indexes = [
             Index(fields=['email']),
             Index(fields=['phone_number']),
         ]
+        
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.email})'
+        return f'{self.first_name} {self.last_name}'
+
+
 
 class Biometrics(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='biometrics', db_index=True)
@@ -81,6 +86,28 @@ class Biometrics(BaseModel):
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name} - {self.biochemical.name} - {self.value}'
+
+    def scale_biometrics(self, healthy_min, healthy_max, i):
+        optimum_value = (healthy_min + healthy_max) / 2
+        if healthy_min <= i <= healthy_max:
+            return round(2 * (i - optimum_value) / (healthy_max - healthy_min), 2)
+        elif i < healthy_min:
+            return round((i - healthy_min) - 1, 2)
+        elif i > healthy_max:
+            return round((i - healthy_max) + 1, 2)
+
+    def save(self, *args, **kwargs):
+        if self.value is not None and self.biochemical is not None:
+            if self.user.gender == 'female':
+                healthy_min = self.biochemical.female_min
+                healthy_max = self.biochemical.female_max
+            if self.user.gender == 'male':
+                healthy_min = self.biochemical.male_min
+                healthy_max = self.biochemical.male_max
+
+            self.scaled_value = self.scale_biometrics(healthy_min, healthy_max, float(self.value))
+
+        super().save(*args, **kwargs)
 
 class FoodScore(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='food_scores', db_index=True)

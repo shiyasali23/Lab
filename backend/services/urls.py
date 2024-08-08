@@ -2,23 +2,19 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Users 
+    # User URLs
     path('users/', views.user_list, name='user-list'),
     path('users/<int:pk>/', views.user_detail, name='user-detail'),
-    
-    # Biometrics
+
+    # Biometrics URLs
     path('biometrics/', views.biometrics_list, name='biometrics-list'),
     path('biometrics/<int:pk>/', views.biometrics_detail, name='biometrics-detail'),
-    
-    # Food Scores
-    path('food-scores/', views.food_score_list, name='food-score-list'),
-    path('food-scores/<int:pk>/', views.food_score_detail, name='food-score-detail'),
-    
-    # Biochemicals
-    path('biochemicals/', views.biochemical_list, name='biochemical-list'),
-    path('biochemicals/<int:pk>/', views.biochemical_detail, name='biochemical-detail'),
-    
-    # Foods
-    path('foods/', views.food_list, name='food-list'),
-    path('foods/<int:pk>/', views.food_detail, name='food-detail'),
+
+    # FoodScore URLs
+    path('foodscores/', views.foodscore_list, name='foodscore-list'),
+    path('foodscores/<int:pk>/', views.foodscore_detail, name='foodscore-detail'),
+
+    # Signup and Login URLs
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login, name='login'),
 ]
