@@ -40,10 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
     'services.apps.ServicesConfig',
     'adminpanel.apps.AdminpanelConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 
 

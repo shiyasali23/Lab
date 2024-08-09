@@ -90,6 +90,7 @@ def biometrics_detail(request, pk):
 def foodscore_list(request):
     return generic_list_view(request, FoodScore, FoodScoreSerializer)
 
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def foodscore_detail(request, pk):
     return generic_detail_view(request, FoodScore, FoodScoreSerializer, pk)

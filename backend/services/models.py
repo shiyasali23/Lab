@@ -85,7 +85,7 @@ class Biometrics(BaseModel):
         ]
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name} - {self.biochemical.name} - {self.value}'
+        return f'{self.user.first_name} {self.user.last_name} - {self.biochemical.name} - {self.scaled_value}'
 
     def scale_biometrics(self, healthy_min, healthy_max, i):
         optimum_value = (healthy_min + healthy_max) / 2
