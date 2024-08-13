@@ -10,6 +10,14 @@ urlpatterns = [
     path('biometrics/', views.biometrics_list, name='biometrics-list'),
     path('biometrics/<int:pk>/', views.biometrics_detail, name='biometrics-detail'),
 
+    # BiometricsEntry URLs
+    path('biometrics-entries/', views.biometrics_entry_list, name='biometrics-entry-list'),
+    path('biometrics-entries/<int:pk>/', views.biometrics_entry_detail, name='biometrics-entry-detail'),
+
+    # BiometricsValue URLs
+    path('biometrics-values/', views.biometrics_value_list, name='biometrics-value-list'),
+    path('biometrics-values/<int:pk>/', views.biometrics_value_detail, name='biometrics-value-detail'),
+
     # FoodScore URLs
     path('foodscores/', views.foodscore_list, name='foodscore-list'),
     path('foodscores/<int:pk>/', views.foodscore_detail, name='foodscore-detail'),

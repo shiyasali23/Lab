@@ -1,5 +1,5 @@
-from .models import User, Biometrics, FoodScore
-from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer
+from .models import User, Biometrics, BiometricsEntry, BiometricsValue, FoodScore
+from .serializers import UserSerializer, BiometricsSerializer, BiometricsEntrySerializer, BiometricsValueSerializer, FoodScoreSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -87,9 +87,24 @@ def biometrics_detail(request, pk):
     return generic_detail_view(request, Biometrics, BiometricsSerializer, pk)
 
 @api_view(['GET', 'POST'])
+def biometrics_entry_list(request):
+    return generic_list_view(request, BiometricsEntry, BiometricsEntrySerializer)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def biometrics_entry_detail(request, pk):
+    return generic_detail_view(request, BiometricsEntry, BiometricsEntrySerializer, pk)
+
+@api_view(['GET', 'POST'])
+def biometrics_value_list(request):
+    return generic_list_view(request, BiometricsValue, BiometricsValueSerializer)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def biometrics_value_detail(request, pk):
+    return generic_detail_view(request, BiometricsValue, BiometricsValueSerializer, pk)
+
+@api_view(['GET', 'POST'])
 def foodscore_list(request):
     return generic_list_view(request, FoodScore, FoodScoreSerializer)
-
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def foodscore_detail(request, pk):
