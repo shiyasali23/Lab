@@ -1,28 +1,30 @@
 from django.urls import path
-from . import views
+from .views import (
+    signup, login, biometrics_list, biometrics_entry_list, 
+    biometrics_entry_values, latest_food_scores, user_latest_food_score
+)
 
 urlpatterns = [
-    # User URLs
-    path('users/', views.user_list, name='user-list'),
-    path('users/<int:pk>/', views.user_detail, name='user-detail'),
+    # User authentication
+    path('signup/', signup, name='signup'),
+    path('login/', login, name='login'),
 
-    # Biometrics URLs
-    path('biometrics/', views.biometrics_list, name='biometrics-list'),
-    path('biometrics/<int:pk>/', views.biometrics_detail, name='biometrics-detail'),
+    # Biometrics
+    path('biometrics/', biometrics_list, name='biometrics-list'),
+    path('biometrics/<int:pk>/', biometrics_list, name='biometrics-detail'),
 
-    # BiometricsEntry URLs
-    path('biometrics-entries/', views.biometrics_entry_list, name='biometrics-entry-list'),
-    path('biometrics-entries/<int:pk>/', views.biometrics_entry_detail, name='biometrics-entry-detail'),
+    # Biometrics Entries
+    path('biometrics-entries/', biometrics_entry_list, name='biometrics-entry-list'),
+    path('biometrics-entries/<int:pk>/', biometrics_entry_list, name='biometrics-entry-detail'),
+    path('biometrics-entries/<int:pk>/values/', biometrics_entry_values, name='biometrics-entry-values'),
 
-    # BiometricsValue URLs
-    path('biometrics-values/', views.biometrics_value_list, name='biometrics-value-list'),
-    path('biometrics-values/<int:pk>/', views.biometrics_value_detail, name='biometrics-value-detail'),
+    # Biometrics Values
+    path('biometrics-values/', biometrics_entry_list, name='biometrics-value-list'),
+    path('biometrics-values/<int:pk>/', biometrics_entry_list, name='biometrics-value-detail'),
 
-    # FoodScore URLs
-    path('foodscores/', views.foodscore_list, name='foodscore-list'),
-    path('foodscores/<int:pk>/', views.foodscore_detail, name='foodscore-detail'),
-
-    # Signup and Login URLs
-    path('signup/', views.signup, name='signup'),
-    path('login/', views.login, name='login'),
+    # Food Scores
+    path('foodscores/', latest_food_scores, name='foodscore-list'),
+    path('foodscores/<int:pk>/', latest_food_scores, name='foodscore-detail'),
+    path('foodscores/latest/', latest_food_scores, name='foodscore-latest'),
+    path('foodscores/user-latest/', user_latest_food_score, name='foodscore-user-latest'),
 ]

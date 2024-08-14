@@ -4,7 +4,7 @@ from .models import User, Biometrics, BiometricsEntry, BiometricsValue, FoodScor
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'phone_number', 'date_of_birth', 'gender')
+    list_display = ('email', 'first_name', 'last_name', 'phone_number', 'date_of_birth', 'gender', 'is_active', 'is_staff')
     list_filter = ('gender', 'city', 'is_staff', 'is_superuser')
     search_fields = ('email', 'first_name', 'last_name', 'phone_number')
     ordering = ('email',)
@@ -12,7 +12,7 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number', 'date_of_birth', 'gender')}),
         ('Address', {'fields': ('city', 'address')}),
-        ('Additional info', {'fields': ('job', 'height', 'weight')}),
+        ('Additional info', {'fields': ('job', 'height_cm', 'weight_kg')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (

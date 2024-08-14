@@ -1,17 +1,15 @@
 from django.db import models
-from django.db.models import Index
-from adminpanel.models import Food, Biochemical
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.translation import gettext_lazy as _
 
 class BaseModel(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    id = models.BigAutoField(primary_key=True, unique=True)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
         abstract = True
 
-# Custom User Manager
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -33,7 +31,6 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
-# User Model
 class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     GENDER_CHOICES = [
         ('male', 'male'),
@@ -41,102 +38,118 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     ]
 
     email = models.EmailField(unique=True, db_index=True)
-    first_name = models.CharField(max_length=150)  # Reduced length for memory efficiency
+    first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    phone_number = models.CharField(max_length=15, blank=True, null=True, db_index=True)
+    phone_number = models.CharField(max_length=15, unique=True, db_index=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     job = models.CharField(max_length=50, blank=True, null=True)
     date_of_birth = models.DateField()
-    height = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)  # Smaller range for precision
-    weight = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    height_cm = models.DecimalField(
+        max_digits=3, 
+        decimal_places=1, 
+        blank=True, 
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(300)]  
+    )
+    weight_kg = models.DecimalField(
+        max_digits=3, 
+        decimal_places=1, 
+        blank=True, 
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(300)]  
+    )
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'date_of_birth', 'gender']
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     objects = CustomUserManager()
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'date_of_birth', 'gender']
+
     class Meta:
         db_table = 'services_user'
         indexes = [
-            Index(fields=['email']),
-            Index(fields=['phone_number']),
+            models.Index(fields=['email']),
+            models.Index(fields=['phone_number']),
         ]
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
-# Biometrics Model
+    def get_full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
 class Biometrics(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='biometrics', db_index=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='biometrics')
 
     class Meta:
         indexes = [models.Index(fields=['user'])]
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f'Biometrics for {self.user.get_full_name()}'
 
-# Biometrics Entry Model
 class BiometricsEntry(BaseModel):
-    biometrics = models.ForeignKey(Biometrics, on_delete=models.CASCADE, related_name='entries', db_index=True)
+    biometrics = models.ForeignKey(Biometrics, on_delete=models.CASCADE, related_name='entries')
 
     class Meta:
         indexes = [models.Index(fields=['biometrics'])]
 
     def __str__(self):
-        return f'{self.biometrics.user.first_name} {self.biometrics.user.last_name} - Entry {self.id}'
+        return f'Entry {self.id} for {self.biometrics.user.get_full_name()}'
 
-# Biometrics Value Model
 class BiometricsValue(BaseModel):
-    biochemical = models.ForeignKey(Biochemical, on_delete=models.CASCADE, related_name='values', db_index=True)
-    value = models.DecimalField(max_digits=8, decimal_places=2)  # Reduced max digits to save space
+    biochemical = models.ForeignKey('adminpanel.Biochemical', on_delete=models.CASCADE, related_name='values')
+    value = models.DecimalField(max_digits=8, decimal_places=2, null=True)
     scaled_value = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
-    biometrics_entry = models.ForeignKey(BiometricsEntry, on_delete=models.CASCADE, related_name='values', db_index=True, null=True, blank=True)
+    biometrics_entry = models.ForeignKey(BiometricsEntry, on_delete=models.CASCADE, related_name='values')
 
     class Meta:
-        indexes = [models.Index(fields=['biochemical'])]
+        indexes = [models.Index(fields=['biochemical']), models.Index(fields=['biometrics_entry'])]
 
     def __str__(self):
-        return f'{self.biometrics_entry.biometrics.user.first_name} {self.biometrics_entry.biometrics.user.last_name} - {self.biochemical.name} - {self.scaled_value}'
+        return f'{self.biometrics_entry.biometrics.user.get_full_name()} - {self.biochemical.name} - {self.scaled_value}'
 
-    def scale_biometrics(self, healthy_min, healthy_max, value):
+    def scale_biometrics(self):
+        if self.value is None or self.biochemical is None:
+            return None
+
+        user = self.biometrics_entry.biometrics.user
+        healthy_min, healthy_max = self.get_healthy_range(user.gender)
+        if healthy_min is None or healthy_max is None:
+            return None
+        
         optimum_value = (healthy_min + healthy_max) / 2
+        value = float(self.value)
+
         if healthy_min <= value <= healthy_max:
             return round(2 * (value - optimum_value) / (healthy_max - healthy_min), 2)
         elif value < healthy_min:
             return round((value - healthy_min) - 1, 2)
-        elif value > healthy_max:
+        else:
             return round((value - healthy_max) + 1, 2)
 
+    def get_healthy_range(self, gender):
+        if gender == 'female':
+            return self.biochemical.female_min, self.biochemical.female_max
+        return self.biochemical.male_min, self.biochemical.male_max
+
     def save(self, *args, **kwargs):
-        if self.value is not None and self.biochemical is not None:
-            user = self.biometrics_entry.biometrics.user
-            if user.gender == 'female':
-                healthy_min = self.biochemical.female_min
-                healthy_max = self.biochemical.female_max
-            elif user.gender == 'male':
-                healthy_min = self.biochemical.male_min
-                healthy_max = self.biochemical.male_max
-
-            self.scaled_value = self.scale_biometrics(healthy_min, healthy_max, float(self.value))
-
+        self.scaled_value = self.scale_biometrics()
         super().save(*args, **kwargs)
 
-# Food Score Model
 class FoodScore(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='food_scores', db_index=True)
-    food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='food_scores', db_index=True)
-    score = models.DecimalField(max_digits=5, decimal_places=2)  
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='food_scores')
+    food = models.ForeignKey('adminpanel.Food', on_delete=models.CASCADE, related_name='food_scores')
+    score = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     class Meta:
         indexes = [
-            Index(fields=['user']),
-            Index(fields=['food']),
+            models.Index(fields=['user']),
+            models.Index(fields=['food']),
         ]
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name} - {self.food.name} - {self.score}'
+        return f'{self.user.get_full_name()} - {self.food.name} - {self.score}'

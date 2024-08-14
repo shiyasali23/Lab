@@ -1,151 +1,122 @@
-from .models import User, Biometrics, BiometricsEntry, BiometricsValue, FoodScore
-from .serializers import UserSerializer, BiometricsSerializer, BiometricsEntrySerializer, BiometricsValueSerializer, FoodScoreSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from django.views.decorators.csrf import csrf_exempt
-
+from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Max
 import logging
-import traceback
+
+from .models import User, Biometrics, BiometricsEntry, BiometricsValue, FoodScore
+from .serializers import (
+    UserSerializer, BiometricsSerializer, BiometricsEntrySerializer, 
+    BiometricsValueSerializer, FoodScoreSerializer
+)
 
 logger = logging.getLogger(__name__)
 
-def handle_error(context, exception):
-    error_msg = str(exception)
-    traceback_msg = traceback.format_exc()
-    logger.error(f"Unhandled error in {context}: {error_msg}\n{traceback_msg}")
-    return {'error': error_msg}
+def handle_exception(exc):
+    """
+    Handle exceptions and return appropriate responses.
+    """
+    if isinstance(exc, ObjectDoesNotExist):
+        return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
+    logger.error(f"Unhandled error: {str(exc)}", exc_info=True)
+    return Response({'error': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def generic_list_view(request, model, serializer_class):
-    try:
-        if request.method == 'GET':
-            objects = model.objects.all()
-            serializer = serializer_class(objects, many=True)
-            data = [{key: value for key, value in item.items() if key not in ('category', 'subcategory', 'created')} for item in serializer.data]
-            return Response(data)
+def get_serializer_and_validate(serializer_class, data):
+    """
+    Create a serializer instance, validate data, and return serializer or errors.
+    """
+    serializer = serializer_class(data=data)
+    if serializer.is_valid():
+        return serializer, None
+    return None, serializer.errors
 
-        elif request.method == 'POST':
-            if isinstance(request.data, list):
-                serializer = serializer_class(data=request.data, many=True)
-            else:
-                serializer = serializer_class(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                logger.error(f"Error in POST request for {model.__name__}: {serializer.errors}")
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    except Exception as e:
-        return Response(handle_error('generic_list_view', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@api_view(['POST'])
+def signup(request):
+    serializer, errors = get_serializer_and_validate(UserSerializer, request.data)
+    if serializer:
+        user = serializer.save()
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user': serializer.data
+        }, status=status.HTTP_201_CREATED)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-def generic_detail_view(request, model, serializer_class, pk):
-    try:
-        obj = model.objects.get(pk=pk)
-    except model.DoesNotExist:
-        error_msg = f"{model.__name__} with pk {pk} does not exist"
-        logger.error(error_msg)
-        return Response({'error': error_msg}, status=status.HTTP_404_NOT_FOUND)
-
-    try:
-        if request.method == 'GET':
-            serializer = serializer_class(obj)
-            return Response(serializer.data)
-
-        elif request.method == 'PUT':
-            serializer = serializer_class(obj, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                logger.error(f"Error in PUT request for {model.__name__} with pk {pk}: {serializer.errors}")
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        elif request.method == 'DELETE':
-            obj.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-    except Exception as e:
-        return Response(handle_error('generic_detail_view', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-########################################################################################################
-
-@api_view(['GET', 'POST'])
-def user_list(request):
-    return generic_list_view(request, User, UserSerializer)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def user_detail(request, pk):
-    return generic_detail_view(request, User, UserSerializer, pk)
+@api_view(['POST'])
+def login(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    user = authenticate(email=email, password=password)
+    if user and user.is_active:
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user': UserSerializer(user).data
+        })
+    return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET', 'POST'])
 def biometrics_list(request):
-    return generic_list_view(request, Biometrics, BiometricsSerializer)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def biometrics_detail(request, pk):
-    return generic_detail_view(request, Biometrics, BiometricsSerializer, pk)
+    if request.method == 'GET':
+        biometrics = Biometrics.objects.all()
+        serializer = BiometricsSerializer(biometrics, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer, errors = get_serializer_and_validate(BiometricsSerializer, request.data)
+        if serializer:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST'])
 def biometrics_entry_list(request):
-    return generic_list_view(request, BiometricsEntry, BiometricsEntrySerializer)
+    if request.method == 'GET':
+        entries = BiometricsEntry.objects.all()
+        serializer = BiometricsEntrySerializer(entries, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer, errors = get_serializer_and_validate(BiometricsEntrySerializer, request.data)
+        if serializer:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def biometrics_entry_detail(request, pk):
-    return generic_detail_view(request, BiometricsEntry, BiometricsEntrySerializer, pk)
+@api_view(['GET'])
+def biometrics_entry_values(request, pk):
+    try:
+        biometrics_entry = BiometricsEntry.objects.get(pk=pk)
+    except BiometricsEntry.DoesNotExist:
+        return handle_exception(ObjectDoesNotExist('BiometricsEntry not found'))
+    
+    values = biometrics_entry.values.all()
+    serializer = BiometricsValueSerializer(values, many=True)
+    return Response(serializer.data)
 
-@api_view(['GET', 'POST'])
-def biometrics_value_list(request):
-    return generic_list_view(request, BiometricsValue, BiometricsValueSerializer)
+@api_view(['GET'])
+def latest_food_scores(request):
+    latest_scores = FoodScore.objects.filter(
+        id__in=FoodScore.objects.values('user').annotate(
+            latest_id=Max('id')
+        ).values('latest_id')
+    ).select_related('user', 'food')
+    
+    serializer = FoodScoreSerializer(latest_scores, many=True)
+    return Response(serializer.data)
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def biometrics_value_detail(request, pk):
-    return generic_detail_view(request, BiometricsValue, BiometricsValueSerializer, pk)
-
-@api_view(['GET', 'POST'])
-def foodscore_list(request):
-    return generic_list_view(request, FoodScore, FoodScoreSerializer)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def foodscore_detail(request, pk):
-    return generic_detail_view(request, FoodScore, FoodScoreSerializer, pk)
-
-@api_view(['POST'])
-@csrf_exempt
-def signup(request):
-    if request.method == 'POST':
-        try:
-            serializer = UserSerializer(data=request.data)
-            if serializer.is_valid():
-                user = serializer.save()
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({
-                    'token': token.key,
-                    'user': UserSerializer(user).data
-                }, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response(handle_error('signup', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-@api_view(['POST'])
-@csrf_exempt
-def login(request):
-    if request.method == 'POST':
-        try:
-            email = request.data.get('email')
-            password = request.data.get('password')
-            user = authenticate(email=email, password=password)
-            if user is not None:
-                if user.is_active:
-                    token, created = Token.objects.get_or_create(user=user)
-                    return Response({
-                        'token': token.key,
-                        'user': UserSerializer(user).data
-                    })
-                else:
-                    return Response({'error': 'This account is inactive.'}, status=status.HTTP_401_UNAUTHORIZED)
-            else:
-                return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
-        except Exception as e:
-            return Response(handle_error('login', e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@api_view(['GET'])
+def user_latest_food_score(request):
+    user_id = request.query_params.get('user_id')
+    if not user_id:
+        return Response({'error': 'user_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        latest_score = FoodScore.objects.filter(user_id=user_id).latest('id')
+    except FoodScore.DoesNotExist:
+        return handle_exception(ObjectDoesNotExist('No food score found for this user'))
+    
+    serializer = FoodScoreSerializer(latest_score)
+    return Response(serializer.data)

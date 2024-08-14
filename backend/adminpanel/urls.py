@@ -18,6 +18,10 @@ urlpatterns = [
     path('biochemicals/', views.biochemical_list, name='biochemical-list'),
     path('biochemicals/<int:pk>/', views.biochemical_detail, name='biochemical-detail'),
 
+    # Biochemical Condition URLs
+    path('biochemical_conditions/', views.biochemical_condition_list, name='biochemical-condition-list'),
+    path('biochemical_conditions/<int:pk>/', views.biochemical_condition_detail, name='biochemical-condition-detail'),
+
     # Food URLs
     path('foods/', views.food_list, name='food-list'),
     path('foods/<int:pk>/', views.food_detail, name='food-detail'),
@@ -27,10 +31,14 @@ urlpatterns = [
     path('nutrients/<int:pk>/', views.nutrient_detail, name='nutrient-detail'),
     
     # Food Nutrient URLs
-    path('food_nutrients/', views.food_nutrient_list, name='food_nutrients-list'),
-    path('food_nutrients/<int:pk>/', views.food_nutrient_detail, name='food_nutrients-detail'),
+    path('food_nutrients/', views.food_nutrient_list, name='food-nutrient-list'),
+    path('food_nutrients/<int:pk>/', views.food_nutrient_detail, name='food-nutrient-detail'),
 
-    # Weight URLs
-    path('weights/', views.weight_list, name='weight-list'),
-    path('weights/<int:pk>/', views.weight_detail, name='weight-detail'),
+    # Food Weight URLs
+    path('food_weights/', views.food_weight_list, name='food-weight-list'),
+    path('food_weights/<int:pk>/', views.food_weight_detail, name='food-weight-detail'),
+
+    # Nutrient Weight URLs
+    path('nutrient_weights/', views.nutrient_weight_list, name='nutrient-weight-list'),
+    path('nutrient_weights/<int:pk>/', views.nutrient_weight_detail, name='nutrient-weight-detail'),
 ]

@@ -1,5 +1,13 @@
-from .models import Category, SubCategory, Biochemical, Condition, Food, Nutrient,FoodNutrient, Weight
-from .serializers import CategorySerializer, SubCategorySerializer, BiochemicalSerializer, ConditionSerializer, FoodSerializer, NutrientSerializer,FoodNutrientSerializer, WeightSerializer
+from .models import (
+    Category, SubCategory, Biochemical, Condition, Food, Nutrient, 
+    FoodNutrient, FoodWeight, NutrientWeight, BiochemicalCondition
+)
+from .serializers import (
+    CategorySerializer, SubCategorySerializer, BiochemicalSerializer,
+    ConditionSerializer, FoodSerializer, NutrientSerializer,
+    FoodNutrientSerializer, FoodWeightSerializer, NutrientWeightSerializer,
+    BiochemicalConditionSerializer
+)
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -8,13 +16,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Generic views for list and detail
 def generic_list_view(request, model, serializer_class):
     if request.method == 'GET':
         objects = model.objects.all()
         serializer = serializer_class(objects, many=True)
         data = [{key: value for key, value in item.items() if key not in ('category','subcategory','created')} for item in serializer.data]
         return Response(data)
-
     
     elif request.method == 'POST':
         if isinstance(request.data, list):
@@ -25,11 +33,7 @@ def generic_list_view(request, model, serializer_class):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        # Print errors to terminal
-        print(f"Error in POST request for {model.__name__}:")
-        print(serializer.errors)
         logger.error(f"Error in POST request for {model.__name__}: {serializer.errors}")
-        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def generic_detail_view(request, model, serializer_class, pk):
@@ -37,7 +41,6 @@ def generic_detail_view(request, model, serializer_class, pk):
         obj = model.objects.get(pk=pk)
     except model.DoesNotExist:
         error_msg = f"{model.__name__} with pk {pk} does not exist"
-        print(error_msg)
         logger.error(error_msg)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -51,21 +54,14 @@ def generic_detail_view(request, model, serializer_class, pk):
             serializer.save()
             return Response(serializer.data)
         
-        # Print errors to terminal
-        print(f"Error in PUT request for {model.__name__} with pk {pk}:")
-        print(serializer.errors)
         logger.error(f"Error in PUT request for {model.__name__} with pk {pk}: {serializer.errors}")
-        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-########################################################################################################
-
-
+# API views for each model
 @api_view(['GET', 'POST'])
 def category_list(request):
     return generic_list_view(request, Category, CategorySerializer)
@@ -99,6 +95,14 @@ def condition_detail(request, pk):
     return generic_detail_view(request, Condition, ConditionSerializer, pk)
 
 @api_view(['GET', 'POST'])
+def biochemical_condition_list(request):
+    return generic_list_view(request, BiochemicalCondition, BiochemicalConditionSerializer)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def biochemical_condition_detail(request, pk):
+    return generic_detail_view(request, BiochemicalCondition, BiochemicalConditionSerializer, pk)
+
+@api_view(['GET', 'POST'])
 def food_list(request):
     return generic_list_view(request, Food, FoodSerializer)
 
@@ -118,15 +122,22 @@ def nutrient_detail(request, pk):
 def food_nutrient_list(request):
     return generic_list_view(request, FoodNutrient, FoodNutrientSerializer)
 
-
 @api_view(['GET', 'PUT', 'DELETE'])
 def food_nutrient_detail(request, pk):
     return generic_detail_view(request, FoodNutrient, FoodNutrientSerializer, pk)
 
 @api_view(['GET', 'POST'])
-def weight_list(request):
-    return generic_list_view(request, Weight, WeightSerializer)
+def food_weight_list(request):
+    return generic_list_view(request, FoodWeight, FoodWeightSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def weight_detail(request, pk):
-    return generic_detail_view(request, Weight, WeightSerializer, pk)
+def food_weight_detail(request, pk):
+    return generic_detail_view(request, FoodWeight, FoodWeightSerializer, pk)
+
+@api_view(['GET', 'POST'])
+def nutrient_weight_list(request):
+    return generic_list_view(request, NutrientWeight, NutrientWeightSerializer)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def nutrient_weight_detail(request, pk):
+    return generic_detail_view(request, NutrientWeight, NutrientWeightSerializer, pk)

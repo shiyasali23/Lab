@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Category, SubCategory, Condition, Biochemical, Food, Nutrient, FoodNutrient, Weight
+from .models import (
+    Category, SubCategory, Condition, Biochemical, Food, Nutrient, 
+    FoodNutrient, FoodWeight, NutrientWeight, BiochemicalCondition
+)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -22,15 +25,15 @@ class ConditionAdmin(admin.ModelAdmin):
 
 @admin.register(Biochemical)
 class BiochemicalAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'female_min', 'female_max', 'male_min', 'male_max', 'created')
+    list_display = ('name', 'category', 'female_min', 'female_max', 'male_min', 'male_max', 'unit', 'created')
     search_fields = ('name', 'category__name')
     list_filter = ('category',)
     ordering = ('name',)
-    filter_horizontal = ('hyper_conditions', 'hypo_conditions')
+    # Remove filter_horizontal since there is no many-to-many field
 
 @admin.register(Food)
 class FoodAdmin(admin.ModelAdmin):
-    list_display = ('name', 'subcategory', 'created')
+    list_display = ('name', 'subcategory', 'nutriscore', 'created')
     search_fields = ('name', 'subcategory__name')
     list_filter = ('subcategory',)
     ordering = ('name',)
@@ -49,9 +52,23 @@ class FoodNutrientAdmin(admin.ModelAdmin):
     list_filter = ('food', 'nutrient')
     ordering = ('food', 'nutrient')
 
-@admin.register(Weight)
-class WeightAdmin(admin.ModelAdmin):
-    list_display = ('weight', 'biochemical', 'nutrient', 'food', 'created')
-    search_fields = ('biochemical__name', 'nutrient__name', 'food__name')
-    list_filter = ('biochemical', 'nutrient', 'food')
-    ordering = ('weight',)
+@admin.register(FoodWeight)
+class FoodWeightAdmin(admin.ModelAdmin):
+    list_display = ('biochemical', 'food', 'bias', 'weight', 'created')
+    search_fields = ('biochemical__name', 'food__name')
+    list_filter = ('biochemical', 'food')
+    ordering = ('biochemical', 'food')
+
+@admin.register(NutrientWeight)
+class NutrientWeightAdmin(admin.ModelAdmin):
+    list_display = ('biochemical', 'nutrient', 'bias', 'weight', 'created')
+    search_fields = ('biochemical__name', 'nutrient__name')
+    list_filter = ('biochemical', 'nutrient')
+    ordering = ('biochemical', 'nutrient')
+
+@admin.register(BiochemicalCondition)
+class BiochemicalConditionAdmin(admin.ModelAdmin):
+    list_display = ('biochemical', 'condition', 'is_hyper', 'created')
+    search_fields = ('biochemical__name', 'condition__name')
+    list_filter = ('biochemical', 'condition', 'is_hyper')
+    ordering = ('biochemical', 'condition', 'is_hyper')
