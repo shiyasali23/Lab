@@ -3,120 +3,122 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Max
 import logging
 
-from .models import User, Biometrics, BiometricsEntry, BiometricsValue, FoodScore
-from .serializers import (
-    UserSerializer, BiometricsSerializer, BiometricsEntrySerializer, 
-    BiometricsValueSerializer, FoodScoreSerializer
-)
+from .models import User, Biometrics
+from .serializers import UserSerializer, BiometricsSerializer
 
 logger = logging.getLogger(__name__)
 
-def handle_exception(exc):
-    """
-    Handle exceptions and return appropriate responses.
-    """
-    if isinstance(exc, ObjectDoesNotExist):
-        return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
-    logger.error(f"Unhandled error: {str(exc)}", exc_info=True)
-    return Response({'error': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def get_serializer_and_validate(serializer_class, data):
-    """
-    Create a serializer instance, validate data, and return serializer or errors.
-    """
-    serializer = serializer_class(data=data)
-    if serializer.is_valid():
-        return serializer, None
-    return None, serializer.errors
+def get_user_details(user):
+    try:
+        latest_biometrics = Biometrics.objects.filter(user=user).order_by('-id').first()
+        biometrics_values_data = []
+        food_scores_data = []
+        if latest_biometrics:
+            biometrics_values = BiometricsValue.objects.filter(biometrics_entry__biometrics=latest_biometrics)
+            biometrics_values_data = BiometricsValueSerializer(biometrics_values, many=True).data
+
+            food_scores = FoodScore.objects.filter(biometrics_entry__biometrics=latest_biometrics)
+            food_scores_data = FoodScoreSerializer(food_scores, many=True).data
+
+        return {
+            'latest_biometrics': BiometricsSerializer(latest_biometrics).data if latest_biometrics else None,
+            'biometrics_values': biometrics_values_data,
+            'food_scores': food_scores_data,
+        }
+
+    except Exception as exc:
+        logger.error(f"Error fetching user details: {str(exc)}", exc_info=True)
+        return None
+
 
 @api_view(['POST'])
 def signup(request):
-    serializer, errors = get_serializer_and_validate(UserSerializer, request.data)
-    if serializer:
-        user = serializer.save()
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user': serializer.data
-        }, status=status.HTTP_201_CREATED)
-    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+    email = request.data.get('email')
+
+    if User.objects.filter(email=email).exists():
+        return Response({'error': 'User with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            user = serializer.save()
+            token, _ = Token.objects.get_or_create(user=user)
+            response = get_user_details(user)
+            if response is None:
+                return Response({'error': 'An unexpected error occurred while fetching user details.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response['token'] = token.key
+            return Response(response, status=status.HTTP_201_CREATED)
+        except Exception as exc:
+            logger.error(f"Error during user signup: {str(exc)}", exc_info=True)
+            return Response({'error': 'An unexpected error occurred during signup.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def login(request):
     email = request.data.get('email')
     password = request.data.get('password')
     user = authenticate(email=email, password=password)
+
     if user and user.is_active:
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user': UserSerializer(user).data
-        })
+        try:
+            token, _ = Token.objects.get_or_create(user=user)
+            response = get_user_details(user)
+            if response is None:
+                return Response({'error': 'An unexpected error occurred while fetching user details.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response['token'] = token.key
+            return Response(response, status=status.HTTP_201_CREATED)
+        except Exception as exc:
+            logger.error(f"Error during user login: {str(exc)}", exc_info=True)
+            return Response({'error': 'An unexpected error occurred during login.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-@api_view(['GET', 'POST'])
-def biometrics_list(request):
-    if request.method == 'GET':
-        biometrics = Biometrics.objects.all()
-        serializer = BiometricsSerializer(biometrics, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer, errors = get_serializer_and_validate(BiometricsSerializer, request.data)
-        if serializer:
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'POST'])
-def biometrics_entry_list(request):
-    if request.method == 'GET':
-        entries = BiometricsEntry.objects.all()
-        serializer = BiometricsEntrySerializer(entries, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer, errors = get_serializer_and_validate(BiometricsEntrySerializer, request.data)
-        if serializer:
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def biometrics_entry_values(request, pk):
+@api_view(['POST'])
+def create_biometrics(request, pk):
     try:
-        biometrics_entry = BiometricsEntry.objects.get(pk=pk)
-    except BiometricsEntry.DoesNotExist:
-        return handle_exception(ObjectDoesNotExist('BiometricsEntry not found'))
-    
-    values = biometrics_entry.values.all()
-    serializer = BiometricsValueSerializer(values, many=True)
-    return Response(serializer.data)
+        user = User.objects.get(id=pk)
+        data = request.data.copy()
+        data['user'] = user.id  
+        serializer = BiometricsSerializer(data=data)
+        if serializer.is_valid():
+            biometrics = serializer.save()
+            response = get_user_details(user)
+            if response is None:
+                return Response({'error': 'An unexpected error occurred while fetching user details.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def latest_food_scores(request):
-    latest_scores = FoodScore.objects.filter(
-        id__in=FoodScore.objects.values('user').annotate(
-            latest_id=Max('id')
-        ).values('latest_id')
-    ).select_related('user', 'food')
-    
-    serializer = FoodScoreSerializer(latest_scores, many=True)
-    return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
-def user_latest_food_score(request):
-    user_id = request.query_params.get('user_id')
-    if not user_id:
-        return Response({'error': 'user_id is required'}, status=status.HTTP_400_BAD_REQUEST)
-    
+    except Exception as exc:
+        logger.error(f"Error creating biometrics: {str(exc)}", exc_info=True)
+        return Response({'error': 'An unexpected error occurred while creating biometrics.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def deactivate_user(request, pk=None):
     try:
-        latest_score = FoodScore.objects.filter(user_id=user_id).latest('id')
-    except FoodScore.DoesNotExist:
-        return handle_exception(ObjectDoesNotExist('No food score found for this user'))
+        if pk:
+            user = User.objects.get(pk=pk)
+        else:
+            email = request.data.get('email')
+            user = User.objects.get(email=email)
+        
+        user.is_active = False
+        user.save()
+        return Response({'message': 'User account has been deactivated successfully.'}, status=status.HTTP_200_OK)
     
-    serializer = FoodScoreSerializer(latest_score)
-    return Response(serializer.data)
+    except ObjectDoesNotExist:
+        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    except Exception as exc:
+        logger.error(f"Error during user deactivation: {str(exc)}", exc_info=True)
+        return Response({'error': 'An unexpected error occurred during user deactivation.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

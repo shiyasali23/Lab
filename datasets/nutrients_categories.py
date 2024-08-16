@@ -8,17 +8,15 @@ for food_category, data in fruit.items():
     for food_name, nutrients_dict in data.items():
         for nutrient_category, nutrient_info in nutrients_dict.items():
             for nutrient_name, nutrient_value in nutrient_info.items():
-                # Create a tuple of (name, category) for uniqueness check
-                nutrient_entry = (nutrient_name, nutrient_category)
-
-                # Check if the nutrient entry is already in the set
+                nutrient_unit = nutrient_value['unit']
+                nutrient_entry = (nutrient_name, nutrient_category, nutrient_unit)
                 if nutrient_entry not in seen_nutrients:
-                    # If not seen before, add it to the set and the list
                     seen_nutrients.add(nutrient_entry)
                     flattened_nutrients.append(
                         {
                             'name': nutrient_name,
-                            'category': nutrient_category
+                            'category': nutrient_category,
+                            'unit': nutrient_unit
                         }
                     )
 

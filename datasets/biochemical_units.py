@@ -8,6 +8,7 @@ for biochemichals, data in biochemicals_units.items():
   row['name'] = biochemichals
   row['category'] = data['category']
   row['unit'] = data['unit']
+  row['validity'] = data['validity']
   row['female_Min'] = data['healthy_range_female'][0]
   row['female_Max'] = data['healthy_range_female'][1]
   row['male_Min'] = data['healthy_range_male'][0]

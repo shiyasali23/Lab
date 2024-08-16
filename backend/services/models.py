@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from datetime import timedelta
 
 class BaseModel(models.Model):
     id = models.BigAutoField(primary_key=True, unique=True)
@@ -83,7 +85,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         return f'{self.first_name} {self.last_name}'
 
 class Biometrics(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='biometrics')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='biometrics')
 
     class Meta:
         indexes = [models.Index(fields=['user'])]
@@ -91,32 +93,24 @@ class Biometrics(BaseModel):
     def __str__(self):
         return f'Biometrics for {self.user.get_full_name()}'
 
-class BiometricsEntry(BaseModel):
-    biometrics = models.ForeignKey(Biometrics, on_delete=models.CASCADE, related_name='entries')
-
-    class Meta:
-        indexes = [models.Index(fields=['biometrics'])]
-
-    def __str__(self):
-        return f'Entry {self.id} for {self.biometrics.user.get_full_name()}'
-
 class BiometricsValue(BaseModel):
     biochemical = models.ForeignKey('adminpanel.Biochemical', on_delete=models.CASCADE, related_name='values')
     value = models.DecimalField(max_digits=8, decimal_places=2, null=True)
     scaled_value = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
-    biometrics_entry = models.ForeignKey(BiometricsEntry, on_delete=models.CASCADE, related_name='values')
+    biometrics = models.ForeignKey(Biometrics, on_delete=models.CASCADE, related_name='entries')
+    expired_date = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        indexes = [models.Index(fields=['biochemical']), models.Index(fields=['biometrics_entry'])]
+        indexes = [models.Index(fields=['biochemical']), models.Index(fields=['biometrics'])]
 
     def __str__(self):
-        return f'{self.biometrics_entry.biometrics.user.get_full_name()} - {self.biochemical.name} - {self.scaled_value}'
+        return f'{self.biometrics.user.get_full_name()} - {self.biochemical.name} - {self.scaled_value}'
 
     def scale_biometrics(self):
         if self.value is None or self.biochemical is None:
             return None
 
-        user = self.biometrics_entry.biometrics.user
+        user = self.biometrics.user
         healthy_min, healthy_max = self.get_healthy_range(user.gender)
         if healthy_min is None or healthy_max is None:
             return None
@@ -137,19 +131,21 @@ class BiometricsValue(BaseModel):
         return self.biochemical.male_min, self.biochemical.male_max
 
     def save(self, *args, **kwargs):
+        if self.biochemical:
+            self.expired_date = timezone.now() + timedelta(days=self.biochemical.validity_days)
         self.scaled_value = self.scale_biometrics()
         super().save(*args, **kwargs)
 
 class FoodScore(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='food_scores')
+    biometrics = models.ForeignKey(Biometrics, on_delete=models.CASCADE, related_name='food_scores')
     food = models.ForeignKey('adminpanel.Food', on_delete=models.CASCADE, related_name='food_scores')
-    score = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    score = models.DecimalField(max_digits=5, decimal_places=2)
 
     class Meta:
         indexes = [
-            models.Index(fields=['user']),
+            models.Index(fields=['biometrics']),
             models.Index(fields=['food']),
         ]
 
     def __str__(self):
-        return f'{self.user.get_full_name()} - {self.food.name} - {self.score}'
+        return f'{self.biometrics.user.get_full_name()} - {self.food.name} - {self.score}'

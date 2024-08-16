@@ -43,6 +43,7 @@ class Biochemical(BaseModel):
     female_max = models.FloatField()
     male_min = models.FloatField()
     male_max = models.FloatField()
+    validity_days = models.FloatField()
     unit = models.CharField(max_length=50, default='g/dL')
 
     def __str__(self):
@@ -86,6 +87,19 @@ class Nutrient(BaseModel):
     class Meta:
         indexes = [models.Index(fields=['name']), models.Index(fields=['category'])]
 
+class FoodNutrient(BaseModel):
+    food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='nutrients')
+    nutrient = models.ForeignKey(Nutrient, on_delete=models.CASCADE, related_name='foods')
+    value = models.FloatField()
+
+    def __str__(self):
+        return f"{self.food.name} - {self.nutrient.name}: {self.value} {self.nutrient.unit}"
+
+    class Meta:
+        unique_together = ('food', 'nutrient')
+        indexes = [models.Index(fields=['food', 'nutrient'])]
+
+
 class FoodWeight(BaseModel):
     biochemical = models.ForeignKey(Biochemical, on_delete=models.CASCADE, related_name='food_weights')
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='weights')
@@ -112,14 +126,4 @@ class NutrientWeight(BaseModel):
         unique_together = ('biochemical', 'nutrient')
         indexes = [models.Index(fields=['biochemical', 'nutrient', 'bias', 'weight'])]
 
-class FoodNutrient(BaseModel):
-    food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='nutrients')
-    nutrient = models.ForeignKey(Nutrient, on_delete=models.CASCADE, related_name='foods')
-    value = models.FloatField()
 
-    def __str__(self):
-        return f"{self.food.name} - {self.nutrient.name}: {self.value} {self.nutrient.unit}"
-
-    class Meta:
-        unique_together = ('food', 'nutrient')
-        indexes = [models.Index(fields=['food', 'nutrient'])]

@@ -25,11 +25,10 @@ class ConditionAdmin(admin.ModelAdmin):
 
 @admin.register(Biochemical)
 class BiochemicalAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'female_min', 'female_max', 'male_min', 'male_max', 'unit', 'created')
+    list_display = ('name', 'category', 'female_min', 'female_max', 'male_min', 'male_max', 'unit', 'validity_days', 'created')
     search_fields = ('name', 'category__name')
     list_filter = ('category',)
     ordering = ('name',)
-    # Remove filter_horizontal since there is no many-to-many field
 
 @admin.register(Food)
 class FoodAdmin(admin.ModelAdmin):
@@ -50,25 +49,25 @@ class FoodNutrientAdmin(admin.ModelAdmin):
     list_display = ('food', 'nutrient', 'value')
     search_fields = ('food__name', 'nutrient__name')
     list_filter = ('food', 'nutrient')
-    ordering = ('food', 'nutrient')
+    ordering = ('food__name', 'nutrient__name')
 
 @admin.register(FoodWeight)
 class FoodWeightAdmin(admin.ModelAdmin):
     list_display = ('biochemical', 'food', 'bias', 'weight', 'created')
     search_fields = ('biochemical__name', 'food__name')
     list_filter = ('biochemical', 'food')
-    ordering = ('biochemical', 'food')
+    ordering = ('biochemical__name', 'food__name')
 
 @admin.register(NutrientWeight)
 class NutrientWeightAdmin(admin.ModelAdmin):
     list_display = ('biochemical', 'nutrient', 'bias', 'weight', 'created')
     search_fields = ('biochemical__name', 'nutrient__name')
     list_filter = ('biochemical', 'nutrient')
-    ordering = ('biochemical', 'nutrient')
+    ordering = ('biochemical__name', 'nutrient__name')
 
 @admin.register(BiochemicalCondition)
 class BiochemicalConditionAdmin(admin.ModelAdmin):
     list_display = ('biochemical', 'condition', 'is_hyper', 'created')
     search_fields = ('biochemical__name', 'condition__name')
     list_filter = ('biochemical', 'condition', 'is_hyper')
-    ordering = ('biochemical', 'condition', 'is_hyper')
+    ordering = ('biochemical__name', 'condition__name', 'is_hyper')
