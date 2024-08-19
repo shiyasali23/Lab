@@ -1,0 +1,117 @@
+header {
+  padding: 1rem 2rem;
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+header h1 {
+  color: #444;
+  font-size: 1.6rem;
+  margin-left: 2rem;
+}
+
+header nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem; 
+}
+
+header nav a {
+  color: #444;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+
+
+header nav i {
+  font-size: 1.2rem;
+  color: #444;
+}
+
+header nav i:hover {
+  color: black;
+}
+
+header nav span {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+header nav span:hover {
+  color: black;
+}
+
+header nav .me-4 {
+  margin-right: 2rem;
+}
+
+
+.form-box {
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.form-input {
+  height: 50px;
+  width: 100%;
+  font-size: 1rem;
+  border: none;
+  background: rgba(224, 224, 224, 0.8);
+  padding: 0 1rem;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: none;
+  background: rgba(246, 246, 246, 0.823);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.form-button {
+  border: none;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-button:hover {
+  box-shadow: 
+    4px 4px 10px rgba(0, 0, 0, 0.2), 
+    -4px -4px 10px rgba(255, 255, 255, 0.5);
+  background: #000000e8;
+}
+
+.form-button:active {
+  box-shadow: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.2), 
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+}
+
+.login-footer {
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.login-footer a {
+  text-decoration: none;
+  color:#444;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-footer a:hover {
+  color: #444;
+}
+
+.form-box h2 {
+  color: #444;
+  font-size: 1.6rem;
+}

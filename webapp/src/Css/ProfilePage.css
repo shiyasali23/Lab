@@ -1,0 +1,18 @@
+.profile-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.profile-card {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: none;
+  margin-top: 1rem;
+  width: 100%;
+  padding: 1rem 1rem;
+}
+
+
+
+
+
+
