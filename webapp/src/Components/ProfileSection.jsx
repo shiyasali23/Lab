@@ -1,53 +1,28 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Form, Button, Alert, Spinner } from "react-bootstrap";
-import FormField from "./FormField"; 
+import FormField from "./FormField";
 import { useUser } from "../Contexts/UserContext";
 
-const ProfileSection = () => {
-  const { loading, getUser, updateUser, deactivateUser } = useUser();
-  
-  const [profileData, setProfileData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    gender: '',
-    job: '',
-    city: '',
-    dateOfBirth: '',
-    height: '',
-    weight: ''
-  });
-  
-  const [originalProfileData, setOriginalProfileData] = useState({});
+const ProfileSection = ({ profileData }) => {
+  const { loading, updateUser, deactivateUser, error } = useUser();
+
+  const [profile, setProfile] = useState(profileData || {});
+  const [originalProfileData, setOriginalProfileData] = useState(profileData || {});
   const [status, setStatus] = useState({ loading: false, errors: [], success: false });
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const fetchedUser = await getUser();
-      if (fetchedUser) {
-        const userData = {
-          firstName: fetchedUser.user.first_name || '',
-          lastName: fetchedUser.user.last_name || '',
-          email: fetchedUser.user.email || '',
-          phone: fetchedUser.user.phone_number || '',
-          gender: fetchedUser.user.gender || '',
-          job: fetchedUser.user.job || '',
-          city: fetchedUser.user.city || '',
-          dateOfBirth: fetchedUser.user.date_of_birth || '',
-          height: fetchedUser.user.height_cm || '',
-          weight: fetchedUser.user.weight_kg || ''
-        };
-        setProfileData(userData);
-        setOriginalProfileData(userData); // Store original data
-      }
-    };
-    fetchUser();
-  }, [getUser]);
+    if (profileData) {
+      setProfile(profileData);
+      setOriginalProfileData(profileData);
+    } else {
+      setProfile({});
+      setOriginalProfileData({});
+    }
+  }, [profileData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProfileData({ ...profileData, [name]: value });
+    setProfile({ ...profile, [name]: value });
   };
 
   const validateForm = (data) => {
@@ -69,17 +44,16 @@ const ProfileSection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = validateForm(profileData);
+    const errors = validateForm(profile);
     if (errors.length > 0) {
       setStatus({ ...status, errors });
       return;
     }
 
-    // Prepare the updated fields
-    const updatedFields = Object.keys(profileData).reduce((acc, key) => {
-      const value = profileData[key];
+    const updatedFields = Object.keys(profile).reduce((acc, key) => {
+      const value = profile[key];
       if (value !== originalProfileData[key]) {
-        acc[key] = value === '' ? null : value; // Convert empty strings to null
+        acc[key] = value === '' ? null : value;
       }
       return acc;
     }, {});
@@ -116,12 +90,23 @@ const ProfileSection = () => {
     setStatus({ ...status, loading: false });
   };
 
+  if (!profileData) {
+    return (
+      <Card className="profile-card">
+        <Card.Body>
+          <Alert variant="danger">Failed to load profile data.</Alert>
+        </Card.Body>
+      </Card>
+    );
+  }
+
   return (
     <Card className="profile-card">
       <Card.Body>
+      <h2 className="text-start">Profile</h2>
         <span
           style={{ color: "red", cursor: "pointer" }}
-          className="me-4 mb-4 text-end d-block mb-1"
+          className=" mb-4 text-end d-block"
           onClick={handleDeactivate}
         >
           <i className="me-2 text-end fa-regular fa-trash-can"></i>
@@ -129,7 +114,7 @@ const ProfileSection = () => {
         </span>
 
         <Form onSubmit={handleSubmit}>
-          {loading && (
+          {status.loading && (
             <Spinner animation="border" className="d-block mx-auto mb-4" />
           )}
           {status.errors.length > 0 && (
@@ -143,6 +128,9 @@ const ProfileSection = () => {
           )}
           {status.success && !status.loading && (
             <Alert variant="success">Profile updated successfully!</Alert>
+          )}
+          {error && !status.loading && (
+            <Alert variant="danger">{error}</Alert>
           )}
           <div className="row">
             {[
@@ -162,7 +150,7 @@ const ProfileSection = () => {
                 name={name}
                 label={label}
                 type={type}
-                value={profileData[name]}
+                value={profile[name] || ''}
                 onChange={handleChange}
               />
             ))}
@@ -171,9 +159,9 @@ const ProfileSection = () => {
             className="save-btn"
             variant="dark"
             type="submit"
-            disabled={loading}
+            disabled={status.loading}
           >
-            {loading ? "Saving..." : "Save Changes"}
+            {status.loading ? "Saving..." : "Save Changes"}
           </Button>
         </Form>
       </Card.Body>

@@ -4,27 +4,17 @@ import Header from "../Components/Header";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
+  const token = localStorage.getItem('token');
   useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.storageArea === localStorage && !localStorage.getItem("token")) {
-        navigate("/login");
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
-    if (!localStorage.getItem("token")) {
-      navigate("/login");
-    }
-    return () => window.removeEventListener("storage", handleStorageChange);
+   if(!token) navigate('/login');
+
   }, [navigate]);
 
   return (
     <div className="d-flex flex-column min-vh-100">
-      <Header isLoggedIn={true} />
-      <Container className="d-flex flex-grow-1 align-items-center justify-content-center">
-        {/* Page content here */}
-      </Container>
+      <Header isLoggedIn={false} />
+      <Container className="d-flex flex-grow-1 align-items-center justify-content-center"></Container>
     </div>
   );
 };

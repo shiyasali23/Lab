@@ -6,7 +6,10 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 
-from .models import User, Biometrics
+
+from .models import User, Biometrics, BiometricsValue, FoodScore
+from adminpanel.models import Biochemical
+from adminpanel.serializers import BiochemicalSerializer
 from .serializers import UserSerializer, BiometricsSerializer, BiometricsValueSerializer, FoodScoreSerializer
 
 logger = logging.getLogger(__name__)
@@ -36,15 +39,31 @@ def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
 def get_user_details(user):
     try:
         latest_biometrics = Biometrics.objects.filter(user=user).order_by('-id').first()
+        biochemicals = Biochemical.objects.all()
+        biometrics_values = BiometricsValue.objects.filter(biometrics=latest_biometrics) if latest_biometrics else []
+        biometrics_values_dict = {value.biochemical.id: value for value in biometrics_values}
+        biometrics_values_data = []
+        for biochemical in biochemicals:
+            value_entry = biometrics_values_dict.get(biochemical.id)
+            biometrics_values_data.append({
+                'biochemical': BiochemicalSerializer(biochemical).data,
+                'value': value_entry.value if value_entry else None,
+                'scaled_value': value_entry.scaled_value if value_entry else None,
+                'expired_date': value_entry.expired_date if value_entry else None
+            })
+        latest_biometrics_data = BiometricsSerializer(latest_biometrics).data if latest_biometrics else None
+        food_scores_data = FoodScoreSerializer(FoodScore.objects.filter(biometrics=latest_biometrics), many=True).data if latest_biometrics else []
+
         return {
             'user': UserSerializer(user).data,
-            'latest_biometrics': BiometricsSerializer(latest_biometrics).data if latest_biometrics else None,
-            'biometrics_values': BiometricsValueSerializer(BiometricsValue.objects.filter(biometrics_entry__biometrics=latest_biometrics), many=True).data if latest_biometrics else [],
-            'food_scores': FoodScoreSerializer(FoodScore.objects.filter(biometrics_entry__biometrics=latest_biometrics), many=True).data if latest_biometrics else [],
+            'latest_biometrics': latest_biometrics_data,
+            'biometrics_values': biometrics_values_data,
+            'food_scores': food_scores_data,
         }
     except Exception as exc:
         logger.exception(f"Error fetching user details: {exc}")
         return None
+
 
 @api_view(['GET'])
 @authentication_classes([authentication.TokenAuthentication])
@@ -155,3 +174,47 @@ def create_biometrics(request):
         return Response({'detail': 'Account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as exc:
         return Response({'detail': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# biochemicals = {
+#     {
+#         name : 'x',
+#         id : 1,
+#     },
+#     {
+#         name : 'w',
+#         id : 2,
+#     },
+#     {
+#         name : 'z',
+#         id : 3,
+#     },
+# }
+
+
+# biometrics_values = {
+#     {
+#         'biochemical':{
+#             'name': 'x',
+#             'id': 1,
+#         }
+#         'value' :34,
+#         'scaled_value' : 0.34
+#     },
+#     {
+#         biochemical :{
+#             'name': 'w',
+#             'id': 2,
+#         }
+#         'value' :4,
+#         'scaled_value' : 0.4
+#     },
+#     {
+#         biochemical : {
+#             'name': 'z',
+#         'id': 3,
+#         }
+#         'value' : null,
+#         'scaled_value' :  null,
+#     },
+# }

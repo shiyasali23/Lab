@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
 const UserContext = createContext();
@@ -10,9 +10,6 @@ export const UserProvider = ({ children }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [user, setUser] = useState(null);
-  const token = localStorage.getItem('token');
-
-  axios.defaults.headers.common['Authorization'] = `Token ${token}`;
 
   const resetState = useCallback(() => {
     setLoading(false);
@@ -20,9 +17,23 @@ export const UserProvider = ({ children }) => {
     setSuccess('');
   }, []);
 
+  const setAuthHeader = useCallback(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+    } else {
+      delete axios.defaults.headers.common['Authorization'];
+    }
+  }, []);
+
+  useEffect(() => {
+    setAuthHeader(); // Ensure headers are set on mount
+  }, [setAuthHeader]);
+
   const handleApiCall = useCallback(async (apiCall, successMessage) => {
     resetState();
     setLoading(true);
+    setAuthHeader(); // Ensure headers are set before API call
 
     try {
       const response = await apiCall();
@@ -35,29 +46,30 @@ export const UserProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [resetState]);
+  }, [resetState, setAuthHeader]);
 
-  const getUser = useCallback(() => 
-    handleApiCall(() => axios.get(`${API_URL}api/services/user/`), 'User details fetched successfully.'),
+  const getUser = useCallback(() =>
+    handleApiCall(() => axios.get(`${API_URL}api/services/user/`), 'User details fetched.'),
   [handleApiCall]);
 
   const updateUser = useCallback((userData) => 
-    handleApiCall(() => axios.patch(`${API_URL}api/services/user/update/`, userData), 'User updated successfully.'),
+    handleApiCall(() => axios.patch(`${API_URL}api/services/user/update/`, userData), 'User updated.'),
   [handleApiCall]);
 
   const deactivateUser = useCallback(() => 
     handleApiCall(
       async () => {
         await axios.post(`${API_URL}api/services/user/deactivate/`);
-        localStorage.removeItem('token'); // Remove the token from local storage
-        setUser(null); // Set user to null
+        localStorage.removeItem('token');
+        setAuthHeader(); // Ensure headers are updated
+        setUser(null);
       },
-      'User account deactivated successfully!'
+      'User account deactivated'
     ),
-  [handleApiCall]);
+  [handleApiCall, setAuthHeader]);
 
   const createBiometrics = useCallback((biometricsData) => 
-    handleApiCall(() => axios.post(`${API_URL}api/services/biometrics/create/`, biometricsData), 'Biometrics created successfully.'),
+    handleApiCall(() => axios.post(`${API_URL}api/services/biometrics/create/`, biometricsData), 'Biometrics created.'),
   [handleApiCall]);
 
   const logout = useCallback(() => 
@@ -65,12 +77,12 @@ export const UserProvider = ({ children }) => {
       async () => {
         await axios.post(`${API_URL}api/services/logout/`);
         localStorage.removeItem('token');
+        setAuthHeader(); // Ensure headers are updated
         setUser(null);
       },
-      'Logged out successfully!'
+      'Logged out!'
     ),
-  [handleApiCall]);
-  
+  [handleApiCall, setAuthHeader]);
 
   const value = {
     user,
