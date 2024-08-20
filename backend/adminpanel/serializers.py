@@ -9,18 +9,20 @@ from .models import (
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['name']
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
+    category = CategorySerializer(read_only=True)  
     category_id = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), source='category', write_only=True
-    )
+    )  
+
+    category_name = serializers.CharField(source='category.name', read_only=True)
 
     class Meta:
         model = SubCategory
-        fields = '__all__'
+        fields = ['name' 'category_name']
 
 
 class ConditionSerializer(serializers.ModelSerializer):
@@ -30,14 +32,16 @@ class ConditionSerializer(serializers.ModelSerializer):
 
 
 class BiochemicalSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
+    category = CategorySerializer(read_only=True)  
     category_id = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), source='category', write_only=True
-    )
+    )  
+
+    category_name = serializers.CharField(source='category.name', read_only=True)
 
     class Meta:
         model = Biochemical
-        fields = '__all__'
+        fields = ['name', 'id', 'category_name']  
 
 
 class BiochemicalConditionSerializer(serializers.ModelSerializer):

@@ -1,15 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../Contexts/AuthContext';
+import { useUser } from '../Contexts/UserContext';
 
 const Header = () => {
-  const { logout } = useAuth();
+  const { logout } = useUser();
   
-  // Check if the token exists in localStorage
   const token = localStorage.getItem('token');
-  const isLoggedIn = !token; // true if token exists, otherwise false
+  const isLoggedIn = !token; 
 
-  // Inline styles for disabled state
   const disabledStyle = {
     pointerEvents: 'none',
     display: 'none',

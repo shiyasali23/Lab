@@ -19,16 +19,18 @@ class UserSerializer(serializers.ModelSerializer):
 class BiometricsValueSerializer(serializers.ModelSerializer):
     biochemical = BiochemicalSerializer(read_only=True)
     biochemical_id = serializers.PrimaryKeyRelatedField(queryset=Biochemical.objects.all(), source='biochemical', write_only=True)
+    biochemical_name = serializers.CharField(source='biochemical.name', read_only=True)
+
 
     class Meta:
         model = BiometricsValue
-        fields = '__all__'
+        fields = ['biochemical_name','biochemical_id', 'value', 'scaled_value', 'biometrics', 'expired_date']
+
 
 
 class BiometricsSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='user', write_only=True)
-    values = BiometricsValueSerializer(many=True, write_only=True)
+    user = UserSerializer(read_only=True)  # For output
+    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='user', write_only=True)  # For input
 
     class Meta:
         model = Biometrics
@@ -36,13 +38,35 @@ class BiometricsSerializer(serializers.ModelSerializer):
         
     def create(self, validated_data):
         values_data = validated_data.pop('values', [])
-        user = validated_data.pop('user', None)
-        biometrics = Biometrics.objects.create(user=user, **validated_data)
-        if values_data:
-            for value_data in values_data:
-                BiometricsValue.objects.create(biometrics=biometrics, **value_data)
+        user = validated_data.pop('user', None)  
+         
+        with transaction.atomic():
+            biometrics = Biometrics.objects.create(user=user, **validated_data)           
+            biochemicals = list(Biochemical.objects.all())
+            biochemical_dict = {biochemical.id: biochemical for biochemical in biochemicals}          
+            biometrics_values = []
+            values_dict = {item['biochemical']: item for item in values_data}
+
+            for biochemical_id, biochemical in biochemical_dict.items():
+                value_data = values_dict.get(biochemical_id, None)
+                value = value_data.get('value') if value_data else None
+                biometrics_values.append(
+                    BiometricsValue(
+                        biometrics=biometrics,
+                        biochemical=biochemical,
+                        value=value,
+                        scaled_value=None,  
+                        expired_date=None,  
+                    )
+                )
+            if biometrics_values:
+                BiometricsValue.objects.bulk_create(biometrics_values)
 
         return biometrics
+
+        
+        
+    
 
 
 class FoodScoreSerializer(serializers.ModelSerializer):

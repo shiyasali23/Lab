@@ -1,124 +1,157 @@
-from rest_framework import status
-from rest_framework.decorators import api_view
+import logging
+from rest_framework import status, authentication, permissions
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from django.core.exceptions import ObjectDoesNotExist
-import logging
+from django.shortcuts import get_object_or_404
 
 from .models import User, Biometrics
-from .serializers import UserSerializer, BiometricsSerializer
+from .serializers import UserSerializer, BiometricsSerializer, BiometricsValueSerializer, FoodScoreSerializer
 
 logger = logging.getLogger(__name__)
 
+def get_token_from_request(request):
+    token_key = request.headers.get('Authorization', '').split(' ')[-1]
+    return get_object_or_404(Token, key=token_key)
+
+
+def get_error_message(error_dict):
+    if isinstance(error_dict, dict):
+        for field, errors in error_dict.items():
+            if isinstance(errors, list):
+                return f"{field}: {errors[0]}"
+            elif isinstance(errors, str):
+                return f"{field}: {errors}"
+    return str(error_dict)
+
+
+def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
+    if error:
+        error_message = get_error_message(error)
+        logger.error(f"Error: {error_message}")
+        return Response({'error': error_message}, status=status_code)
+    return Response(data, status=status_code)
 
 def get_user_details(user):
     try:
         latest_biometrics = Biometrics.objects.filter(user=user).order_by('-id').first()
-        biometrics_values_data = []
-        food_scores_data = []
-        if latest_biometrics:
-            biometrics_values = BiometricsValue.objects.filter(biometrics_entry__biometrics=latest_biometrics)
-            biometrics_values_data = BiometricsValueSerializer(biometrics_values, many=True).data
-
-            food_scores = FoodScore.objects.filter(biometrics_entry__biometrics=latest_biometrics)
-            food_scores_data = FoodScoreSerializer(food_scores, many=True).data
-
         return {
+            'user': UserSerializer(user).data,
             'latest_biometrics': BiometricsSerializer(latest_biometrics).data if latest_biometrics else None,
-            'biometrics_values': biometrics_values_data,
-            'food_scores': food_scores_data,
+            'biometrics_values': BiometricsValueSerializer(BiometricsValue.objects.filter(biometrics_entry__biometrics=latest_biometrics), many=True).data if latest_biometrics else [],
+            'food_scores': FoodScoreSerializer(FoodScore.objects.filter(biometrics_entry__biometrics=latest_biometrics), many=True).data if latest_biometrics else [],
         }
-
     except Exception as exc:
-        logger.error(f"Error fetching user details: {str(exc)}", exc_info=True)
+        logger.exception(f"Error fetching user details: {exc}")
         return None
 
+@api_view(['GET'])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def get_user(request):
+    try:
+        token = get_token_from_request(request)
+        response_data = get_user_details(token.user)
+        return handle_response(response_data, status_code=status.HTTP_200_OK)
+    except Exception as exc:
+        return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def logout(request):
+    try:
+        token = get_token_from_request(request)
+        token.delete()
+        return Response({"detail": "Logout successful!"}, status=status.HTTP_200_OK)
+    except Exception as exc:
+        return Response({"detail": str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def deactivate_user(request):
+    try:
+        token = get_token_from_request(request)
+        user = token.user
+        
+        if user.is_active:
+            user.is_active = False
+            user.save()
+            token.delete()
+            return Response({'message': 'Account successfully deactivated.'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'Account is already inactive.'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as exc:
+        return Response({'detail': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['PATCH'])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def update_user(request):
+    try:
+        token = get_token_from_request(request)
+        user = token.user
+        
+        if user.is_active:
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            logger.error(f"Validation error: {serializer.errors}")
+            return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as exc:
+        logger.exception("Unexpected error in update_user")
+        return Response({'detail': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def signup(request):
-    email = request.data.get('email')
-
-    if User.objects.filter(email=email).exists():
-        return Response({'error': 'User with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    serializer = UserSerializer(data=request.data)
+    serializer = UserSerializer(data={**request.data, 'is_active': True, 'is_staff': False})
     if serializer.is_valid():
         try:
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
-            response = get_user_details(user)
-            if response is None:
-                return Response({'error': 'An unexpected error occurred while fetching user details.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            response['token'] = token.key
-            return Response(response, status=status.HTTP_201_CREATED)
+            response_data = get_user_details(user)
+            if response_data:
+                response_data['token'] = token.key
+                return handle_response(response_data, status_code=status.HTTP_201_CREATED)
         except Exception as exc:
-            logger.error(f"Error during user signup: {str(exc)}", exc_info=True)
-            return Response({'error': 'An unexpected error occurred during signup.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return handle_response(error=serializer.errors, status_code=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def login(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
-    user = authenticate(email=email, password=password)
-
+    user = authenticate(email=request.data.get('email'), password=request.data.get('password'))
     if user and user.is_active:
         try:
             token, _ = Token.objects.get_or_create(user=user)
-            response = get_user_details(user)
-            if response is None:
-                return Response({'error': 'An unexpected error occurred while fetching user details.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            response['token'] = token.key
-            return Response(response, status=status.HTTP_201_CREATED)
+            response_data = get_user_details(user)
+            if response_data:
+                response_data['token'] = token.key
+                return handle_response(response_data)
         except Exception as exc:
-            logger.error(f"Error during user login: {str(exc)}", exc_info=True)
-            return Response({'error': 'An unexpected error occurred during login.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return handle_response(error='Invalid credentials.', status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['POST'])
-def create_biometrics(request, pk):
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def create_biometrics(request):
     try:
-        user = User.objects.get(id=pk)
-        data = request.data.copy()
-        data['user'] = user.id  
-        serializer = BiometricsSerializer(data=data)
-        if serializer.is_valid():
-            biometrics = serializer.save()
-            response = get_user_details(user)
-            if response is None:
-                return Response({'error': 'An unexpected error occurred while fetching user details.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            return Response(response, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    except User.DoesNotExist:
-        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-    except Exception as exc:
-        logger.error(f"Error creating biometrics: {str(exc)}", exc_info=True)
-        return Response({'error': 'An unexpected error occurred while creating biometrics.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(['POST'])
-def deactivate_user(request, pk=None):
-    try:
-        if pk:
-            user = User.objects.get(pk=pk)
-        else:
-            email = request.data.get('email')
-            user = User.objects.get(email=email)
+        token = get_token_from_request(request)
+        user = token.user
         
-        user.is_active = False
-        user.save()
-        return Response({'message': 'User account has been deactivated successfully.'}, status=status.HTTP_200_OK)
-    
-    except ObjectDoesNotExist:
-        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-    
+        if user.is_active:
+            data = {**request.data, 'user': user.id}
+            serializer = BiometricsSerializer(data=data)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as exc:
-        logger.error(f"Error during user deactivation: {str(exc)}", exc_info=True)
-        return Response({'error': 'An unexpected error occurred during user deactivation.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'detail': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

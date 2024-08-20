@@ -1,4 +1,7 @@
 from django.db import models
+from decimal import Decimal
+from django.core.validators import RegexValidator
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
@@ -42,24 +45,24 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     email = models.EmailField(unique=True, db_index=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    phone_number = models.CharField(max_length=15, unique=True, db_index=True)
+    phone_number = models.CharField(max_length=10, unique=True, db_index=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     job = models.CharField(max_length=50, blank=True, null=True)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(blank=True, null=True)
     height_cm = models.DecimalField(
-        max_digits=3, 
-        decimal_places=1, 
-        blank=True, 
+        max_digits=5,  # Adjusted to accommodate possible values
+        decimal_places=1,
+        blank=True,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(300)]  
+        validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('300.0'))]  
     )
     weight_kg = models.DecimalField(
-        max_digits=3, 
-        decimal_places=1, 
-        blank=True, 
+        max_digits=5,  # Adjusted to accommodate possible values
+        decimal_places=1,
+        blank=True,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(300)]  
+        validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('300.0'))]  
     )
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
 

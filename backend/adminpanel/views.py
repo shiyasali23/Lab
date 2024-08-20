@@ -21,14 +21,14 @@ def generic_list_view(request, model, serializer_class):
     if request.method == 'GET':
         objects = model.objects.all()
         serializer = serializer_class(objects, many=True)
-        data = [{key: value for key, value in item.items() if key not in ('category','subcategory','created')} for item in serializer.data]
-        return Response(data)
-    
+        return Response(serializer.data)
+
     elif request.method == 'POST':
         if isinstance(request.data, list):
             serializer = serializer_class(data=request.data, many=True)
         else:
             serializer = serializer_class(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

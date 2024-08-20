@@ -25,11 +25,8 @@ export const AuthProvider = ({ children }) => {
       const response = await apiCall();
       setSuccess(successMessage);
       setUser(response.data);
-      localStorage.setItem('token', response.data.token);   
-      console.log(response.data);  
+      localStorage.setItem('token', response.data.token);
       return response.data;
-     
-      
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred.');
       return null;
@@ -46,11 +43,6 @@ export const AuthProvider = ({ children }) => {
     handleApiCall(() => axios.post(`${API_URL}api/services/login/`, { email, password }), 'Login successful!'),
   [handleApiCall]);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setSuccess('Logout successful!');
-  }, []);
 
   const value = {
     user,
@@ -59,7 +51,6 @@ export const AuthProvider = ({ children }) => {
     success,
     signup,
     login,
-    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
