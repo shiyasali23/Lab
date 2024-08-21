@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Biometrics, BiometricsValue, FoodScore
+from .models import User, Biometrics, FoodRecommendation, FoodScore
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
@@ -24,27 +24,27 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Biometrics)
 class BiometricsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'biochemical', 'value', 'scaled_value', 'expired_date', 'created')
+    list_filter = ('biochemical', 'created', 'user__gender')
+    search_fields = ('user__email', 'user__first_name', 'user__last_name', 'biochemical__name')
+    ordering = ('-created',)
+
+@admin.register(FoodRecommendation)
+class FoodRecommendationAdmin(admin.ModelAdmin):
     list_display = ('user', 'created')
     list_filter = ('created',)
     search_fields = ('user__email', 'user__first_name', 'user__last_name')
-    ordering = ('created',)
-
-@admin.register(BiometricsValue)
-class BiometricsValueAdmin(admin.ModelAdmin):
-    list_display = ('biochemical', 'value', 'scaled_value', 'biometrics', 'created')
-    list_filter = ('biochemical', 'created')
-    search_fields = ('biochemical__name', 'biometrics__user__email', 'biometrics__user__first_name', 'biometrics__user__last_name')
-    ordering = ('created',)
+    ordering = ('-created',)
 
 @admin.register(FoodScore)
 class FoodScoreAdmin(admin.ModelAdmin):
-    list_display = ('user', 'food', 'score', 'created')
+    list_display = ('get_user_full_name', 'food', 'score', 'created')
     list_filter = ('food', 'created')
-    search_fields = ('biometrics__user__first_name', 'biometrics__user__last_name', 'food__name')
-    ordering = ('created',)
+    search_fields = ('food_recommendation__user__first_name', 'food_recommendation__user__last_name', 'food__name')
+    ordering = ('-created',)
 
-    def user(self, obj):
+    def get_user_full_name(self, obj):
         """Display the full name of the user for the FoodScore."""
-        return obj.biometrics.user.get_full_name()
-    user.admin_order_field = 'biometrics__user__email'
-    user.short_description = 'User'
+        return obj.food_recommendation.user.get_full_name()
+    get_user_full_name.admin_order_field = 'food_recommendation__user__email'
+    get_user_full_name.short_description = 'User'

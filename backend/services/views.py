@@ -7,10 +7,10 @@ from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 
 
-from .models import User, Biometrics, BiometricsValue, FoodScore
+from .models import User, Biometrics, FoodScore
 from adminpanel.models import Biochemical
 from adminpanel.serializers import BiochemicalSerializer
-from .serializers import UserSerializer, BiometricsSerializer, BiometricsValueSerializer, FoodScoreSerializer
+from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -38,31 +38,41 @@ def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
 
 def get_user_details(user):
     try:
-        latest_biometrics = Biometrics.objects.filter(user=user).order_by('-id').first()
+        # Fetch all biochemicals
         biochemicals = Biochemical.objects.all()
-        biometrics_values = BiometricsValue.objects.filter(biometrics=latest_biometrics) if latest_biometrics else []
-        biometrics_values_dict = {value.biochemical.id: value for value in biometrics_values}
+
+        # Fetch the latest biometrics entries for the user
+        latest_biometrics = {
+            biometric.biochemical_id: biometric
+            for biometric in Biometrics.objects.filter(user=user).order_by('biochemical_id', '-created')
+        }
+        
+        # Prepare the biometrics data
         biometrics_values_data = []
         for biochemical in biochemicals:
-            value_entry = biometrics_values_dict.get(biochemical.id)
+            # Get the latest entry for the current biochemical
+            value_entry = latest_biometrics.get(biochemical.id)
+            
+            # Append the data to the list
             biometrics_values_data.append({
-                'biochemical': BiochemicalSerializer(biochemical).data,
+                'biochemical': {
+                    'name': biochemical.name,
+                    'id': biochemical.id,
+                },
                 'value': value_entry.value if value_entry else None,
                 'scaled_value': value_entry.scaled_value if value_entry else None,
-                'expired_date': value_entry.expired_date if value_entry else None
+                'expired_date': value_entry.expired_date if value_entry else None,
             })
-        latest_biometrics_data = BiometricsSerializer(latest_biometrics).data if latest_biometrics else None
-        food_scores_data = FoodScoreSerializer(FoodScore.objects.filter(biometrics=latest_biometrics), many=True).data if latest_biometrics else []
 
         return {
             'user': UserSerializer(user).data,
-            'latest_biometrics': latest_biometrics_data,
-            'biometrics_values': biometrics_values_data,
-            'food_scores': food_scores_data,
+            'biometrics': biometrics_values_data,
         }
+    
     except Exception as exc:
         logger.exception(f"Error fetching user details: {exc}")
         return None
+
 
 
 @api_view(['GET'])
@@ -116,8 +126,9 @@ def update_user(request):
             serializer = UserSerializer(user, data=request.data, partial=True)
             
             if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                serializer.save()               
+                response_data = get_user_details(token.user)
+                return Response(response_data, status=status.HTTP_200_OK)
             logger.error(f"Validation error: {serializer.errors}")
             return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'detail': 'Account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -165,8 +176,7 @@ def create_biometrics(request):
         
         if user.is_active:
             data = {**request.data, 'user': user.id}
-            serializer = BiometricsSerializer(data=data)
-            
+            serializer = BiometricsSerializer(data=data)     
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -192,7 +202,9 @@ def create_biometrics(request):
 # }
 
 
-# biometrics_values = {
+# here in biometrics w and x are registered and z not so biometrics should look like this
+
+# biometrics = {
 #     {
 #         'biochemical':{
 #             'name': 'x',
@@ -211,7 +223,7 @@ def create_biometrics(request):
 #     },
 #     {
 #         biochemical : {
-#             'name': 'z',
+#         'name': 'z',
 #         'id': 3,
 #         }
 #         'value' : null,

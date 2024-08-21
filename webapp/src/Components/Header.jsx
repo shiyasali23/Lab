@@ -3,15 +3,21 @@ import { Link } from 'react-router-dom';
 import { useUser } from '../Contexts/UserContext';
 
 const Header = () => {
-  const { logout } = useUser();
+  const { logout, setUser } = useUser();  
   
   const token = localStorage.getItem('token');
-  const isLoggedIn = !token; 
+  const isLoggedIn = !!token;  
 
   const disabledStyle = {
     pointerEvents: 'none',
     display: 'none',
     cursor: 'not-allowed',
+  };
+
+  const handleLogout = async () => {
+    localStorage.removeItem('token');
+    setUser(null)
+    await logout(); 
   };
 
   return (
@@ -28,8 +34,8 @@ const Header = () => {
               <Link
                 to="/profile"
                 className="text-dark text-center text-decoration-none"
-                style={isLoggedIn ? disabledStyle : {}}
-                aria-disabled={isLoggedIn}
+                style={!isLoggedIn ? disabledStyle : {}}
+                aria-disabled={!isLoggedIn}
               >
                 <i className="fa-regular fa-user d-block mb-1"></i>
                 <span>Profile</span>
@@ -37,30 +43,31 @@ const Header = () => {
               <Link
                 to="/hospital"
                 className="text-dark text-center text-decoration-none"
-                style={isLoggedIn ? disabledStyle : {}}
-                aria-disabled={isLoggedIn}
+                style={!isLoggedIn ? disabledStyle : {}}
+                aria-disabled={!isLoggedIn}
               >
-                
                 <i className="fa-regular fa-hospital d-block mb-1"></i>
                 <span>Hospital</span>
               </Link>
               <Link
                 to="/history"
                 className="text-dark text-center text-decoration-none"
-                style={isLoggedIn ? disabledStyle : {}}
-                aria-disabled={isLoggedIn}
+                style={!isLoggedIn ? disabledStyle : {}}
+                aria-disabled={!isLoggedIn}
               >
                 <i className="fa-regular fa-file d-block mb-1"></i>
                 <span>Report</span>
               </Link>
-              <div
-                className="text-dark text-center text-decoration-none"
-                style={isLoggedIn ? disabledStyle : {}}
-                onClick={() => !isLoggedIn && logout()}
-              >
-                <i className="fa-solid fa-right-from-bracket d-block mb-1"></i>
-                <span>Logout</span>
-              </div>
+              {isLoggedIn && (
+                <div
+                  className="text-dark text-center text-decoration-none"
+                  onClick={handleLogout} // Add the click handler here
+                  style={{ cursor: 'pointer' }}
+                >
+                  <i className="fa-solid fa-right-from-bracket d-block mb-1"></i>
+                  <span>Logout</span>
+                </div>
+              )}
             </nav>
           </div>
         </div>

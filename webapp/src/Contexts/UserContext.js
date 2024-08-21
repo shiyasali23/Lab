@@ -27,18 +27,20 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    setAuthHeader(); // Ensure headers are set on mount
+    setAuthHeader(); 
   }, [setAuthHeader]);
 
   const handleApiCall = useCallback(async (apiCall, successMessage) => {
     resetState();
     setLoading(true);
-    setAuthHeader(); // Ensure headers are set before API call
+    setAuthHeader();
 
     try {
       const response = await apiCall();
       setSuccess(successMessage);
       setUser(response.data);
+      console.log(response.data);
+      console.log(user);      
       return response.data;
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred.');
@@ -61,7 +63,7 @@ export const UserProvider = ({ children }) => {
       async () => {
         await axios.post(`${API_URL}api/services/user/deactivate/`);
         localStorage.removeItem('token');
-        setAuthHeader(); // Ensure headers are updated
+        setAuthHeader(); 
         setUser(null);
       },
       'User account deactivated'
@@ -77,7 +79,7 @@ export const UserProvider = ({ children }) => {
       async () => {
         await axios.post(`${API_URL}api/services/logout/`);
         localStorage.removeItem('token');
-        setAuthHeader(); // Ensure headers are updated
+        setAuthHeader(); 
         setUser(null);
       },
       'Logged out!'
