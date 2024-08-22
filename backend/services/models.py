@@ -1,7 +1,6 @@
 from django.db import models
 from decimal import Decimal
 from django.core.validators import RegexValidator
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
@@ -21,7 +20,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        user.set_password(password)  
         user.save(using=self._db)
         return user
 
@@ -45,7 +44,12 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     email = models.EmailField(unique=True, db_index=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    phone_number = models.CharField(max_length=10, unique=True, db_index=True)
+    phone_number = models.CharField(
+        max_length=10, 
+        unique=True, 
+        db_index=True,
+        validators=[RegexValidator(regex=r'^\d{10}$', message='Phone number must be 10 digits')]
+    )
     city = models.CharField(max_length=50, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     job = models.CharField(max_length=50, blank=True, null=True)
@@ -87,26 +91,39 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
 
+class BiometricsEntry(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='biometrics_entries')
+    health_score = models.DecimalField(max_digits=5, decimal_places=2, null=True)  # Changed to DecimalField
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['user']),
+        ]
+
+    def __str__(self):
+        return f'{self.user.get_full_name()}'
 
 class Biometrics(BaseModel):
-    biochemical = models.ForeignKey('adminpanel.Biochemical', on_delete=models.CASCADE, related_name='biometrics', null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='biometrics')
+    biochemical = models.ForeignKey('adminpanel.Biochemical', on_delete=models.CASCADE, related_name='biometrics')
+    biometricsentry = models.ForeignKey(BiometricsEntry, on_delete=models.CASCADE, related_name='biometrics')
     value = models.DecimalField(max_digits=8, decimal_places=2, null=True)
     scaled_value = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)  
     expired_date = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        indexes = [models.Index(fields=['biochemical']), models.Index(fields=['user'])]
-
+        indexes = [
+            models.Index(fields=['biochemical']),
+            models.Index(fields=['biometricsentry']),
+        ]
 
     def __str__(self):
-        return f'{self.user.get_full_name()} - {self.biochemical.name} - {self.scaled_value}'
+        return f'{self.biometricsentry.user.get_full_name()} - {self.biochemical.name} - {self.scaled_value}'
 
     def scale_biometrics(self):
         if self.value is None or self.biochemical is None:
             return None
 
-        user = self.user
+        user = self.biometricsentry.user
         healthy_min, healthy_max = self.get_healthy_range(user.gender)
         if healthy_min is None or healthy_max is None:
             return None
@@ -128,40 +145,23 @@ class Biometrics(BaseModel):
 
     def save(self, *args, **kwargs):
         if self.value is not None and self.biochemical:
-            # self.expired_date = timezone.now() + timedelta(days=self.biochemical.validity_days)
+            self.expired_date = timezone.now() + timedelta(days=self.biochemical.validity_days)
             self.scaled_value = self.scale_biometrics()
         else:
             self.scaled_value = None
-            # self.expired_date = None
-
+            self.expired_date = None
         super().save(*args, **kwargs)
 
-
-
-class FoodRecommendation(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='food_recommendations')
-
-    class Meta:
-        indexes = [
-            models.Index(fields=['user']),
-        ]
-
-    def __str__(self):
-        return f'{self.user.get_full_name()}'
-
-
 class FoodScore(BaseModel):
-    food_recommendation = models.ForeignKey(FoodRecommendation, on_delete=models.CASCADE, related_name='food_scores')
+    biometricsentry = models.ForeignKey(BiometricsEntry, on_delete=models.CASCADE, related_name='food_scores')
     food = models.ForeignKey('adminpanel.Food', on_delete=models.CASCADE, related_name='food_scores')
     score = models.DecimalField(max_digits=5, decimal_places=2)
 
     class Meta:
         indexes = [
-            models.Index(fields=['food_recommendation']),
+            models.Index(fields=['biometricsentry']),
             models.Index(fields=['food']),
         ]
 
     def __str__(self):
-        return f'{self.food_recommendation.user.get_full_name()} - {self.food.name} - {self.score}'
-
-
+        return f'{self.biometricsentry.user.get_full_name()} - {self.food.name} - {self.score}'

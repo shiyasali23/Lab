@@ -94,6 +94,7 @@ export const UserProvider = ({ children }) => {
     deactivateUser,
     createBiometrics,
     logout,
+    setUser
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

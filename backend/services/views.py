@@ -41,8 +41,11 @@ def get_user_details(user):
         biochemicals = Biochemical.objects.all()
         latest_biometrics = {
             biometric.biochemical_id: biometric
-            for biometric in Biometrics.objects.filter(user=user).order_by('biochemical_id', 'created')
+            for biometric in Biometrics.objects
+                .filter(biometricsentry__user=user)
+                .order_by('biochemical_id', 'created')
         }
+        
         biometrics_values_data = []
         for biochemical in biochemicals:
             value_entry = latest_biometrics.get(biochemical.id)
@@ -56,6 +59,7 @@ def get_user_details(user):
                 'scaled_value': value_entry.scaled_value if value_entry else None,
                 'expired_date': value_entry.expired_date if value_entry else None,
             })
+        
         return {
             'user': UserSerializer(user).data,
             'biometrics': biometrics_values_data,
@@ -63,6 +67,7 @@ def get_user_details(user):
     except Exception as exc:
         logger.exception(f"Error fetching user details: {exc}")
         return None
+
 
 
 
@@ -135,9 +140,8 @@ def signup(request):
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
             response_data = get_user_details(user)
-            if response_data:
-                response_data['token'] = token.key
-                return handle_response(response_data, status_code=status.HTTP_201_CREATED)
+            response_data['token'] = token.key
+            return handle_response(token.key, status_code=status.HTTP_201_CREATED)
         except Exception as exc:
             return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return handle_response(error=serializer.errors, status_code=status.HTTP_400_BAD_REQUEST)
@@ -165,62 +169,25 @@ def create_biometrics(request):
     try:
         token = get_token_from_request(request)
         user = token.user
-        data = request.data.copy()
-        data['user_id'] = user.id  
-        serializer = BiometricsSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            response_data = get_user_details(token.user)
-            return handle_response(response_data, status_code=status.HTTP_200_OK)
-        logger.error(f"Validation error in create_biometrics: {serializer.errors}")
-        return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)    
+        biometrics_data = request.data  
+        serialized_biometrics_data = []
+
+        for item in biometrics_data:
+            item['user'] = user.id 
+            serializer = BiometricsSerializer(data=item, context={'user': user})
+            if serializer.is_valid():
+                serializer.save()
+                serialized_biometrics_data.append(serializer.data)
+            else:
+                logger.error(f"Validation error in create_biometrics: {serializer.errors}")
+                return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        response_data = get_user_details(user)
+        return Response({'biometrics': serialized_biometrics_data, **response_data}, status=status.HTTP_200_OK)
+
     except Exception as exc:
         logger.exception("Unexpected error in create_biometrics")
-        return handle_response(error=str(exc), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'error': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
-# biochemicals = {
-#     {
-#         name : 'x',
-#         id : 1,
-#     },
-#     {
-#         name : 'w',
-#         id : 2,
-#     },
-#     {
-#         name : 'z',
-#         id : 3,
-#     },
-# }
-
-
-# here in biometrics w and x are registered and z not so biometrics should look like this
-
-# biometrics = {
-#     {
-#         'biochemical':{
-#             'name': 'x',
-#             'id': 1,
-#         }
-#         'value' :34,
-#         'scaled_value' : 0.34
-#     },
-#     {
-#         biochemical :{
-#             'name': 'w',
-#             'id': 2,
-#         }
-#         'value' :4,
-#         'scaled_value' : 0.4
-#     },
-#     {
-#         biochemical : {
-#         'name': 'z',
-#         'id': 3,
-#         }
-#         'value' : null,
-#         'scaled_value' :  null,
-#     },
-# }

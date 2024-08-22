@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Biometrics, FoodRecommendation, FoodScore
+from .models import User, Biometrics, BiometricsEntry, FoodScore
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
@@ -22,29 +22,45 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
-@admin.register(Biometrics)
-class BiometricsAdmin(admin.ModelAdmin):
-    list_display = ('user', 'biochemical', 'value', 'scaled_value', 'expired_date', 'created')
-    list_filter = ('biochemical', 'created', 'user__gender')
-    search_fields = ('user__email', 'user__first_name', 'user__last_name', 'biochemical__name')
+@admin.register(BiometricsEntry)
+class BiometricsEntryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'health_score', 'created')
+    list_filter = ('created', 'user__gender')
+    search_fields = ('user__email', 'user__first_name', 'user__last_name', 'user__phone_number')
     ordering = ('-created',)
 
-@admin.register(FoodRecommendation)
-class FoodRecommendationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'created')
-    list_filter = ('created',)
-    search_fields = ('user__email', 'user__first_name', 'user__last_name')
+@admin.register(Biometrics)
+class BiometricsAdmin(admin.ModelAdmin):
+    list_display = ('get_user_full_name', 'biochemical', 'value', 'scaled_value', 'expired_date', 'created')
+    list_filter = ('biochemical', 'created', 'biometricsentry__user__gender')
+    search_fields = ('biometricsentry__user__email', 'biometricsentry__user__first_name', 'biometricsentry__user__last_name', 'biochemical__name')
     ordering = ('-created',)
+    raw_id_fields = ('biometricsentry', 'biochemical')  
+    autocomplete_fields = ['biometricsentry', 'biochemical']
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related('biometricsentry__user', 'biochemical')
+
+    def get_user_full_name(self, obj):
+        return obj.biometricsentry.user.get_full_name()
+    get_user_full_name.admin_order_field = 'biometricsentry__user__last_name'  
+    get_user_full_name.short_description = 'User'
 
 @admin.register(FoodScore)
 class FoodScoreAdmin(admin.ModelAdmin):
     list_display = ('get_user_full_name', 'food', 'score', 'created')
     list_filter = ('food', 'created')
-    search_fields = ('food_recommendation__user__first_name', 'food_recommendation__user__last_name', 'food__name')
+    search_fields = ('biometricsentry__user__first_name', 'biometricsentry__user__last_name', 'food__name')
     ordering = ('-created',)
+    raw_id_fields = ('biometricsentry', 'food')  
+    autocomplete_fields = ['biometricsentry', 'food']
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related('biometricsentry__user', 'food')
 
     def get_user_full_name(self, obj):
-        """Display the full name of the user for the FoodScore."""
-        return obj.food_recommendation.user.get_full_name()
-    get_user_full_name.admin_order_field = 'food_recommendation__user__email'
+        return obj.biometricsentry.user.get_full_name()
+    get_user_full_name.admin_order_field = 'biometricsentry__user__last_name'  
     get_user_full_name.short_description = 'User'

@@ -23,7 +23,8 @@ const BiometricsSection = ({ biometrics }) => {
   const handleSubmit = async (category, items) => {
     setLocalError('');
     setSuccess('');
-  
+
+    // Prepare data for submission
     const updatedBiometrics = items
       .filter(item => {
         const newValue = biometricsData[item.biochemical.id];
@@ -34,15 +35,16 @@ const BiometricsSection = ({ biometrics }) => {
         biochemical_id: item.biochemical.id,
         value: biometricsData[item.biochemical.id] === '' ? null : parseFloat(biometricsData[item.biochemical.id])
       }));
-  
+
     if (updatedBiometrics.length === 0) {
       setSuccess(`No changes detected in ${category}.`);
       return;
     }
-  
+
     try {
-      const results = await Promise.all(updatedBiometrics.map(biometric => createBiometrics(biometric)));
-      if (results.every(result => result)) {
+      // Send all updated biometrics data in one request
+      const response = await createBiometrics(updatedBiometrics);
+      if (response) {
         setSuccess(`${category} biometrics updated successfully!`);
       } else {
         setLocalError('Some biometrics failed to update. Please try again.');
