@@ -11,22 +11,23 @@ const ProfilePage = () => {
   const { getUser, user, loading, error } = useUser();
   const [profileData, setProfileData] = useState(null);
   const [biometrics, setBiometrics] = useState(null);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) {
       navigate('/login');
     } else {
       getUser();
     }
-  }, [navigate, getUser]);
-
+  }, [navigate, token, getUser]);
+  
   useEffect(() => {
     if (user) {
       setProfileData(user.user);
       setBiometrics(user.biometrics);
     }
   }, [user]);
+  
 
   if (loading) {
     return <Spinner animation="border" className="d-block mx-auto mt-5" />;

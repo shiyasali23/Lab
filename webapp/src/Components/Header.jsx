@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { useUser } from '../Contexts/UserContext';
 
 const Header = () => {
-  const { logout, setUser } = useUser();  
-  
+  const { logout, setUser } = useUser();
+
   const token = localStorage.getItem('token');
-  const isLoggedIn = !!token;  
+  const isLoggedIn = !!token;
 
   const disabledStyle = {
     pointerEvents: 'none',
@@ -16,8 +16,8 @@ const Header = () => {
 
   const handleLogout = async () => {
     localStorage.removeItem('token');
-    setUser(null)
-    await logout(); 
+    setUser(null);
+    await logout();
   };
 
   return (
@@ -61,7 +61,7 @@ const Header = () => {
               {isLoggedIn && (
                 <div
                   className="text-dark text-center text-decoration-none"
-                  onClick={handleLogout} // Add the click handler here
+                  onClick={handleLogout} 
                   style={{ cursor: 'pointer' }}
                 >
                   <i className="fa-solid fa-right-from-bracket d-block mb-1"></i>
