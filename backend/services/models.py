@@ -127,9 +127,13 @@ class Biometrics(BaseModel):
         return self.biochemical.male_min, self.biochemical.male_max
 
     def save(self, *args, **kwargs):
-        if self.biochemical and self.value:
-            self.expired_date = timezone.now() + timedelta(days=self.biochemical.validity_days)
-        self.scaled_value = self.scale_biometrics()
+        if self.value is not None and self.biochemical:
+            # self.expired_date = timezone.now() + timedelta(days=self.biochemical.validity_days)
+            self.scaled_value = self.scale_biometrics()
+        else:
+            self.scaled_value = None
+            # self.expired_date = None
+
         super().save(*args, **kwargs)
 
 

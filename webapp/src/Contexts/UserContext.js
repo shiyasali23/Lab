@@ -38,9 +38,7 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await apiCall();
       setSuccess(successMessage);
-      setUser(response.data);
-      console.log(response.data);
-      console.log(user);      
+      setUser(response.data);     
       return response.data;
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred.');

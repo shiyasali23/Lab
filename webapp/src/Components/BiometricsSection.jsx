@@ -1,97 +1,118 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
-import FormField from './FormField'; 
+import { Card, Form, Button, Alert, Spinner, Accordion } from 'react-bootstrap';
 import { useUser } from '../Contexts/UserContext';
 
 const BiometricsSection = ({ biometrics }) => {
-  const { loading, createBiometrics, success, error } = useUser();
-  const [formValues, setFormValues] = useState({});
-  const [status, setStatus] = useState({ loading: false, errors: [], success: false });
+  const { loading, createBiometrics, error: contextError } = useUser();
+  const [biometricsData, setBiometricsData] = useState({});
+  const [localError, setLocalError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    if (biometrics.length > 0) {
-      const initialFormValues = biometrics.reduce((acc, { biochemical, value }) => {
-        acc[biochemical.id] = value || '';
-        return acc;
-      }, {});
-      setFormValues(initialFormValues);
-    }
+    const initialData = {};
+    biometrics.forEach(item => {
+      initialData[item.biochemical.id] = item.value !== null ? item.value.toString() : '';
+    });
+    setBiometricsData(initialData);
   }, [biometrics]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (id, value) => {
+    setBiometricsData(prev => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus((prev) => ({ ...prev, loading: true, errors: [], success: false }));
-
-    try {
-      const values = Object.entries(formValues).map(([biochemical_id, value]) => ({
-        biochemical_id,
-        value: value || null,
-        scaled_value: null,
-        expired_date: null,
+  const handleSubmit = async (category, items) => {
+    setLocalError('');
+    setSuccess('');
+  
+    const updatedBiometrics = items
+      .filter(item => {
+        const newValue = biometricsData[item.biochemical.id];
+        const oldValue = item.value !== null ? item.value.toString() : '';
+        return newValue !== oldValue;
+      })
+      .map(item => ({
+        biochemical_id: item.biochemical.id,
+        value: biometricsData[item.biochemical.id] === '' ? null : parseFloat(biometricsData[item.biochemical.id])
       }));
-
-      await createBiometrics({ values });
-      setStatus((prev) => ({ ...prev, success: true }));
+  
+    if (updatedBiometrics.length === 0) {
+      setSuccess(`No changes detected in ${category}.`);
+      return;
+    }
+  
+    try {
+      const results = await Promise.all(updatedBiometrics.map(biometric => createBiometrics(biometric)));
+      if (results.every(result => result)) {
+        setSuccess(`${category} biometrics updated successfully!`);
+      } else {
+        setLocalError('Some biometrics failed to update. Please try again.');
+      }
     } catch (err) {
-      setStatus((prev) => ({ ...prev, errors: [err.message] }));
-    } finally {
-      setStatus((prev) => ({ ...prev, loading: false }));
+      setLocalError('An error occurred while updating biometrics. Please try again.');
+      console.error('Biometrics update error:', err);
     }
   };
 
-  if (loading) return <div className="text-center mb-4"><Spinner animation="border" /></div>;
-  if (error) return <Alert variant="danger">{error}</Alert>;
+  const isExpired = (date) => {
+    return date && new Date(date) < new Date();
+  };
+
+  const isCategoryExpired = (category) => {
+    return category.some(item => isExpired(item.expired_date));
+  };
+
+  const groupedBiometrics = biometrics.reduce((acc, item) => {
+    if (!acc[item.biochemical.category]) {
+      acc[item.biochemical.category] = [];
+    }
+    acc[item.biochemical.category].push(item);
+    return acc;
+  }, {});
 
   return (
-    <Card className="profile-card mt-4">
+    <Card className="biometrics-card mt-4">
       <Card.Body>
-        <h2 className="text-start me-4 mb-4">Biometrics</h2>
-        <Form onSubmit={handleSubmit}>
-          {status.loading && <div className="text-center mb-4"><Spinner animation="border" /></div>}
-          {status.errors.length > 0 && (
-            <Alert variant="danger">
-              <ul className="mb-0">
-                {status.errors.map((err, index) => <li key={index}>{err}</li>)}
-              </ul>
-            </Alert>
-          )}
-          {status.success && !status.loading && (
-            <Alert variant="success">Biometrics updated successfully!</Alert>
-          )}
-          <div className="row">
-            {biometrics.map(({ biochemical, value, expired_date }) => {
-              // Check if the biochemical is expired
-              const isExpired = expired_date && new Date(expired_date) < new Date();
-              
-              // Adjust the label if expired
-              const label = isExpired ? `${biochemical.name} *Expired` : biochemical.name;
-
-              return (
-                <div className="col-lg-3 col-md-4 col-sm-6 mb-3" key={biochemical.id}>
-                  <FormField
-                    name={String(biochemical.id)}
-                    label={label}
-                    value={formValues[biochemical.id]}
-                    onChange={handleChange}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <Button
-            className="save-btn"
-            variant="dark"
-            type="submit"
-            disabled={status.loading}
-          >
-            {status.loading ? 'Saving...' : 'Save Changes'}
-          </Button>
-        </Form>
+        <h2 className="text-start mb-4">Biometrics</h2>
+        {loading && <Spinner animation="border" className="d-block mx-auto mb-4" />}
+        {(contextError || localError) && <Alert variant="danger" className="mb-4">{contextError || localError}</Alert>}
+        {success && <Alert variant="success" className="mb-4">{success}</Alert>}
+        <Accordion>
+          {Object.entries(groupedBiometrics).map(([category, items], index) => (
+            <Accordion.Item eventKey={index.toString()} key={category}>
+              <Accordion.Header>
+                {category}
+                {isCategoryExpired(items) && <span className="text-danger ms-2">*Expired</span>}
+              </Accordion.Header>
+              <Accordion.Body>
+                <Form onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit(category, items);
+                }}>
+                  <div className="row">
+                    {items.map((item) => (
+                      <Form.Group className="mb-3 col-lg-4 col-md-6 col-sm-12" key={item.biochemical.id}>
+                        <Form.Label className={isExpired(item.expired_date) ? 'text-danger' : ''}>
+                          {item.biochemical.name}
+                          {isExpired(item.expired_date) && <span className="text-danger ms-1">* expired</span>}
+                        </Form.Label>
+                        <Form.Control
+                          type="number"
+                          step="0.01"
+                          value={biometricsData[item.biochemical.id] || ''}
+                          onChange={(e) => handleChange(item.biochemical.id, e.target.value)}
+                          className="form-input"
+                        />
+                      </Form.Group>
+                    ))}
+                  </div>
+                  <Button className="save-btn mt-3" variant="dark" type="submit" disabled={loading}>
+                    {loading ? "Saving..." : `Save Changes`}
+                  </Button>
+                </Form>
+              </Accordion.Body>
+            </Accordion.Item>
+          ))}
+        </Accordion>
       </Card.Body>
     </Card>
   );

@@ -38,37 +38,28 @@ def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
 
 def get_user_details(user):
     try:
-        # Fetch all biochemicals
         biochemicals = Biochemical.objects.all()
-
-        # Fetch the latest biometrics entries for the user
         latest_biometrics = {
             biometric.biochemical_id: biometric
-            for biometric in Biometrics.objects.filter(user=user).order_by('biochemical_id', '-created')
+            for biometric in Biometrics.objects.filter(user=user).order_by('biochemical_id', 'created')
         }
-        
-        # Prepare the biometrics data
         biometrics_values_data = []
         for biochemical in biochemicals:
-            # Get the latest entry for the current biochemical
             value_entry = latest_biometrics.get(biochemical.id)
-            
-            # Append the data to the list
             biometrics_values_data.append({
                 'biochemical': {
                     'name': biochemical.name,
                     'id': biochemical.id,
+                    'category': biochemical.category.name,
                 },
                 'value': value_entry.value if value_entry else None,
                 'scaled_value': value_entry.scaled_value if value_entry else None,
                 'expired_date': value_entry.expired_date if value_entry else None,
             })
-
         return {
             'user': UserSerializer(user).data,
             'biometrics': biometrics_values_data,
-        }
-    
+        }   
     except Exception as exc:
         logger.exception(f"Error fetching user details: {exc}")
         return None
@@ -166,6 +157,7 @@ def login(request):
     return handle_response(error='Invalid credentials.', status_code=status.HTTP_401_UNAUTHORIZED)
 
 
+
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])
 @permission_classes([permissions.IsAuthenticated])
@@ -173,17 +165,19 @@ def create_biometrics(request):
     try:
         token = get_token_from_request(request)
         user = token.user
-        
-        if user.is_active:
-            data = {**request.data, 'user': user.id}
-            serializer = BiometricsSerializer(data=data)     
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'detail': 'Account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data.copy()
+        data['user_id'] = user.id  
+        serializer = BiometricsSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            response_data = get_user_details(token.user)
+            return handle_response(response_data, status_code=status.HTTP_200_OK)
+        logger.error(f"Validation error in create_biometrics: {serializer.errors}")
+        return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)    
     except Exception as exc:
-        return Response({'detail': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.exception("Unexpected error in create_biometrics")
+        return handle_response(error=str(exc), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 # biochemicals = {

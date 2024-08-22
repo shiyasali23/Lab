@@ -13,6 +13,31 @@
 
 
 
+.biometrics-card .form-input {
+  height: 50px;
+  width: 100%;
+  font-size: 1rem;
+  border: none;
+  background: rgba(224, 224, 224, 0.8);
+  padding: 0 1rem;
+}
+
+.biometrics-card .form-input:focus {
+  outline: none;
+  box-shadow: none;
+  background: rgba(246, 246, 246, 0.823);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.biometrics-card .accordion-button:not(.collapsed) {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: #000;
+}
+
+.biometrics-card .accordion-button:focus {
+  box-shadow: none;
+  border-color: rgba(0, 0, 0, 0.125);
+}
 
 
 

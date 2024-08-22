@@ -22,7 +22,7 @@ const ProfileSection = ({ userProfile }) => {
     e.preventDefault();
     const errors = validateForm(profile);
     if (errors.length) return setLocalStatus({ errors, success: false });
-  
+
     const updatedFields = Object.keys(profile).reduce((acc, key) => {
       const value = profile[key];
       if (value !== originalProfileData[key] && value !== false) {
@@ -30,12 +30,12 @@ const ProfileSection = ({ userProfile }) => {
       }
       return acc;
     }, {});
-  
+
     if (!Object.keys(updatedFields).length) {
       setLocalStatus({ errors: ["No changes detected."], success: false });
       return;
     }
-  
+
     const updatedUser = await updateUser(updatedFields);
     setLocalStatus({
       errors: updatedUser ? [] : ["Failed to update profile."],
@@ -52,7 +52,7 @@ const ProfileSection = ({ userProfile }) => {
         <p style={{ cursor: "pointer" }} className="mb-4 text-end d-block text-danger" onClick={handleDeactivate}><i className="me-2 text-end fa-regular fa-trash-can"></i>Delete Account</p>
         {loading && <Spinner animation="border" className="d-block mx-auto mb-4" />}
         {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
-        {localStatus.errors.length && <Alert variant="danger" className="mb-4"><ul className="mb-0">{localStatus.errors.map((err, i) => <li key={i}>{err}</li>)}</ul></Alert>}
+        {localStatus.errors.length > 0 && <Alert variant="danger" className="mb-4"><ul className="mb-0">{localStatus.errors.map((err, i) => <li key={i}>{err}</li>)}</ul></Alert>}
         {localStatus.success && <Alert variant="success" className="mb-4">Profile updated successfully!</Alert>}
         <Form onSubmit={handleSubmit}>
           <div className="row">

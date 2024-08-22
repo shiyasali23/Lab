@@ -8,8 +8,9 @@ import { useUser } from '../Contexts/UserContext';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { getUser, user, biometrics, loading, error } = useUser();
+  const { getUser, user, loading, error } = useUser();
   const [profileData, setProfileData] = useState(null);
+  const [biometrics, setBiometrics] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -23,6 +24,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       setProfileData(user.user);
+      setBiometrics(user.biometrics);
     }
   }, [user]);
 
