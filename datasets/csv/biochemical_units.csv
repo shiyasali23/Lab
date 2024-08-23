@@ -1,4 +1,4 @@
-name,category,unit,validity,female_Min,female_Max,male_Min,male_Max
+name,category,unit,validity,female_min,female_max,male_min,male_max
 Blood Glucose,Carbohydrates,mg/dL,1,70.0,100.0,70.0,100.0
 Hemoglobin A1c,Carbohydrates,%,90,4.0,5.6,4.0,5.6
 Glycated Albumin,Carbohydrates,%,30,11.0,16.0,11.0,16.0

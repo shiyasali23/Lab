@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from .models import User, Biometrics, FoodScore
 from adminpanel.models import Biochemical
 from adminpanel.serializers import BiochemicalSerializer
-from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer
+from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer, BiometricsEntrySerializer
 
 logger = logging.getLogger(__name__)
 
@@ -152,14 +152,13 @@ def login(request):
     if user and user.is_active:
         try:
             token, _ = Token.objects.get_or_create(user=user)
-            response_data = get_user_details(user)
-            if response_data:
-                response_data['token'] = token.key
-                return handle_response(response_data)
+            response_data = {
+                'token' : token.key
+            }
+            return handle_response(response_data)
         except Exception as exc:
             return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return handle_response(error='Invalid credentials.', status_code=status.HTTP_401_UNAUTHORIZED)
-
 
 
 @api_view(['POST'])
@@ -167,27 +166,25 @@ def login(request):
 @permission_classes([permissions.IsAuthenticated])
 def create_biometrics(request):
     try:
-        token = get_token_from_request(request)
-        user = token.user
-        biometrics_data = request.data  
-        serialized_biometrics_data = []
-
-        for item in biometrics_data:
-            item['user'] = user.id 
-            serializer = BiometricsSerializer(data=item, context={'user': user})
-            if serializer.is_valid():
-                serializer.save()
-                serialized_biometrics_data.append(serializer.data)
-            else:
-                logger.error(f"Validation error in create_biometrics: {serializer.errors}")
-                return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        response_data = get_user_details(user)
-        return Response({'biometrics': serialized_biometrics_data, **response_data}, status=status.HTTP_200_OK)
-
+        data = {
+            'user': request.user.id,
+            'biometrics': request.data
+        }
+        serializer = BiometricsEntrySerializer(data=data, context={'user': request.user})
+        if serializer.is_valid():
+            biometrics_entry = serializer.save()
+            response_data = get_user_details(request.user)
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"Validation error in create_biometrics: {serializer.errors}")
+            return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as exc:
         logger.exception("Unexpected error in create_biometrics")
         return Response({'error': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
 
 
 

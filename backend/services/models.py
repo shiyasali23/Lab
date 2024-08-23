@@ -119,23 +119,13 @@ class Biometrics(BaseModel):
     def __str__(self):
         return f'{self.biometricsentry.user.get_full_name()} - {self.biochemical.name} - {self.scaled_value}'
 
-    def scale_biometrics(self):
-        if self.value is None or self.biochemical is None:
-            return None
-
-        user = self.biometricsentry.user
-        healthy_min, healthy_max = self.get_healthy_range(user.gender)
-        if healthy_min is None or healthy_max is None:
-            return None
-
+    def scale_biometrics(self, healthy_min, healthy_max, value):
         optimum_value = (healthy_min + healthy_max) / 2
-        value = float(self.value)
-
         if healthy_min <= value <= healthy_max:
             return round(2 * (value - optimum_value) / (healthy_max - healthy_min), 2)
         elif value < healthy_min:
             return round((value - healthy_min) - 1, 2)
-        else:
+        elif value > healthy_max:
             return round((value - healthy_max) + 1, 2)
 
     def get_healthy_range(self, gender):
@@ -145,8 +135,10 @@ class Biometrics(BaseModel):
 
     def save(self, *args, **kwargs):
         if self.value is not None and self.biochemical:
+            healthy_min, healthy_max = self.get_healthy_range(self.biometricsentry.user.gender)
+
+            self.scaled_value = self.scale_biometrics(healthy_min, healthy_max, float(self.value))
             self.expired_date = timezone.now() + timedelta(days=self.biochemical.validity_days)
-            self.scaled_value = self.scale_biometrics()
         else:
             self.scaled_value = None
             self.expired_date = None

@@ -24,7 +24,7 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(BiometricsEntry)
 class BiometricsEntryAdmin(admin.ModelAdmin):
-    list_display = ('user', 'health_score', 'created')
+    list_display = ('id','user', 'health_score', 'created')
     list_filter = ('created', 'user__gender')
     search_fields = ('user__email', 'user__first_name', 'user__last_name', 'user__phone_number')
     ordering = ('-created',)
