@@ -32,7 +32,7 @@ class BiochemicalAdmin(admin.ModelAdmin):
 
 @admin.register(Food)
 class FoodAdmin(admin.ModelAdmin):
-    list_display = ('name', 'subcategory', 'nutriscore', 'created')
+    list_display = ('name', 'subcategory', 'nutriscore', 'normalized_nutriscore', 'created')
     search_fields = ('name', 'subcategory__name')
     list_filter = ('subcategory',)
     ordering = ('name',)
@@ -46,7 +46,7 @@ class NutrientAdmin(admin.ModelAdmin):
 
 @admin.register(FoodNutrient)
 class FoodNutrientAdmin(admin.ModelAdmin):
-    list_display = ('food', 'nutrient', 'value')
+    list_display = ('food', 'nutrient', 'value', 'normalized_value')
     search_fields = ('food__name', 'nutrient__name')
     list_filter = ('food', 'nutrient')
     ordering = ('food__name', 'nutrient__name')

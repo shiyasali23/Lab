@@ -1,5 +1,4 @@
 from django.db import models
-from decimal import Decimal
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -54,19 +53,15 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     address = models.TextField(blank=True, null=True)
     job = models.CharField(max_length=50, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
-    height_cm = models.DecimalField(
-        max_digits=5,  
-        decimal_places=1,
+    height_cm = models.FloatField(
         blank=True,
         null=True,
-        validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('300.0'))]  
+        validators=[MinValueValidator(0.0), MaxValueValidator(300.0)]  
     )
-    weight_kg = models.DecimalField(
-        max_digits=5,  
-        decimal_places=1,
+    weight_kg = models.FloatField(
         blank=True,
         null=True,
-        validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('300.0'))]  
+        validators=[MinValueValidator(0.0), MaxValueValidator(300.0)]  
     )
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
 
@@ -93,7 +88,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
 
 class BiometricsEntry(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='biometrics_entries')
-    health_score = models.DecimalField(max_digits=5, decimal_places=2, null=True)  # Changed to DecimalField
+    health_score = models.FloatField(null=True)  
     
     class Meta:
         indexes = [
@@ -106,8 +101,8 @@ class BiometricsEntry(BaseModel):
 class Biometrics(BaseModel):
     biochemical = models.ForeignKey('adminpanel.Biochemical', on_delete=models.CASCADE, related_name='biometrics')
     biometricsentry = models.ForeignKey(BiometricsEntry, on_delete=models.CASCADE, related_name='biometrics')
-    value = models.DecimalField(max_digits=8, decimal_places=2, null=True)
-    scaled_value = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)  
+    value = models.FloatField(null=True)
+    scaled_value = models.FloatField(null=True, blank=True)  
     expired_date = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -147,7 +142,7 @@ class Biometrics(BaseModel):
 class FoodScore(BaseModel):
     biometricsentry = models.ForeignKey(BiometricsEntry, on_delete=models.CASCADE, related_name='food_scores')
     food = models.ForeignKey('adminpanel.Food', on_delete=models.CASCADE, related_name='food_scores')
-    score = models.DecimalField(max_digits=5, decimal_places=2)
+    score = models.FloatField()
 
     class Meta:
         indexes = [

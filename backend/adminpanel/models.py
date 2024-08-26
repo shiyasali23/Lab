@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Index
 
 class BaseModel(models.Model):
     id = models.AutoField(primary_key=True)
@@ -68,13 +67,15 @@ class BiochemicalCondition(BaseModel):
 class Food(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='foods')
-    nutriscore = models.FloatField(null=True, blank=True)  # Allow null and blank values
+    nutriscore = models.FloatField(null=True, blank=True)
+    normalized_nutriscore = models.FloatField(null=True, blank=True)  
 
     def __str__(self):
         return self.name
 
     class Meta:
         indexes = [models.Index(fields=['name']), models.Index(fields=['subcategory'])]
+        
 
 
 class Nutrient(BaseModel):
@@ -92,6 +93,7 @@ class FoodNutrient(BaseModel):
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='nutrients')
     nutrient = models.ForeignKey(Nutrient, on_delete=models.CASCADE, related_name='foods')
     value = models.FloatField()
+    normalized_value = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.food.name} - {self.nutrient.name}: {self.value} {self.nutrient.unit}"
@@ -99,13 +101,16 @@ class FoodNutrient(BaseModel):
     class Meta:
         unique_together = ('food', 'nutrient')
         indexes = [models.Index(fields=['food', 'nutrient'])]
+   
 
+    
+    
 
 class FoodWeight(BaseModel):
     biochemical = models.ForeignKey(Biochemical, on_delete=models.CASCADE, related_name='food_weights')
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='weights')
-    bias = models.FloatField(null=True, blank=True)  # Allow null and blank values
-    weight = models.FloatField(null=True, blank=True)  # Allow null and blank values
+    bias = models.FloatField(null=True, blank=True)  
+    weight = models.FloatField(null=True, blank=True)  
 
     def __str__(self):
         return f"{self.food.name} - {self.biochemical.name} : {self.bias} - {self.weight}"
@@ -117,8 +122,8 @@ class FoodWeight(BaseModel):
 class NutrientWeight(BaseModel):
     biochemical = models.ForeignKey(Biochemical, on_delete=models.CASCADE, related_name='nutrient_weights')
     nutrient = models.ForeignKey(Nutrient, on_delete=models.CASCADE, related_name='weights')
-    bias = models.FloatField(null=True, blank=True)  # Allow null and blank values
-    weight = models.FloatField(null=True, blank=True)  # Allow null and blank values
+    bias = models.FloatField(null=True, blank=True)  
+    weight = models.FloatField(null=True, blank=True)  
 
     def __str__(self):
         return f"{self.nutrient.name} - {self.biochemical.name} : {self.bias} - {self.weight}"
@@ -126,6 +131,3 @@ class NutrientWeight(BaseModel):
     class Meta:
         unique_together = ('biochemical', 'nutrient')
         indexes = [models.Index(fields=['biochemical', 'nutrient', 'bias', 'weight'])]
-
-
-

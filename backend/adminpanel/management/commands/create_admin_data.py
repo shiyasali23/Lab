@@ -27,6 +27,8 @@ class Command(BaseCommand):
             call_command('create_food_nutrients')
             call_command('create_food_bias_weights')
             call_command('create_nutrients_bias_weights')
+            call_command('normalize_nutriscore_nutreint')
+            call_command('check_normalized_nutrients')
 
 
             User = get_user_model()
