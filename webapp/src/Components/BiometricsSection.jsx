@@ -72,7 +72,7 @@ const BiometricsSection = ({ biometrics }) => {
   }, {});
 
   return (
-    <Card className="biometrics-card mt-4">
+    <Card className="primary-card mt-4">
       <Card.Body>
         <h2 className="text-start mb-4">Biometrics</h2>
         {loading && <Spinner animation="border" className="d-block mx-auto mb-4" />}

@@ -92,14 +92,14 @@ class BiometricsEntrySerializer(serializers.ModelSerializer):
 
             # Keep track of the latest biometrics for each biochemical
             latest_biometrics = {}
+            latest_health_weights = {}
             for bio in biometrics_queryset:
                 if bio.biochemical not in latest_biometrics:
                     latest_biometrics[bio.biochemical] = bio.scaled_value
+                    latest_health_weights[bio.biochemical] = bio.health_weight
 
-            # Calculate total score
-            total_score = sum(latest_biometrics.values())
+            total_score = sum(latest_health_weights.values())
 
-            # Update the health score and food score
             biometrics_entry.health_score = total_score
             self.update_food_score(latest_biometrics, biometrics_entry)
             biometrics_entry.save()
@@ -198,11 +198,7 @@ class BiometricsEntrySerializer(serializers.ModelSerializer):
         return normalized_dict
 
 
-             
-
-
         
-
 class BiometricsSerializer(serializers.ModelSerializer):
     biochemical_id = serializers.PrimaryKeyRelatedField(queryset=Biochemical.objects.all(), source='biochemical')
     biochemical = BiochemicalSerializer(read_only=True)
@@ -213,10 +209,6 @@ class BiometricsSerializer(serializers.ModelSerializer):
             'id', 'biochemical', 'biochemical_id', 'value',
             'scaled_value', 'expired_date', 'created'
         ]
-
-
-
-
 
 
 

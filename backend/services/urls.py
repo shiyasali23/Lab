@@ -4,8 +4,8 @@ from .views import (
     login, 
     create_biometrics, 
     deactivate_user,
-    get_user,
     update_user,
+    get_user,
     logout
 )
 
@@ -17,10 +17,10 @@ urlpatterns = [
 
         # User management
     path('user/', get_user, name='get-user'),
-    path('user/deactivate/', deactivate_user, name='deactivate-user'),
-    path('user/update/', update_user, name='update-user'),
+    path('deactivate/', deactivate_user, name='deactivate-user'),
+    path('userupdate/', update_user, name='update-user'),
     
     # Biometrics
-    path('biometrics/create/', create_biometrics, name='create-biometrics'),  # Changed to POST without pk
+    path('biometrics/create/', create_biometrics, name='create-biometrics'),  
     
 ]

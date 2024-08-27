@@ -24,7 +24,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       setProfileData(user.user);
-      setBiometrics(user.biometrics);
+      setBiometrics(user.latest_biometrics);
     }
   }, [user]);
   

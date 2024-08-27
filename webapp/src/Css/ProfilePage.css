@@ -3,7 +3,7 @@
   min-height: 100vh;
 }
 
-.profile-card {
+.primary-card {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   border: none;
   margin-top: 1rem;
@@ -13,7 +13,7 @@
 
 
 
-.biometrics-card .form-input {
+.primary-card .form-input {
   height: 50px;
   width: 100%;
   font-size: 1rem;
@@ -22,19 +22,19 @@
   padding: 0 1rem;
 }
 
-.biometrics-card .form-input:focus {
+.primary-card .form-input:focus {
   outline: none;
   box-shadow: none;
   background: rgba(246, 246, 246, 0.823);
   border-color: rgba(0, 0, 0, 0.2);
 }
 
-.biometrics-card .accordion-button:not(.collapsed) {
+.primary-card .accordion-button:not(.collapsed) {
   background-color: rgba(0, 0, 0, 0.03);
   color: #000;
 }
 
-.biometrics-card .accordion-button:focus {
+.primary-card .accordion-button:focus {
   box-shadow: none;
   border-color: rgba(0, 0, 0, 0.125);
 }

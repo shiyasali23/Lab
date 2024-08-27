@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
+from django.db.models import Prefetch, Max
 
-
-from .models import User, Biometrics, FoodScore
+from .models import User, Biometrics, FoodScore, BiometricsEntry
 from adminpanel.models import Biochemical
 from adminpanel.serializers import BiochemicalSerializer
 from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer, BiometricsEntrySerializer
@@ -18,7 +18,6 @@ def get_token_from_request(request):
     token_key = request.headers.get('Authorization', '').split(' ')[-1]
     return get_object_or_404(Token, key=token_key)
 
-
 def get_error_message(error_dict):
     if isinstance(error_dict, dict):
         for field, errors in error_dict.items():
@@ -28,7 +27,6 @@ def get_error_message(error_dict):
                 return f"{field}: {errors}"
     return str(error_dict)
 
-
 def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
     if error:
         error_message = get_error_message(error)
@@ -36,38 +34,100 @@ def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
         return Response({'error': error_message}, status=status_code)
     return Response(data, status=status_code)
 
-def get_user_details(user):
+
+# ------------------------------------------------------------------------------
+
+
+def fetch_user_data(user):
     try:
-        biochemicals = Biochemical.objects.all()
-        latest_biometrics = {
-            biometric.biochemical_id: biometric
-            for biometric in Biometrics.objects
-                .filter(biometricsentry__user=user)
-                .order_by('biochemical_id', 'created')
-        }
+        biometrics_entries = BiometricsEntry.objects.filter(user=user)
         
-        biometrics_values_data = []
+        if not biometrics_entries.exists():
+            return None, 'No biometrics entries found for the user.'
+        
+        latest_entry = biometrics_entries.latest('created')
+        biometrics = Biometrics.objects.filter(biometricsentry__user=user)
+        food_scores = FoodScore.objects.filter(biometricsentry=latest_entry)
+        
+        # Process biometrics data
+        biometrics_data = [
+            {
+                'id': biometric.biochemical.id,
+                'name': biometric.biochemical.name,
+                'value': biometric.value,
+                'created': biometric.biometricsentry.created,
+            }
+            for biometric in biometrics
+        ]
+        
+        # Process health scores data
+        health_scores_data = [
+            {
+                'id': entry.id,
+                'health_score': entry.health_score,
+                'created': entry.created,
+            }
+            for entry in biometrics_entries
+        ]
+        
+        food_scores_data = [
+            {
+                'id': score.id,
+                'food_name': score.food.name,
+                'score': score.score,
+            }
+            for score in food_scores
+        ]
+
+        biochemicals = Biochemical.objects.prefetch_related(
+            Prefetch(
+                'biometrics',
+                queryset=Biometrics.objects.filter(biometricsentry__user=user).order_by('biochemical_id', 'created'),
+                to_attr='user_biometrics'
+            )
+        )
+
+        # Prepare latest biometrics data
+        latest_biometrics_data = []
         for biochemical in biochemicals:
-            value_entry = latest_biometrics.get(biochemical.id)
-            biometrics_values_data.append({
-                'biochemical': {
-                    'name': biochemical.name,
-                    'id': biochemical.id,
-                    'category': biochemical.category.name,
-                },
-                'value': value_entry.value if value_entry else None,
-                'scaled_value': value_entry.scaled_value if value_entry else None,
-                'expired_date': value_entry.expired_date if value_entry else None,
-            })
+            if biochemical.user_biometrics:
+                latest_biometric = biochemical.user_biometrics[-1]  
+                latest_biometrics_data.append({
+                    'biochemical': {
+                        'name': biochemical.name,
+                        'id': biochemical.id,
+                        'category': biochemical.category.name,
+                    },
+                    'value': latest_biometric.value,
+                    'scaled_value': latest_biometric.scaled_value,
+                    'expired_date': latest_biometric.expired_date,
+                })
+            else:
+                latest_biometrics_data.append({
+                    'biochemical': {
+                        'name': biochemical.name,
+                        'id': biochemical.id,
+                        'category': biochemical.category.name,
+                    },
+                    'value': None,
+                    'scaled_value': None,
+                    'expired_date': None,
+                })
         
         return {
             'user': UserSerializer(user).data,
-            'biometrics': biometrics_values_data,
-        }   
-    except Exception as exc:
-        logger.exception(f"Error fetching user details: {exc}")
-        return None
+            'biometrics': biometrics_data,
+            'latest_biometrics': latest_biometrics_data,
+            'food_scores': food_scores_data,
+            'health_score': health_scores_data,
+        }, None
 
+    except Exception as exc:
+        logger.exception(f"Error fetching user biometrics entry details: {exc}")
+        return None, 'Error fetching user biometrics entry details.'
+
+
+# ------------------------------------------------------------------------------
 
 
 
@@ -76,11 +136,13 @@ def get_user_details(user):
 @permission_classes([permissions.IsAuthenticated])
 def get_user(request):
     try:
-        token = get_token_from_request(request)
-        response_data = get_user_details(token.user)
-        return handle_response(response_data, status_code=status.HTTP_200_OK)
+        response_data, error = fetch_user_data(request.user)
+        if error:
+            return handle_response(error=error, status_code=status.HTTP_404_NOT_FOUND)
+        return handle_response(response_data)
     except Exception as exc:
         return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# ------------------------------------------------------------------------------
 
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])
@@ -89,9 +151,9 @@ def logout(request):
     try:
         token = get_token_from_request(request)
         token.delete()
-        return Response({"detail": "Logout successful!"}, status=status.HTTP_200_OK)
+        return handle_response({"detail": "Logout successful!"})
     except Exception as exc:
-        return Response({"detail": str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])
@@ -105,10 +167,10 @@ def deactivate_user(request):
             user.is_active = False
             user.save()
             token.delete()
-            return Response({'message': 'Account successfully deactivated.'}, status=status.HTTP_200_OK)
-        return Response({'detail': 'Account is already inactive.'}, status=status.HTTP_400_BAD_REQUEST)
+            return handle_response({'message': 'Account successfully deactivated.'})
+        return handle_response(error='Account is already inactive.', status_code=status.HTTP_400_BAD_REQUEST)
     except Exception as exc:
-        return Response({'detail': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['PATCH'])
 @authentication_classes([authentication.TokenAuthentication])
@@ -120,17 +182,34 @@ def update_user(request):
         
         if user.is_active:
             serializer = UserSerializer(user, data=request.data, partial=True)
-            
             if serializer.is_valid():
                 serializer.save()               
-                response_data = get_user_details(token.user)
-                return Response(response_data, status=status.HTTP_200_OK)
-            logger.error(f"Validation error: {serializer.errors}")
-            return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'detail': 'Account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
+                response_data = fetch_user_data(token.user)
+                return handle_response(response_data)
+            return handle_response(error=serializer.errors, status_code=status.HTTP_400_BAD_REQUEST)
+        return handle_response(error='Account is inactive.', status_code=status.HTTP_400_BAD_REQUEST)
     except Exception as exc:
         logger.exception("Unexpected error in update_user")
-        return Response({'detail': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def create_biometrics(request):
+    try:
+        data = {'user': request.user.id, 'biometrics': request.data}
+        serializer = BiometricsEntrySerializer(data=data, context={'user': request.user})
+        if serializer.is_valid():
+            biometrics_entry = serializer.save()
+            response_data = fetch_user_data(request.user)
+            return handle_response(response_data, status_code=status.HTTP_201_CREATED)
+        return handle_response(error=serializer.errors, status_code=status.HTTP_400_BAD_REQUEST)
+    except Exception as exc:
+        return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# ------------------------------------------------------------------------------
+
 
 @api_view(['POST'])
 def signup(request):
@@ -139,9 +218,10 @@ def signup(request):
         try:
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
-            response_data = get_user_details(user)
-            response_data['token'] = token.key
-            return handle_response(token.key, status_code=status.HTTP_201_CREATED)
+            response_data = {
+                'token': token.key,
+            }
+            return handle_response(response_data, status_code=status.HTTP_201_CREATED)
         except Exception as exc:
             return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return handle_response(error=serializer.errors, status_code=status.HTTP_400_BAD_REQUEST)
@@ -152,38 +232,11 @@ def login(request):
     if user and user.is_active:
         try:
             token, _ = Token.objects.get_or_create(user=user)
-            response_data = {
-                'token' : token.key
-            }
+            response_data = {'token' : token.key}
             return handle_response(response_data)
         except Exception as exc:
             return handle_response(error=exc, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return handle_response(error='Invalid credentials.', status_code=status.HTTP_401_UNAUTHORIZED)
-
-
-@api_view(['POST'])
-@authentication_classes([authentication.TokenAuthentication])
-@permission_classes([permissions.IsAuthenticated])
-def create_biometrics(request):
-    try:
-        data = {
-            'user': request.user.id,
-            'biometrics': request.data
-        }
-        serializer = BiometricsEntrySerializer(data=data, context={'user': request.user})
-        if serializer.is_valid():
-            biometrics_entry = serializer.save()
-            response_data = get_user_details(request.user)
-            return Response(response_data, status=status.HTTP_201_CREATED)
-        else:
-            logger.error(f"Validation error in create_biometrics: {serializer.errors}")
-            return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-    except Exception as exc:
-        logger.exception("Unexpected error in create_biometrics")
-        return Response({'error': str(exc)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
 
 
 

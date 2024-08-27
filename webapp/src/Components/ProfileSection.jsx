@@ -46,7 +46,7 @@ const ProfileSection = ({ userProfile }) => {
   const handleDeactivate = async () => await deactivateUser();
 
   return (
-    <Card className="profile-card">
+    <Card className="primary-card">
       <Card.Body>
         <h2 className="text-start">Profile</h2>
         <p style={{ cursor: "pointer" }} className="mb-4 text-end d-block text-danger" onClick={handleDeactivate}><i className="me-2 text-end fa-regular fa-trash-can"></i>Delete Account</p>
