@@ -75,6 +75,18 @@ class Food(BaseModel):
 
     class Meta:
         indexes = [models.Index(fields=['name']), models.Index(fields=['subcategory'])]
+
+class FoodImage(BaseModel):
+    food = models.OneToOneField(Food, on_delete=models.CASCADE, related_name='image')
+    image = models.ImageField()
+
+    def __str__(self):
+        return self.food.name
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['food']),
+        ]
         
 
 

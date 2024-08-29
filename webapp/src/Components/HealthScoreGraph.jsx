@@ -21,7 +21,11 @@ const HealthScoreGraph = ({ healthScore }) => {
       type: 'line',
       data: {
         labels: healthScore.map((score) =>
-          new Date(score.created).toLocaleDateString('en-GB')
+          new Date(score.created).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+          })
         ),
         datasets: [
           {
@@ -41,33 +45,56 @@ const HealthScoreGraph = ({ healthScore }) => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            top: 20,
+            bottom: 20,
+          },
+        },
         scales: {
           x: {
             title: {
               display: false,
             },
             ticks: {
-              callback: function (value, index, ticks) {
-                return new Date(value).toLocaleDateString('en-GB');
-              },
+              color: '#F7FAFC', // Set x-axis tick font color
             },
+            grid: {
+              borderColor: '#F7FAFC', // Set grid line color
+            },
+            offset: true, // Offset the axis to ensure space
           },
           y: {
             title: {
               display: true,
-              text: 'Health Score',
+              color: '#F7FAFC', // Set y-axis title color
+              padding: { top: 20 },
             },
             beginAtZero: true,
             ticks: {
-              display: false, // Remove health scores from y-axis
+              color: '#F7FAFC', // Set y-axis tick font color
+            },
+            grid: {
+              borderColor: '#F7FAFC', // Set grid line color
+            },
+            padding: {
+              top: 20, // Add space between the top border and axis
+              bottom: 20, // Add space between the bottom border and axis
             },
           },
         },
         plugins: {
           legend: {
-            display: false, // Remove health score label from top
+            display: true,
+            position: 'top', // Move legend to the top
+            labels: {
+              color: '#F7FAFC', // Set legend label color
+            },
           },
         },
+        color: '#F7FAFC', // Set general font color
       },
     });
 
@@ -79,7 +106,11 @@ const HealthScoreGraph = ({ healthScore }) => {
     };
   }, [healthScore]);
 
-  return <canvas ref={chartRef} style={{ width: '100%', height: '300px' }} />;
+  return (
+    <div style={{ backgroundColor: '#192232', width: '100%', height: '100%', position: 'relative' }}>
+      <canvas ref={chartRef} style={{ width: '100%', height: '100%' }} />
+    </div>
+  );
 };
 
 export default HealthScoreGraph;

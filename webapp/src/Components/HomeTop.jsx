@@ -2,7 +2,14 @@ import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import HealthScoreGraph from "./HealthScoreGraph";
 
-const HomeTop = ({ profileData, latestBiometrics, healthScore }) => {
+const HomeTop = ({
+  profileData,
+  latesBiometrics,
+  healthScore,
+  conditions,
+}) => {
+  console.log(latesBiometrics);
+  // Function to process the latest biometrics
   const processLatestBiometrics = (biometrics) => {
     if (!Array.isArray(biometrics)) {
       return { hypoBiochemicals: [], hyperBiochemicals: [] };
@@ -20,76 +27,129 @@ const HomeTop = ({ profileData, latestBiometrics, healthScore }) => {
     return { hypoBiochemicals, hyperBiochemicals };
   };
 
-  const { hypoBiochemicals, hyperBiochemicals } =
-    processLatestBiometrics(latestBiometrics);
 
+  // Process the latest biometrics
+  const { hypoBiochemicals, hyperBiochemicals } = processLatestBiometrics(latesBiometrics);
+  
   const renderBiochemicalList = (biochemicals) => {
     return biochemicals.map((bio) => (
-      <span
+      <div
         key={bio.biochemical?.name || "unknown"}
-        style={{ color: "red", marginRight: "5px" }}
+        style={{ marginRight: "5px" }}
+        className="badge bg-danger"
       >
         {bio.biochemical?.name || "Unknown"} ({bio.value || "N/A"})
-      </span>
+      </div>
     ));
   };
 
+  const weight = profileData?.weight_kg;
+  const height = profileData?.height_cm / 100; // Convert height to meters
+  const bmi = weight && height ? weight / height ** 2 : null;
+
+  const getBmiCategory = (bmi) => {
+    if (bmi < 18.5) return { category: "Underweight", color: "orange" };
+    if (bmi >= 18.5 && bmi < 25) return { category: "Healthy", color: "green" };
+    if (bmi >= 25 && bmi < 30)
+      return { category: "Overweight", color: "yellow" };
+    return { category: "Obesity", color: "red" };
+  };
+
+  const bmiCategory = bmi
+    ? getBmiCategory(bmi)
+    : { category: "N/A", color: "black" };
+
   return (
-    <Row
-      className="d-flex justify-content-between align-items-stretch"
-      style={{ marginTop: "20px", height: "350px", width: "100%" }}
+    <Card
+      className="d-flex justify-content-between align-items-stretch primary-card"
+      style={{ minHeight: "250px" }}
     >
-      <Col xs={12} md={6} className="mb-3 mb-md-0">
-        <Card className="primary-card" style={{ height: "350px" }}>
-          <Card.Body>
+      <Card.Body>
+        <Row>
+          <Col xs={12} md={6} className="mb-3 mb-md-0">
             {profileData ? (
               <>
-                <h2>Hello {profileData.first_name || "User"}.</h2>
-                <h6>
+                <h3>Hello {profileData.first_name || "User"}.</h3>
+                {bmi && (
+                  <h6>
+                    BMI: {bmi.toFixed(2)}{" "}
+                    <span style={{ color: bmiCategory.color }}>
+                      ({bmiCategory.category})
+                    </span>
+                  </h6>
+                )}
+                <div className="p-2 m-3">
                   {hypoBiochemicals.length > 0 && (
-                    <>Low: {renderBiochemicalList(hypoBiochemicals)}</>
+                    <h6 className="card-title">
+                      Low {renderBiochemicalList(hypoBiochemicals)}
+                    </h6>
                   )}
-                </h6>
-                <h6>
                   {hyperBiochemicals.length > 0 && (
-                    <>
-                      High: {renderBiochemicalList(hyperBiochemicals)}
-                    </>
+                    <h6 className="card-title">
+                      High {renderBiochemicalList(hyperBiochemicals)}
+                    </h6>
                   )}
-                </h6>
-                <h6>
-                  {hypoBiochemicals.length === 0 &&
-                    hyperBiochemicals.length === 0 &&
-                    "All your biometrics are within normal range."}
-                </h6>
+                </div>
+                {hypoBiochemicals.length === 0 &&
+                  hyperBiochemicals.length === 0 && (
+                    <div>All your biometrics are within normal range.</div>
+                  )}
+                {conditions && conditions.length > 0 && (
+                  <Card className="mt-3">
+                    <Card.Body>
+                      <h5 className="mb-2">You may have</h5>
+                      <div
+                        className="card-text"
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "7px",
+                        }}
+                      >
+                        {conditions.map((condition, index) => (
+                          <span
+                            key={index}
+                            className="badge bg-dark"
+                            style={{ padding: "10px", fontSize: "12px" }}
+                          >
+                            {condition}
+                          </span>
+                        ))}
+                      </div>
+                    </Card.Body>
+                  </Card>
+                )}
               </>
             ) : (
-              <h2>Loading profile data...</h2>
+              <span className="badge m-auto rounded-pill bg-secondary">
+                Please Refresh Page
+              </span>
             )}
-          </Card.Body>
-        </Card>
-      </Col>
-      <Col xs={12} md={6}>
-        <Card className="primary-card" style={{ height: "350px" }}>
-          <Card.Body
-            style={{
-              height: "350px",
-              overflow: "auto",
-              backgroundColor: "#e9ecef",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {Array.isArray(healthScore) && healthScore.length > 0 ? (
-              <HealthScoreGraph healthScore={healthScore} />
-            ) : (
-              <h2>Health score not available</h2>
-            )}
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
+          </Col>
+
+          <Col xs={12} md={6}>
+            <div
+              style={{
+                overflow: "auto",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0px",
+                height: "400px",
+              }}
+            >
+              {Array.isArray(healthScore) && healthScore.length > 0 ? (
+                <HealthScoreGraph healthScore={healthScore} />
+              ) : (
+                <span className="badge m-auto rounded-pill bg-secondary">
+                  Health score not available
+                </span>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </Card.Body>
+    </Card>
   );
 };
 

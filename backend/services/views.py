@@ -6,10 +6,11 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch, Max
+from django.utils import timezone
 
 from .models import User, Biometrics, FoodScore, BiometricsEntry
-from adminpanel.models import Biochemical
-from adminpanel.serializers import BiochemicalSerializer
+from adminpanel.models import Biochemical, BiochemicalCondition
+from adminpanel.serializers import BiochemicalSerializer, BiochemicalConditionSerializer
 from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer, BiometricsEntrySerializer
 
 logger = logging.getLogger(__name__)
@@ -49,16 +50,37 @@ def fetch_user_data(user):
         biometrics = Biometrics.objects.filter(biometricsentry__user=user)
         food_scores = FoodScore.objects.filter(biometricsentry=latest_entry)
         
-        # Process biometrics data
-        biometrics_data = [
-            {
-                'id': biometric.biochemical.id,
-                'name': biometric.biochemical.name,
+        
+        
+        biometrics_data_dict = {}
+        
+        for biometric in biometrics:
+            bio_name = biometric.biochemical.name
+            
+            if bio_name not in biometrics_data_dict:
+                biometrics_data_dict[bio_name] = {
+                    'values': [],
+                    'healthy_min': (
+                        biometric.biochemical.female_min if user.gender == 'female'
+                        else biometric.biochemical.male_min
+                    ),
+                    'healthy_max': (
+                        biometric.biochemical.female_max if user.gender == 'female'
+                        else biometric.biochemical.male_max
+                    ),
+                    'category': biometric.biochemical.category.name,
+                }
+            
+            biometrics_data_dict[bio_name]['values'].append({
                 'value': biometric.value,
-                'created': biometric.biometricsentry.created,
-            }
-            for biometric in biometrics
-        ]
+                'scaled_value': biometric.scaled_value,
+                'created': biometric.biometricsentry.created
+            })
+
+        # Convert the dictionary to the desired list format
+        biometrics_data_list = [{name: data} for name, data in biometrics_data_dict.items()]
+        
+      
         
         # Process health scores data
         health_scores_data = [
@@ -74,6 +96,7 @@ def fetch_user_data(user):
             {
                 'id': score.id,
                 'food_name': score.food.name,
+                'image': score.food.image.image.url,
                 'score': score.score,
             }
             for score in food_scores
@@ -87,8 +110,10 @@ def fetch_user_data(user):
             )
         )
 
-        # Prepare latest biometrics data
+        
         latest_biometrics_data = []
+        conditions = set()
+        time_now = timezone.now()
         for biochemical in biochemicals:
             if biochemical.user_biometrics:
                 latest_biometric = biochemical.user_biometrics[-1]  
@@ -102,6 +127,22 @@ def fetch_user_data(user):
                     'scaled_value': latest_biometric.scaled_value,
                     'expired_date': latest_biometric.expired_date,
                 })
+                
+                if latest_biometric.expired_date > time_now:
+                    if latest_biometric.scaled_value < -1:
+                        conditions.update(
+                            BiochemicalCondition.objects.filter(
+                                biochemical=biochemical,
+                                is_hyper=False
+                            ).values_list('condition__name', flat=True)
+                        )
+                    elif latest_biometric.scaled_value > 1:
+                        conditions.update(
+                            BiochemicalCondition.objects.filter(
+                                biochemical=biochemical,
+                                is_hyper=True
+                            ).values_list('condition__name', flat=True)
+                        )
             else:
                 latest_biometrics_data.append({
                     'biochemical': {
@@ -116,10 +157,11 @@ def fetch_user_data(user):
         
         return {
             'user': UserSerializer(user).data,
-            'biometrics': biometrics_data,
+            'biometrics': biometrics_data_list,
             'latest_biometrics': latest_biometrics_data,
             'food_scores': food_scores_data,
             'health_score': health_scores_data,
+            'conditions': list(conditions)
         }, None
 
     except Exception as exc:
@@ -241,3 +283,30 @@ def login(request):
 
 
 
+# biometrics_data = [{
+#     'glucose':{ #biometric.biochemical.name
+#         'values':[
+#             {
+#                 'value':23, #biometric.value
+#                 'scaled_value':0.73, #biometric.scaled_value
+#                 'created':'2022-01-01 00:00:00', #biometric.biometricsentry.created,
+                
+#             },
+#             {
+#                 'value':34,#biometric.value
+#                 'scaled_value':0.33,#biometric.scaled_value
+#                 'created':'2022-05-01 00:00:00',#biometric.biometricsentry.created,
+                
+#             },
+#             {
+#                 'value':53,#biometric.value
+#                 'scaled_value':0.3,#biometric.scaled_value
+#                 'created':'2022-03-01 00:00:00',#biometric.biometricsentry.created,
+                
+#             },
+#         ],
+#         'healthy_min':100, #biometric.biochemical.f"{user.gender}_min"
+#         'healthy_max':200,#biometric.biochemical.f"{user.gender}_max"
+#         'category':'glucose',#biometric.biochemical.category
+#     }
+# }]

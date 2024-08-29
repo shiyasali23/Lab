@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
-    Category, SubCategory, Condition, Biochemical, Food, Nutrient, 
-    FoodNutrient, FoodWeight, NutrientWeight, BiochemicalCondition
+    Category, SubCategory, Condition, Biochemical, Food, FoodImage ,Nutrient, 
+    FoodNutrient, FoodWeight, NutrientWeight, BiochemicalCondition, 
 )
 
 @admin.register(Category)
@@ -37,6 +37,12 @@ class FoodAdmin(admin.ModelAdmin):
     list_filter = ('subcategory',)
     ordering = ('name',)
 
+@admin.register(FoodImage)
+class FoodImageAdmin(admin.ModelAdmin):
+    list_display = ('food',)
+    search_fields = ('food__name',)
+    ordering = ('food__name',)
+
 @admin.register(Nutrient)
 class NutrientAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'unit', 'created')
@@ -71,3 +77,5 @@ class BiochemicalConditionAdmin(admin.ModelAdmin):
     search_fields = ('biochemical__name', 'condition__name')
     list_filter = ('biochemical', 'condition', 'is_hyper')
     ordering = ('biochemical__name', 'condition__name', 'is_hyper')
+
+

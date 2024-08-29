@@ -53,7 +53,7 @@ export const UserProvider = ({ children }) => {
   [handleApiCall]);
 
   const updateUser = useCallback((userData) => 
-    handleApiCall(() => axios.patch(`${API_URL}api/services/user/update/`, userData), 'User updated.'),
+    handleApiCall(() => axios.patch(`${API_URL}api/services/userupdate/`, userData), 'User updated.'),
   [handleApiCall]);
 
   const deactivateUser = useCallback(() => 
