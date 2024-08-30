@@ -14,6 +14,7 @@ const HomePage = () => {
   const [healthScore, setHealthScore] = useState(null);
   const [conditions, setConditions] = useState(null);
   const [latestBiometrics, setLatestBiometrics] = useState(null);
+  const [biometrics, setBiomerics] = useState([]);
   const [foodScore, setFoodScore] = useState(null);
 
   const token = localStorage.getItem("token");
@@ -33,6 +34,7 @@ const HomePage = () => {
       setConditions(user.conditions || null);
       setLatestBiometrics(user.latest_biometrics || null);
       setFoodScore(user.food_scores || null);
+      setBiomerics(user.biometrics || []);
     }
   }, [user]);
 
@@ -48,7 +50,6 @@ const HomePage = () => {
     );
   }
   
-  const biometrics = user ? user.biometrics || [] : [];
 
   return (
     <div className="min-vh-100">

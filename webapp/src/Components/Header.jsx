@@ -31,6 +31,15 @@ const Header = () => {
           </div>
           <div className="col-8">
             <nav className="d-flex justify-content-end">
+            <Link
+                to="/hospital"
+                className="text-dark text-center text-decoration-none"
+                style={!isLoggedIn ? disabledStyle : {}}
+                aria-disabled={!isLoggedIn}
+              >
+                <i className="fa-solid fa-camera"></i>
+                <span>Scan</span>
+              </Link>
               <Link
                 to="/profile"
                 className="text-dark text-center text-decoration-none"
@@ -40,15 +49,7 @@ const Header = () => {
                 <i className="fa-solid fa-user d-block mb-1"></i>
                 <span>Profile</span>
               </Link>
-              <Link
-                to="/hospital"
-                className="text-dark text-center text-decoration-none"
-                style={!isLoggedIn ? disabledStyle : {}}
-                aria-disabled={!isLoggedIn}
-              >
-                <i className="fa-solid fa-chart-simple"></i>
-                <span>Analytics</span>
-              </Link>
+             
         
               {isLoggedIn && (
                 <div

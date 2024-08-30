@@ -14,36 +14,50 @@ const HomeTop = ({
       return { hypoBiochemicals: [], hyperBiochemicals: [] };
     }
     const now = new Date();
-    const validBiometrics = biometrics.filter(
-      (bio) => bio && bio.expired_date && new Date(bio.expired_date) > now
+    const hypoBiochemicals = biometrics.filter(
+      (bio) => bio && bio.scaled_value < -1
     );
-    const hypoBiochemicals = validBiometrics.filter(
-      (bio) => bio.scaled_value < -1
-    );
-    const hyperBiochemicals = validBiometrics.filter(
-      (bio) => bio.scaled_value > 1
+    const hyperBiochemicals = biometrics.filter(
+      (bio) => bio && bio.scaled_value > 1
     );
     return { hypoBiochemicals, hyperBiochemicals };
   };
-
 
   // Process the latest biometrics
   const { hypoBiochemicals, hyperBiochemicals } = processLatestBiometrics(latesBiometrics);
   
   const renderBiochemicalList = (biochemicals) => {
-    return biochemicals.map((bio) => (
-      <div
-        key={bio.biochemical?.name || "unknown"}
-        style={{ marginRight: "5px" }}
-        className="badge bg-danger"
-      >
-        {bio.biochemical?.name || "Unknown"} ({bio.value || "N/A"})
-      </div>
-    ));
+    return biochemicals.map((bio) => {
+      const isExpired = bio.expired_date && new Date(bio.expired_date) <= new Date();
+      return (
+        <div
+          key={bio.biochemical?.name || "unknown"}
+          style={{
+            marginRight: "5px",
+            marginBottom: "5px", 
+            padding: "5px 10px", 
+            backgroundColor: "#E74C3C",
+            color: "#FFFFFF",
+            borderRadius: "5px",
+            display: "inline-block",
+            wordBreak: "break-word", 
+            fontSize: "13px",
+            whiteSpace: "normal",
+          }}
+        >
+          {bio.biochemical?.name || "Unknown"} ({bio.value || "N/A"})
+          {isExpired && (
+            <h6 style={{ letterSpacing: "1px",textAlign: "center",color:'white',fontSize: "8px", marginTop: "2px" }}>
+              (expired)
+            </h6>
+          )}
+        </div>
+      );
+    });
   };
 
   const weight = profileData?.weight_kg;
-  const height = profileData?.height_cm / 100; // Convert height to meters
+  const height = profileData?.height_cm / 100; 
   const bmi = weight && height ? weight / height ** 2 : null;
 
   const getBmiCategory = (bmi) => {

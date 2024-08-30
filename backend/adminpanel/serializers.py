@@ -71,12 +71,13 @@ class FoodSerializer(serializers.ModelSerializer):
 class FoodImageSerializer(serializers.ModelSerializer):
     food = FoodSerializer(read_only=True)
     food_id = serializers.PrimaryKeyRelatedField(
-        queryset=SubCategory.objects.all(), source='food', write_only=True
+        queryset=Food.objects.all(), source='food', write_only=True  
     )
 
     class Meta:
         model = FoodImage
         fields = '__all__'
+
 
 
 class FoodWeightSerializer(serializers.ModelSerializer):

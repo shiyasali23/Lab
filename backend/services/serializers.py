@@ -214,18 +214,14 @@ class BiometricsSerializer(serializers.ModelSerializer):
 
 class FoodScoreSerializer(serializers.ModelSerializer):
     food_name = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
 
     class Meta:
         model = FoodScore
         fields = [
-            'id', 'food_name', 'image', 'score'
+            'id', 'food_name', 'score'
         ]
 
     def get_food_name(self, obj):
         return obj.food.name if obj.food else None
 
-    def get_image(self, obj):
-        if obj.food and obj.food.image:
-            return obj.food.image.image.url
-        return None
+

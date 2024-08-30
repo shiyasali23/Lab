@@ -17,27 +17,40 @@ const HomeBottom = ({ foodScore, biometrics }) => {
   }, {});
 
   return (
-    <Card style={{border: 'none',
-        marginTop: '1rem',
-        width: '100%',
-        padding: '0.5rem 0.5rem',}}>
+    <div style={{
+      border: 'none',
+      marginTop: '1rem',
+      width: '100%',
+      padding: '0.5rem 0.5rem',
+      boxShadow: 'none',
+      backgroundColor: 'white'
+    }}>
       <Card.Body>
         <Row>
-          <Col xs={12} md={6}>
-           
+          <Col xs={12} md={6} style={{ maxHeight: '1450px', overflowY: 'auto' }}>
             {biometrics ? (
-              <div style={{ height: '600px', overflowY: 'auto' }}  className='primary-card'>
-                 <h5 className="text-center mb-3">Biometrics Analytics</h5>
+              <div style={{ height: 'auto', overflowY: 'auto' }} className='primary-card'>
+                <h5 className="text-center mb-3">Biometrics Analytics</h5>
                 <Accordion>
                   {Object.keys(categorizedBiometrics).map((category, index) => (
                     <Accordion.Item eventKey={index.toString()} key={index}>
-                      <Accordion.Header>{category}</Accordion.Header>
+                      <Accordion.Header><h5>{category}</h5></Accordion.Header>
                       <Accordion.Body>
                         {categorizedBiometrics[category].map((metric, i) => {
                           const key = Object.keys(metric)[0];
+                          const lastValue = metric[key].values[metric[key].values.length - 1];
+                          const isExpired = new Date(lastValue.expired_date) < new Date();
+                          
                           return (
                             <div key={i} style={{ marginBottom: '20px' }}>
-                              <h6>{key}</h6>
+                              <h6>
+                                {key}{' '}
+                                {isExpired && (
+                                  <span style={{ color: 'red' }}>
+                                    *Expired on {new Date(lastValue.expired_date).toLocaleDateString('en-GB')}
+                                  </span>
+                                )}
+                              </h6>
                               <LineGraph data={metric} />
                             </div>
                           );
@@ -52,9 +65,8 @@ const HomeBottom = ({ foodScore, biometrics }) => {
             )}
           </Col>
           <Col xs={12} md={6}>
-            
             {foodScore ? (
-              <div style={{ height: '1500px', overflowY: 'auto' }} className='primary-card'>
+              <div style={{ height: '1450px', overflowY: 'auto' }} className='primary-card'>
                 <h5 className="text-center">Food Recommendation</h5>
                 <BarGraph foodScore={foodScore} />
               </div>
@@ -64,7 +76,7 @@ const HomeBottom = ({ foodScore, biometrics }) => {
           </Col>
         </Row>
       </Card.Body>
-    </Card>
+    </div>
   );
 };
 

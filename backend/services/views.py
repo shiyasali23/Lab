@@ -74,6 +74,7 @@ def fetch_user_data(user):
             biometrics_data_dict[bio_name]['values'].append({
                 'value': biometric.value,
                 'scaled_value': biometric.scaled_value,
+                'expired_date': biometric.expired_date,
                 'created': biometric.biometricsentry.created
             })
 
