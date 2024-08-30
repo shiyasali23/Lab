@@ -49,7 +49,7 @@ export const UserProvider = ({ children }) => {
   }, [resetState, setAuthHeader]);
 
   const getUser = useCallback(() =>
-    handleApiCall(() => axios.get(`${API_URL}api/services/user/`), 'User details fetched.'),
+    handleApiCall(() => axios.get(`api/services/user/`), 'User details fetched.'),
   [handleApiCall]);
 
   const updateUser = useCallback((userData) => 

@@ -92,15 +92,15 @@ def fetch_user_data(user):
             for entry in biometrics_entries
         ]
         
-        food_scores_data = [
-            {
-                'id': score.id,
-                'food_name': score.food.name,
-                'image': score.food.image.image.url,
-                'score': score.score,
-            }
-            for score in food_scores
-        ]
+        # food_scores_data = [
+        #     {
+        #         'id': score.id,
+        #         'food_name': score.food.name,
+        #         'image': score.food.image.image,
+        #         'score': score.score,
+        #     }
+        #     for score in food_scores
+        # ]
 
         biochemicals = Biochemical.objects.prefetch_related(
             Prefetch(
@@ -159,7 +159,7 @@ def fetch_user_data(user):
             'user': UserSerializer(user).data,
             'biometrics': biometrics_data_list,
             'latest_biometrics': latest_biometrics_data,
-            'food_scores': food_scores_data,
+            'food_scores': FoodScoreSerializer(food_scores, many=True).data,
             'health_score': health_scores_data,
             'conditions': list(conditions)
         }, None
@@ -310,3 +310,5 @@ def login(request):
 #         'category':'glucose',#biometric.biochemical.category
 #     }
 # }]
+
+

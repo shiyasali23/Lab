@@ -37,7 +37,7 @@ const Header = () => {
                 style={!isLoggedIn ? disabledStyle : {}}
                 aria-disabled={!isLoggedIn}
               >
-                <i className="fa-regular fa-user d-block mb-1"></i>
+                <i className="fa-solid fa-user d-block mb-1"></i>
                 <span>Profile</span>
               </Link>
               <Link
@@ -46,18 +46,10 @@ const Header = () => {
                 style={!isLoggedIn ? disabledStyle : {}}
                 aria-disabled={!isLoggedIn}
               >
-                <i className="fa-regular fa-hospital d-block mb-1"></i>
-                <span>Hospital</span>
+                <i className="fa-solid fa-chart-simple"></i>
+                <span>Analytics</span>
               </Link>
-              <Link
-                to="/history"
-                className="text-dark text-center text-decoration-none"
-                style={!isLoggedIn ? disabledStyle : {}}
-                aria-disabled={!isLoggedIn}
-              >
-                <i className="fa-regular fa-file d-block mb-1"></i>
-                <span>Report</span>
-              </Link>
+        
               {isLoggedIn && (
                 <div
                   className="text-dark text-center text-decoration-none"
@@ -77,3 +69,5 @@ const Header = () => {
 };
 
 export default Header;
+
+

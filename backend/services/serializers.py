@@ -213,14 +213,19 @@ class BiometricsSerializer(serializers.ModelSerializer):
 
 
 class FoodScoreSerializer(serializers.ModelSerializer):
-    food = FoodSerializer(read_only=True)
-    food_id = serializers.PrimaryKeyRelatedField(queryset=Food.objects.all(), source='food', write_only=True)
-    biometricsentry = BiometricsEntrySerializer(read_only=True)
-    biometricsentry_id = serializers.PrimaryKeyRelatedField(queryset=BiometricsEntry.objects.all(), source='biometricsentry', write_only=True)
+    food_name = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = FoodScore
         fields = [
-            'id', 'biometricsentry', 'biometricsentry_id', 'food', 'food_id', 'score', 'created'
+            'id', 'food_name', 'image', 'score'
         ]
-        read_only_fields = ['created']
+
+    def get_food_name(self, obj):
+        return obj.food.name if obj.food else None
+
+    def get_image(self, obj):
+        if obj.food and obj.food.image:
+            return obj.food.image.image.url
+        return None

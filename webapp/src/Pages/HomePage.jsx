@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import HomeTop from "../Components/HomeTop";
 import { useUser } from "../Contexts/UserContext";
 import HomeMiddle from "../Components/HomeMiddle";
+import HomeBottom from "../Components/HomeBottom";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const HomePage = () => {
   const [healthScore, setHealthScore] = useState(null);
   const [conditions, setConditions] = useState(null);
   const [latestBiometrics, setLatestBiometrics] = useState(null);
+  const [foodScore, setFoodScore] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -30,11 +32,12 @@ const HomePage = () => {
       setHealthScore(user.health_score || null);
       setConditions(user.conditions || null);
       setLatestBiometrics(user.latest_biometrics || null);
+      setFoodScore(user.food_scores || null);
     }
   }, [user]);
 
   if (loading) {
-    return <Spinner animation="border" className="d-block mx-auto mt-5" />;
+    return <Spinner animation="border" className="d-block mx-auto mt-5 " />;
   }
 
   if (error) {
@@ -44,8 +47,6 @@ const HomePage = () => {
       </Alert>
     );
   }
-
-  console.log(latestBiometrics);
   
   const biometrics = user ? user.biometrics || [] : [];
 
@@ -62,6 +63,7 @@ const HomePage = () => {
         <HomeMiddle
           biometrics={biometrics}
         />
+        <HomeBottom foodScore={foodScore} biometrics={biometrics}/>
       </Container>
     </div>
   );

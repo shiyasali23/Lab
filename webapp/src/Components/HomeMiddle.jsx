@@ -60,7 +60,6 @@ const HomeMiddle = ({ biometrics }) => {
           </>
         )}
       </Card.Body>
-      <button type="button" className="m-auto btn btn-info">More Analytics</button>
     </Card>
   );
 };

@@ -8,7 +8,6 @@ const HomeTop = ({
   healthScore,
   conditions,
 }) => {
-  console.log(latesBiometrics);
   // Function to process the latest biometrics
   const processLatestBiometrics = (biometrics) => {
     if (!Array.isArray(biometrics)) {
