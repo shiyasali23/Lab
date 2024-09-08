@@ -2,7 +2,7 @@ from django.db import models
 
 class MachineLearningModel(models.Model):
 
-    id = models.CharField(max_length=32, unique=True, primary_key=True)  # Consider using UUID for unique IDs
+    id = models.CharField(max_length=32, unique=True, primary_key=True)  
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     
     # Model Metadata
@@ -13,14 +13,12 @@ class MachineLearningModel(models.Model):
     framework = models.CharField(max_length=50, blank=True, null=True)
     hyperparameters = models.JSONField(blank=True, null=True)
     model_file_url = models.URLField(blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     # Performance Metrics
     accuracy = models.FloatField(blank=True, null=True)
-    f1_score = models.FloatField(blank=True, null=True)
     precision = models.FloatField(blank=True, null=True)
     recall = models.FloatField(blank=True, null=True)
-    roc_auc = models.FloatField(blank=True, null=True)
 
     # Model Status
     status = models.CharField(max_length=20, choices=[('active', 'active'), ('inactive', 'inactive')], default='active')  
