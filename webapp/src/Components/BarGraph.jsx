@@ -1,15 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import Chart from "chart.js/auto";
 
-const BarGraph = ({ foodScore }) => {
+const BarGraph = ({ sortedScores }) => {
   const chartRef = useRef(null); // Reference to the canvas element
   const chartInstanceRef = useRef(null); // Reference to the Chart.js instance
 
   useEffect(() => {
     if (!chartRef.current) return;
 
-    // Sort food scores by score in descending order
-    const sortedScores = [...foodScore].sort((a, b) => b.score - a.score);
 
     // Extract labels and data
     const labels = sortedScores.map((food) => food.food_name);
@@ -191,13 +189,13 @@ const BarGraph = ({ foodScore }) => {
         chartInstanceRef.current.destroy();
       }
     };
-  }, [foodScore]);
+  }, [sortedScores]);
 
   return (
     <div style={{ width: "100%", height: "100%", overflowY: "auto" }}>
       <canvas
         ref={chartRef}
-        style={{ width: "100%", height: `${foodScore.length * 20}px` }}
+        style={{ width: "100%", height: `${sortedScores.length * 20}px` }}
       />
     </div>
   );
