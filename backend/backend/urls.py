@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/adminpanel/', include('adminpanel.urls')),
     path('api/services/', include('services.urls')), 
+    path('api/mlmodels/', include('mlmodels.urls')), 
    
 ]
 

@@ -7853,7 +7853,7 @@ fruit = {
                 "Fats": {'value': 0.1, 'unit': 'g'}
             },
             'Vitamins': {
-                "Vitamin A": {'value': 225, 'unit': 'µg'},
+                "Vitamin A": {'value': 11, 'unit': 'µg'},
                 "Vitamin B1": {'value': 0.1, 'unit': 'mg'},
                 "Vitamin B2": {'value': 0.1, 'unit': 'mg'},
                 "Vitamin B3": {'value': 0.4, 'unit': 'mg'},

@@ -1,44 +1,33 @@
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 import requests
 import logging
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .models import MachineLearningModel
+
 from .serializers import MachineLearningModelSerializer
 
 logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def register_model(request):
-    serializer = MachineLearningModelSerializer(data=request.data, partial=True)
-    
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    model_data = {key: value for key, value in serializer.validated_data.items() if key not in ['created_at', 'updated_at', 'status']}
-    
     try:
-        # Send model data to FastAPI service
-        response = requests.post('http://localhost:8001/register_models/', json=model_data)
-        response.raise_for_status()  
-        
+        response = requests.get('http://localhost:8001/register_models/')
+        response.raise_for_status()         
         if response.status_code == 200:
-            data = response.json()
-            
+            data = response.json()           
             for item in data:
                 item['status'] = 'active' 
-                
-            # Use many=True for bulk serialization
             model_serializer = MachineLearningModelSerializer(data=data, partial=True, many=True)
             if model_serializer.is_valid():
                 model_serializer.save()
-                return Response({"detail": "Models registered successfully."}, status=status.HTTP_201_CREATED)
+                for registered_model in model_serializer.data:
+                    logger.info(f"Registered model: {registered_model['name']}")
+                return Response({"message": "Models registered successfully!"}, status=201)
             else:
                 logger.error(f"Model serializer errors: {model_serializer.errors}")
-                return Response(model_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(model_serializer.errors, status=400)
         else:
             logger.error(f"Failed to register models with FastAPI. Status code: {response.status_code}")
-            return Response({"detail": "Failed to register models with FastAPI."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Failed to register models from FastAPI"}, status=response.status_code)
     except requests.RequestException as e:
         logger.error(f"Failed to register model: {e}")
-        return Response({"detail": f"Failed to register model: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Failed to connect to FastAPI service"}, status=500)

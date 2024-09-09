@@ -78,7 +78,7 @@ class Food(BaseModel):
 
 class FoodImage(BaseModel):
     food = models.OneToOneField(Food, on_delete=models.CASCADE, related_name='image')
-    image = models.ImageField()
+    image = models.ImageField(upload_to='food_images/')
 
     def __str__(self):
         return self.food.name

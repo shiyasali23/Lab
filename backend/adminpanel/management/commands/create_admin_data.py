@@ -10,7 +10,7 @@ class Command(BaseCommand):
         try:
             if os.path.exists('db.sqlite3'):
                 os.remove('db.sqlite3')
-            migrations_dirs = ['services/migrations/', 'adminpanel/migrations/']
+            migrations_dirs = ['services/migrations/', 'adminpanel/migrations/', 'mlmodels/migrations/']
             for migrations_dir in migrations_dirs:
                 for file in os.listdir(migrations_dir):
                     if file.endswith('.py') and file.startswith('00'):
@@ -26,9 +26,11 @@ class Command(BaseCommand):
             call_command('create_biochemical_conditions')
             call_command('create_food_nutrients')
             call_command('create_food_bias_weights')
+            call_command('create_food_images')
             call_command('create_nutrients_bias_weights')
             call_command('normalize_nutriscore_nutreint')
             call_command('check_normalized_nutrients')
+            call_command('register_ml_models')
 
 
             User = get_user_model()

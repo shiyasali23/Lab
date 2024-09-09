@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-a%s)u!)%5_4s9g#2l*gwlzz5y(d@u_2m2-8li33!+py51f6v4t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     
     'services.apps.ServicesConfig',
     'adminpanel.apps.AdminpanelConfig',
+    'mlmodels.apps.MlmodelsConfig',
+    
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
