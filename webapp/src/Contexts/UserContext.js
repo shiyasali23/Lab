@@ -3,17 +3,16 @@ import axios from 'axios';
 
 const UserContext = createContext();
 
-const API_URL = process.env.REACT_APP_API_URL;
 
 export const UserProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [userLoading, setUserLoading] = useState(false);
+  const [userError, setUserError] = useState('');
   const [success, setSuccess] = useState('');
   const [user, setUser] = useState(null);
 
   const resetState = useCallback(() => {
-    setLoading(false);
-    setError('');
+    setUserLoading(false);
+    setUserError('');
     setSuccess('');
   }, []);
 
@@ -32,7 +31,7 @@ export const UserProvider = ({ children }) => {
 
   const handleApiCall = useCallback(async (apiCall, successMessage) => {
     resetState();
-    setLoading(true);
+    setUserLoading(true);
     setAuthHeader();
 
     try {
@@ -41,10 +40,10 @@ export const UserProvider = ({ children }) => {
       setUser(response.data);     
       return response.data;
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred.');
+      setUserError(err.response?.data?.error || 'An error occurred.');
       return null;
     } finally {
-      setLoading(false);
+      setUserLoading(false);
     }
   }, [resetState, setAuthHeader]);
 
@@ -53,13 +52,18 @@ export const UserProvider = ({ children }) => {
   [handleApiCall]);
 
   const updateUser = useCallback((userData) => 
-    handleApiCall(() => axios.patch(`${API_URL}api/services/userupdate/`, userData), 'User updated.'),
+    handleApiCall(() => axios.patch(`api/services/userupdate/`, userData), 'User updated.'),
+  [handleApiCall]);
+
+
+  const createBiometrics = useCallback((biometricsData) => 
+    handleApiCall(() => axios.post(`api/services/biometrics/create/`, biometricsData), 'Biometrics created.'),
   [handleApiCall]);
 
   const deactivateUser = useCallback(() => 
     handleApiCall(
       async () => {
-        await axios.post(`${API_URL}api/services/user/deactivate/`);
+        await axios.post(`api/services/user/deactivate/`);
         localStorage.removeItem('token');
         setAuthHeader(); 
         setUser(null);
@@ -68,14 +72,12 @@ export const UserProvider = ({ children }) => {
     ),
   [handleApiCall, setAuthHeader]);
 
-  const createBiometrics = useCallback((biometricsData) => 
-    handleApiCall(() => axios.post(`${API_URL}api/services/biometrics/create/`, biometricsData), 'Biometrics created.'),
-  [handleApiCall]);
+
 
   const logout = useCallback(() => 
     handleApiCall(
       async () => {
-        await axios.post(`${API_URL}api/services/logout/`);
+        await axios.post(`api/services/logout/`);
         localStorage.removeItem('token');
         setAuthHeader(); 
         setUser(null);
@@ -86,9 +88,9 @@ export const UserProvider = ({ children }) => {
 
   const value = {
     user,
-    loading,
-    error,
-    success,
+    userLoading,
+    userError,
+    setUserError,
     getUser,
     updateUser,
     deactivateUser,

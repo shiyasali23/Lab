@@ -24,18 +24,19 @@ class MachineLearningModelAdmin(admin.ModelAdmin):
 
 @admin.register(Prediction)
 class PredictionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'model', 'created_at', 'prediction_result')
+    list_display = ('user', 'model', 'created_at', 'prediction', 'probability')
     list_filter = ('created_at', 'model__name')
-    search_fields = ('user__first_name', 'user__last_name', 'model__name', 'prediction_result')
+    search_fields = ('user__first_name', 'user__last_name', 'model__name', 'prediction', 'probability')
     ordering = ('-created_at',)
     raw_id_fields = ('user', 'model', 'image_input')
-    autocomplete_fields = ['user', 'model']
+    autocomplete_fields = ('user', 'model')
     readonly_fields = ('created_at',)
     fieldsets = (
         (None, {'fields': ('user', 'model', 'created_at')}),
         ('Input Data', {'fields': ('input_data', 'image_input')}),
-        ('Prediction Result', {'fields': ('prediction_result', 'error_message')}),
+        ('Prediction Result', {'fields': ('prediction', 'probability')}),
     )
+
 
 @admin.register(ImageInput)
 class ImageInputAdmin(admin.ModelAdmin):

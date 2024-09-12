@@ -3,6 +3,7 @@ import { Container, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
 import { useAuth } from "../Contexts/AuthContext";
+import SpinnerComponent from "../Components/SpinnerComponent";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ const LoginPage = () => {
             <Form onSubmit={handleSubmit}>
               {loading && (
                 <div className="d-flex justify-content-center mb-3">
-                  <Spinner animation="border" />
+                  <SpinnerComponent/>
                 </div>
               )}
               {error && <Alert variant="danger">{error}</Alert>}

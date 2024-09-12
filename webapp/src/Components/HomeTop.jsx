@@ -1,6 +1,8 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import HealthScoreGraph from "./HealthScoreGraph";
+import { useUser } from "../Contexts/UserContext";
+import SpinnerComponent from "./SpinnerComponent";
 
 const HomeTop = ({
   profileData,
@@ -8,12 +10,12 @@ const HomeTop = ({
   healthScore,
   conditions,
 }) => {
-  // Function to process the latest biometrics
+  const { userLoading } = useUser();
+  
   const processLatestBiometrics = (biometrics) => {
     if (!Array.isArray(biometrics)) {
       return { hypoBiochemicals: [], hyperBiochemicals: [] };
     }
-    const now = new Date();
     const hypoBiochemicals = biometrics.filter(
       (bio) => bio && bio.scaled_value < -1
     );
@@ -25,7 +27,7 @@ const HomeTop = ({
 
   // Process the latest biometrics
   const { hypoBiochemicals, hyperBiochemicals } = processLatestBiometrics(latesBiometrics);
-  
+
   const renderBiochemicalList = (biochemicals) => {
     return biochemicals.map((bio) => {
       const isExpired = bio.expired_date && new Date(bio.expired_date) <= new Date();
@@ -47,7 +49,7 @@ const HomeTop = ({
         >
           {bio.biochemical?.name || "Unknown"} ({bio.value || "N/A"})
           {isExpired && (
-            <h6 style={{ letterSpacing: "1px",textAlign: "center",color:'white',fontSize: "8px", marginTop: "2px" }}>
+            <h6 style={{ letterSpacing: "1px", textAlign: "center", color: 'white', fontSize: "8px", marginTop: "2px" }}>
               (expired)
             </h6>
           )}
@@ -56,15 +58,12 @@ const HomeTop = ({
     });
   };
 
-  const weight = profileData?.weight_kg;
-  const height = profileData?.height_cm / 100; 
-  const bmi = weight && height ? weight / height ** 2 : null;
+  const bmi = profileData?.bmi;
 
   const getBmiCategory = (bmi) => {
     if (bmi < 18.5) return { category: "Underweight", color: "orange" };
     if (bmi >= 18.5 && bmi < 25) return { category: "Healthy", color: "green" };
-    if (bmi >= 25 && bmi < 30)
-      return { category: "Overweight", color: "yellow" };
+    if (bmi >= 25 && bmi < 30) return { category: "Overweight", color: "yellow" };
     return { category: "Obesity", color: "red" };
   };
 
@@ -80,12 +79,14 @@ const HomeTop = ({
       <Card.Body>
         <Row>
           <Col xs={12} md={6} className="mb-3 mb-md-0">
-            {profileData ? (
+            {userLoading ? (
+              <SpinnerComponent/>
+            ) : profileData ? (
               <>
                 <h3>Hello {profileData.first_name || "User"}.</h3>
                 {bmi && (
                   <h6>
-                    BMI: {bmi.toFixed(2)}{" "}
+                    BMI: {bmi}
                     <span style={{ color: bmiCategory.color }}>
                       ({bmiCategory.category})
                     </span>
@@ -103,10 +104,9 @@ const HomeTop = ({
                     </h6>
                   )}
                 </div>
-                {hypoBiochemicals.length === 0 &&
-                  hyperBiochemicals.length === 0 && (
-                    <div>All your biometrics are within normal range.</div>
-                  )}
+                {hypoBiochemicals.length === 0 && hyperBiochemicals.length === 0 && (
+                  <div>All your biometrics are within normal range.</div>
+                )}
                 {conditions && conditions.length > 0 && (
                   <Card className="mt-3">
                     <Card.Body>
@@ -151,7 +151,9 @@ const HomeTop = ({
                 height: "400px",
               }}
             >
-              {Array.isArray(healthScore) && healthScore.length > 0 ? (
+              {userLoading ? (
+                <SpinnerComponent/>
+              ) : Array.isArray(healthScore) && healthScore.length > 0 ? (
                 <HealthScoreGraph healthScore={healthScore} />
               ) : (
                 <span className="badge m-auto rounded-pill bg-secondary">

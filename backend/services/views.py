@@ -92,16 +92,6 @@ def fetch_user_data(user):
             }
             for entry in biometrics_entries
         ]
-        
-        # food_scores_data = [
-        #     {
-        #         'id': score.id,
-        #         'food_name': score.food.name,
-        #         'image': score.food.image.image,
-        #         'score': score.score,
-        #     }
-        #     for score in food_scores
-        # ]
 
         biochemicals = Biochemical.objects.prefetch_related(
             Prefetch(

@@ -3,10 +3,9 @@ import { Card, Form, Button, Alert, Spinner, Accordion } from 'react-bootstrap';
 import { useUser } from '../Contexts/UserContext';
 
 const BiometricsSection = ({ biometrics }) => {
-  const { loading, createBiometrics, error: contextError } = useUser();
+  const { userLoading, createBiometrics } = useUser();
   const [biometricsData, setBiometricsData] = useState({});
   const [localError, setLocalError] = useState('');
-  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     const initialData = {};
@@ -22,35 +21,32 @@ const BiometricsSection = ({ biometrics }) => {
 
   const handleSubmit = async (category, items) => {
     setLocalError('');
-    setSuccess('');
 
     // Prepare data for submission
     const updatedBiometrics = items
-      .filter(item => {
+      .map(item => {
         const newValue = biometricsData[item.biochemical.id];
         const oldValue = item.value !== null ? item.value.toString() : '';
-        return newValue !== oldValue;
+        
+        // Check if there is any change
+        if (newValue !== oldValue) {
+          return {
+            biochemical_id: item.biochemical.id,
+            value: newValue === '' ? null : parseFloat(newValue),
+          };
+        }
+        return null;
       })
-      .map(item => ({
-        biochemical_id: item.biochemical.id,
-        value: biometricsData[item.biochemical.id] === '' ? null : parseFloat(biometricsData[item.biochemical.id])
-      }));
+      .filter(item => item !== null); // Remove null values
 
     if (updatedBiometrics.length === 0) {
-      setSuccess(`No changes detected in ${category}.`);
+      setLocalError('No changes detected.');
       return;
     }
 
     try {
-      // Send all updated biometrics data in one request
-      const response = await createBiometrics(updatedBiometrics);
-      if (response) {
-        setSuccess(`${category} biometrics updated successfully!`);
-      } else {
-        setLocalError('Some biometrics failed to update. Please try again.');
-      }
+      await createBiometrics(updatedBiometrics)
     } catch (err) {
-      setLocalError('An error occurred while updating biometrics. Please try again.');
       console.error('Biometrics update error:', err);
     }
   };
@@ -71,13 +67,15 @@ const BiometricsSection = ({ biometrics }) => {
     return acc;
   }, {});
 
+  if (userLoading) {
+    return <Spinner animation="border" className="d-block mx-auto mt-5" />;
+  }
+
   return (
     <Card className="primary-card mt-4">
       <Card.Body>
         <h2 className="text-start mb-4">Biometrics</h2>
-        {loading && <Spinner animation="border" className="d-block mx-auto mb-4" />}
-        {(contextError || localError) && <Alert variant="danger" className="mb-4">{contextError || localError}</Alert>}
-        {success && <Alert variant="success" className="mb-4">{success}</Alert>}
+        {localError && <Alert variant="danger" className="mb-4">{localError}</Alert>}
         <Accordion>
           {Object.entries(groupedBiometrics).map(([category, items], index) => (
             <Accordion.Item eventKey={index.toString()} key={category}>
@@ -107,8 +105,8 @@ const BiometricsSection = ({ biometrics }) => {
                       </Form.Group>
                     ))}
                   </div>
-                  <Button className="save-btn mt-3" variant="dark" type="submit" disabled={loading}>
-                    {loading ? "Saving..." : `Save Changes`}
+                  <Button className="save-btn mt-3" variant="dark" type="submit" disabled={userLoading}>
+                    {userLoading ? "Saving..." : `Save Changes`}
                   </Button>
                 </Form>
               </Accordion.Body>

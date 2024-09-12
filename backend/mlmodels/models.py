@@ -46,8 +46,8 @@ class Prediction(models.Model):
     input_data = models.JSONField(null=True, blank=True)
     image_input = models.OneToOneField('ImageInput', on_delete=models.SET_NULL, null=True, blank=True)
 
-    prediction_result = models.TextField()  
-    error_message = models.TextField(blank=True, null=True)
+    prediction = models.TextField()
+    probability = models.FloatField(null=True, blank=True, default=0.0)  
 
     class Meta:
         indexes = [

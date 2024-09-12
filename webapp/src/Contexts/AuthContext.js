@@ -6,20 +6,20 @@ const AuthContext = createContext();
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const AuthProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
   const [success, setSuccess] = useState('');
   const [user, setUser] = useState(null);
 
   const resetState = useCallback(() => {
-    setLoading(false);
-    setError('');
+    setAuthLoading(false);
+    setAuthError('');
     setSuccess('');
   }, []);
 
   const handleApiCall = useCallback(async (apiCall, successMessage) => {
     resetState();
-    setLoading(true);
+    setAuthLoading(true);
 
     try {
       const response = await apiCall();
@@ -28,10 +28,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', response.data.token);
       return response.data;
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred.');
+      setAuthError(err.response?.data?.error || 'An error occurred.');
       return null;
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
     }
   }, [resetState]);
 
@@ -46,8 +46,9 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    loading,
-    error,
+    authLoading,
+    authError,
+    setAuthError,
     success,
     signup,
     login,

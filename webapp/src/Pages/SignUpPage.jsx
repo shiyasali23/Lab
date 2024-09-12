@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
+import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import { useAuth } from '../Contexts/AuthContext';
+import SpinnerComponent from '../Components/SpinnerComponent';
 
 const SignUpPage = () => {
   const token = localStorage.getItem("token");
@@ -92,7 +93,7 @@ const SignUpPage = () => {
           <Card.Body>
             <h2 className="text-center mb-4">Sign Up</h2>
             <Form onSubmit={handleSubmit}>
-              {loading && <div className="d-flex justify-content-center mb-3"><Spinner animation="border" /></div>}
+              {loading && <div className="d-flex justify-content-center mb-3"><SpinnerComponent animation="border" /></div>}
               {(error || errors.length > 0) && (
                 <Alert variant="danger">
                   <ul className="mb-0">

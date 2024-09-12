@@ -26,7 +26,7 @@ const Header = () => {
         <div className="row align-items-center">
           <div className="col-4">
             <Link to="/home" className="text-dark text-center text-decoration-none">
-              <h1 className="h4 mb-0 text-dark ms-4">Lab</h1>
+              <h1 className="h4 mb-0 text-dark ms-4">Bio labs</h1>
             </Link>
           </div>
           <div className="col-8">

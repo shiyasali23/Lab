@@ -1,9 +1,12 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import LineGraph from "./LineGraph";
+import { useUser } from "../Contexts/UserContext"; // Make sure useUser is imported
+import SpinnerComponent from "./SpinnerComponent";
 
 const HomeMiddle = ({ biometrics }) => {
-  // Function to categorize biochemicals
+  const { userLoading } = useUser();
+
   const categorizeBiometrics = () => {
     const hypo = [];
     const hyper = [];
@@ -49,15 +52,19 @@ const HomeMiddle = ({ biometrics }) => {
   return (
     <Card className="primary-card">
       <Card.Body className="d-flex flex-column gap-2">
-        {biometrics.length === 0 ? (
-          <span className="badge m-auto rounded-pill bg-secondary">
-            Biometrics data not available
-          </span>
+        {userLoading ? (
+          <SpinnerComponent/>
         ) : (
-          <>
-            {hyper.length > 0 && renderBiochemicals(hyper, "Hyper Biochemicals")}
-            {hypo.length > 0 && renderBiochemicals(hypo, "Hypo Biochemicals")}
-          </>
+          biometrics.length === 0 ? (
+            <span className="badge m-auto rounded-pill bg-secondary">
+              Biometrics data not available
+            </span>
+          ) : (
+            <>
+              {hyper.length > 0 && renderBiochemicals(hyper, "Hyper Biochemicals")}
+              {hypo.length > 0 && renderBiochemicals(hypo, "Hypo Biochemicals")}
+            </>
+          )
         )}
       </Card.Body>
     </Card>
