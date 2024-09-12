@@ -42,7 +42,7 @@ class DiabetesInput(BaseModel):
     vldl: float
     bmi: float
 
-@app.post("/diabetes/", status_code=200)
+@app.post(f"/predict/{models['diabetes']['metadata']['id']}", status_code=200)
 def predict_diabetes(data: DiabetesInput):
     try:
         # Prepare the input data as a 2D array
@@ -66,7 +66,7 @@ def predict_diabetes(data: DiabetesInput):
 
         # Return the prediction and probabilities
         return {
-            "prediction": 'Positive' if prediction[0] == 1 else 'Negative',
+            "prediction": prediction[0],
             'probabilities': probabilities[0].tolist()  # Convert to list for JSON serialization
         }
 
@@ -89,7 +89,7 @@ class LiverConditionInput(BaseModel):
     gamma_glutamyl_transferase: float
     total_protein: float
 
-@app.post("/liver_condition/", status_code=200)
+@app.post(f"/predict/{models['liver_condition']['metadata']['id']}", status_code=200)
 def predict_liver_condition(data: LiverConditionInput):
     try:
         # Prepare the input data as a 2D array
@@ -114,11 +114,7 @@ def predict_liver_condition(data: LiverConditionInput):
 
         # Return the prediction and probabilities
         return {
-            "prediction": 'Healthy' if prediction[0] == 0 
-                        else 'Hepatitis' if prediction[0] == 1 
-                        else 'Fibrosis' if prediction[0] == 2 
-                        else 'Cirrhosis' if prediction[0] == 3 
-                        else 'Error',
+            "prediction": prediction[0],
             'probabilities': probabilities[0].tolist()  # Convert to list for JSON serialization
         }
 
