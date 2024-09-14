@@ -16,7 +16,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
       reader.onloadend = () => {
         setImageSrc(reader.result);
       };
-      reader.readAsDataURL(file); // Read file as data URL
+      reader.readAsDataURL(file); 
     }
   };
 
@@ -25,65 +25,59 @@ const FoodRecomendationComponent = ({ foodScores }) => {
       <Row style={{ overflow: "auto" }} className="flex-grow-1">
         {/* Left Side (70% width) */}
         <Col md={8} className=" d-flex flex-column">
-          <Row className="flex-grow-1">
+          <Row className="d-flex flex-column justify-content-between h-100 w-100 align-items-center">
             {/* Left Top (split into two sections) */}
-            <form
-  md={6}
-  className="border p-0 col d-flex flex-column align-items-center justify-content-center"
->
-  {imageSrc ? (
-    <div
-      style={{ 
-        width: "100%", 
-        height: "200px", /* Set a fixed height */
-        overflow: "hidden",
-        position: "relative" /* Ensure that the image is positioned properly */
-      }}
-      className="card p-0"
-    >
-      <img
-        src={imageSrc}
-        style={{ 
-          width: "100%", 
-          height: "100%", 
-          objectFit: "cover",
-          position: "absolute", /* Ensure the image covers the div completely */
-          top: 0,
-          left: 0
-        }}
-        alt="Uploaded"
-      />
-    </div>
-  ) : (
-    <input
-      type="file"
-      id="imageUpload"
-      name="image"
-      accept="image/*"
-      className="form-control"
-      onChange={handleFileChange}
-    />
-  )}
-  {imageSrc && (
-    <button type="submit" className="btn btn-dark mt-3">
-      Analyse
-    </button>
-  )}
-</form>
 
+            <form
+              md={6}
+              className="w-50 p-0 h-100 border-none card d-flex align-items-center justify-content-between"
+            >
+              {imageSrc ? (
+                <div
+                  style={{
+                    width: "100%",
+                    height: "220px",
+                    margin: "0px",
+                  }}
+                  className="card"
+                >
+                  <img
+                    src={imageSrc}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      padding: "0px",
+                      margin: "0",
+                      objectFit: "fill",
+                    }}
+                    alt="Uploaded"
+                  />
+                  <button className="btn w-25 m-auto btn-primary mt-2">
+                    Analyze
+                  </button>
+                </div>
+              ) : (
+                <input
+                  type="file"
+                  id="imageUpload"
+                  name="image"
+                  accept="image/*"
+                  className="form-control m-auto w-75"
+                  onChange={handleFileChange}
+                />
+              )}
+            </form>
 
             <Col
               md={6}
-              className=" d-flex align-items-center justify-content-center"
+              className="w-50 h-100  d-flex align-items-center justify-content-center"
             >
               Left Top Right
             </Col>
           </Row>
-          <Row className="flex-grow-1">
+          <Row className="w-100 h-100 d-flex align-items-center justify-content-center">
             {/* Left Bottom */}
-            <Col className=" d-flex align-items-center justify-content-center">
-              Left Bottom
-            </Col>
+            Left Bottom
           </Row>
         </Col>
 

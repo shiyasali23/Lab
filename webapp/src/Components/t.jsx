@@ -1,100 +1,98 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useUser } from '../Contexts/UserContext';
+import React, { useState } from "react";
+import { Row, Col } from "react-bootstrap";
+import BarGraph from "./BarGraph";
+import image from "../assets/food.jpg";
 
-const Header = () => {
-  const { logout, setUser } = useUser();
+const FoodRecomendationComponent = ({ foodScores }) => {
+  const sortedScores = Array.isArray(foodScores)
+    ? [...foodScores].sort((a, b) => b.score - a.score)
+    : [];
 
-  const token = localStorage.getItem('token');
-  const isLoggedIn = !!token;
+  const [imageSrc, setImageSrc] = useState(null);
 
-  const disabledStyle = {
-    pointerEvents: 'none',
-    display: 'none',
-    cursor: 'not-allowed',
-  };
-
-  const handleLogout = async () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    await logout();
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageSrc(reader.result);
+      };
+      reader.readAsDataURL(file); // Read file as data URL
+    }
   };
 
   return (
-    <header className="">
-      <div className="container">
-        <div className="row align-items-center">
-          <div className="col-4">
-            <Link to="/home" className="text-dark text-center text-decoration-none">
-              <h1 className="h4 mb-0 text-dark ms-4">Bio labs</h1>
-            </Link>
-          </div>
-          <div className="col-8">
-            <nav className="d-flex justify-content-end">
-            <Link
-                to="/camera"
-                className="text-dark text-center text-decoration-none"
-                style={!isLoggedIn ? disabledStyle : {}}
-                aria-disabled={!isLoggedIn}
-              >
-                <i className="fa-solid fa-camera"></i>
-                <span>Scan</span>
-              </Link>
-              <Link
-                to="/profile"
-                className="text-dark text-center text-decoration-none"
-                style={!isLoggedIn ? disabledStyle : {}}
-                aria-disabled={!isLoggedIn}
-              >
-                <i className="fa-solid fa-user d-block mb-1"></i>
-                <span>Profile</span>
-              </Link>
-             
-        
-              {isLoggedIn && (
-                <div
-                  className="text-dark text-center text-decoration-none"
-                  onClick={handleLogout} 
-                  style={{ cursor: 'pointer' }}
-                >
-                  <i className="fa-solid fa-right-from-bracket d-block mb-1"></i>
-                  <span>Logout</span>
-                </div>
-              )}
-            </nav>
+    <div className="w-100 h-100 border  d-flex align-items-center justify-content-center">
+      <div
+        style={{
+          width: "70%",
+          height: "100%",
+          overflow: "auto",
+        }}
+        className="h-100 border  d-flex flex-column align-items-center justify-content-center"
+      >
+        <div className="w-100 h-100 border  d-flex align-items-center justify-content-center">
+          <form className="w-100 h-100 border  d-flex flex-column align-items-center justify-content-center">
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                padding: "1px",
+                margin: "0px",
+              }}
+              className="card"
+            >
+              <img
+              src={image}
+                style={{
+                  width: "380px",
+                  height: "220px",
+                  padding: "0px",
+                  margin: "auto",
+                  objectFit: "fill",
+                }}
+                alt="Uploaded"
+                className="border"
+              />
+            </div>
+            <button className="btn btn-primary">Analyse</button>
+          </form>
+          <div className="w-100 h-100 border  d-flex align-items-center justify-content-center">
+            left-top-right
           </div>
         </div>
+        <div className="w-100 h-100 border  d-flex align-items-center justify-content-center">
+          left-bottom
+        </div>
       </div>
-    </header>
+
+      <div
+        style={{
+          width: "30%",
+          maxHeight: "76.5vh", 
+          overflow: "auto",
+        }}
+        className="h-100 border  d-flex align-items-center justify-content-center"
+      >
+        {foodScores ? (
+            <div
+              style={{
+                width: "100%",
+                overflow: "auto",
+              }}
+            >
+              <BarGraph sortedScores={sortedScores} />
+            </div>
+          ) : (
+            <div className="d-flex align-items-center justify-content-center flex-grow-1">
+              <span className="badge rounded-pill bg-secondary">
+                User Data not available
+              </span>
+            </div>
+          )}
+      </div>
+    </div>
   );
 };
 
-const styles = {
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px 20px',
-    position: 'relative',
-    height: '15vh',
-  },
-  logo: {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    textDecoration: 'none',
-  },
-  rightComponents: {
-    marginLeft: '1000px',
-    display: 'flex',
-    gap: '35px',
-  },
-  component: {
-    marginLeft: '15px',
-  },
-};
-
-
-export default Header;
-
-
+export default FoodRecomendationComponent;

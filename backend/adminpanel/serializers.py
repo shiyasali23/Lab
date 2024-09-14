@@ -13,16 +13,15 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)  
-    category_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), source='category', write_only=True
-    )  
-
-    category_name = serializers.CharField(source='category.name', read_only=True)
-
+    category= serializers.SerializerMethodField()  
+    
     class Meta:
         model = SubCategory
-        fields = ['name' 'category_name']
+        fields = ['name' 'category']
+        
+    def get_category(self, obj):
+        return obj.category.name
+        
 
 
 class ConditionSerializer(serializers.ModelSerializer):
@@ -59,14 +58,15 @@ class BiochemicalConditionSerializer(serializers.ModelSerializer):
 
 
 class FoodSerializer(serializers.ModelSerializer):
-    subcategory = SubCategorySerializer(read_only=True)
-    subcategory_id = serializers.PrimaryKeyRelatedField(
-        queryset=SubCategory.objects.all(), source='subcategory', write_only=True
-    )
+    subcategory = serializers.SerializerMethodField(read_only=True)
+
 
     class Meta:
         model = Food
         fields = '__all__'
+
+    def get_subcategory(self, obj):
+        return obj.subcategory.name
 
 class FoodImageSerializer(serializers.ModelSerializer):
     food = FoodSerializer(read_only=True)
