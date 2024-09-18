@@ -220,7 +220,7 @@ class FoodScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoodScore
         fields = [
-            'id', 'category' ,'food_name', 'image' ,'score'
+            'id', 'category' ,'food_name', 'image' ,'score', 
         ]
 
     def get_food_name(self, obj):
@@ -233,5 +233,7 @@ class FoodScoreSerializer(serializers.ModelSerializer):
         if obj.food and hasattr(obj.food, 'image') and obj.food.image:
             return obj.food.image.image.url  
         return None
+    
+
 
 

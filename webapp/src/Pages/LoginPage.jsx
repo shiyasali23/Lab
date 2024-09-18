@@ -77,7 +77,7 @@ const LoginPage = () => {
               >
                 Forgot Password?
               </Link>
-              <Link to="/" className="text-dark text-decoration-none">
+              <Link to="/signup" className="text-dark text-decoration-none">
                 Create Account
               </Link>
             </div>

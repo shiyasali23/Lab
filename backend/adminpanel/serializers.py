@@ -59,11 +59,19 @@ class BiochemicalConditionSerializer(serializers.ModelSerializer):
 
 class FoodSerializer(serializers.ModelSerializer):
     subcategory = serializers.SerializerMethodField(read_only=True)
-
-
+    nutrients = serializers.SerializerMethodField(read_only=True) 
+    
+    
     class Meta:
         model = Food
-        fields = '__all__'
+        fields = ['name', 'subcategory', 'nutrients']
+        
+    def get_subcategory(self, obj):
+        return obj.subcategory.name if obj.subcategory else None  
+    
+    def get_nutrients(self, obj):
+        food_nutrients = obj.nutrients.all()
+        return [{'name': food_nutrient.nutrient.name,'category': food_nutrient.nutrient.category.name,'value': food_nutrient.value} for food_nutrient in food_nutrients]
 
     def get_subcategory(self, obj):
         return obj.subcategory.name

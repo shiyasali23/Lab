@@ -7,10 +7,12 @@ import AnalyticsComponent from "../Components/AnalyticsComponent";
 import ModelsComponent from "../Components/ModelsComponent";
 import FoodRecomendationComponent from "../Components/FoodRecomendationComponent";
 import SpinnerComponent from "../Components/SpinnerComponent";
+import { useNutrient } from "../Contexts/NutrientContext";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const { getUser, user, userLoading } = useUser();
+  const { getNutrients } = useNutrient();
 
   const [userData, setUserData] = useState(null);
   const [healthScore, setHealthScore] = useState(null);
@@ -18,7 +20,7 @@ const MainPage = () => {
   const [latestBiometrics, setLatestBiometrics] = useState(null);
   const [biometrics, setBiometrics] = useState([]);
   const [foodScores, setFoodScores] = useState(null);
-  const [activeTab, setActiveTab] = useState("profile"); // State to track active tab
+  const [activeTab, setActiveTab] = useState("profile"); 
 
   const token = localStorage.getItem("token");
 
@@ -27,6 +29,7 @@ const MainPage = () => {
       navigate("/login");
     } else {
       getUser();
+      getNutrients();
     }
   }, [navigate, token, getUser]);
 
