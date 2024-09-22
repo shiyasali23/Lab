@@ -8,7 +8,6 @@ export const NutrientProvider = ({ children }) => {
   const [nutrientError, setNutrientError] = useState('');
   const [success, setSuccess] = useState('');
   const [nutrient, setNutrient] = useState(null);
-console.log(nutrient);
 
   const resetState = useCallback(() => {
     setNutrientLoading(false);
@@ -22,7 +21,6 @@ console.log(nutrient);
 
     try {
       const response = await apiCall();
-      console.log('hic');
       
       setSuccess(successMessage); 
       setNutrient(response.data); 

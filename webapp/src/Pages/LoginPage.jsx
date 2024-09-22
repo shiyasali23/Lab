@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
+import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
 import { useAuth } from "../Contexts/AuthContext";
@@ -18,7 +18,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (token || success) {
-      navigate('/home');
+      navigate('/');
     }
   }, [token, success, navigate]);
 

@@ -7,17 +7,18 @@ const AlertComponent = () => {
   const { authError, setAuthError } = useAuth();
   const { modelError, setModelError } = useModel();
   const { userError, setUserError } = useUser();
+  const { detectionError, setDetectionError } = useUser();
 
   // Handler to reset all errors
   const handleClose = () => {
     setAuthError('');
     setModelError('');
     setUserError('');
+    setDetectionError('');
   };
 
   // Determine which error to display
-  const displayError = authError || modelError || userError;
-console.log(modelError);
+  const displayError = authError || modelError || userError || detectionError;
 
   return (
     displayError ? (

@@ -192,10 +192,10 @@ const BarGraph = ({ sortedScores }) => {
   }, [sortedScores]);
 
   return (
-    <div style={{ width: "100%", height: `${sortedScores.length * 20}px`, overflow: "auto" }}>
+    <div style={{ width: "100%", height: `${sortedScores.length * 30}px`, overflow: "auto" }}>
       <canvas
         ref={chartRef}
-        style={{ width: "100%", height: `${sortedScores.length * 20}px`,  overflow: "auto" }}
+        style={{ width: "100%", height: `${sortedScores.length * 30}px`,  overflow: "auto" }}
       />
     </div>
   );

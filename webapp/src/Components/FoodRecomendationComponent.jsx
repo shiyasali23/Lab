@@ -4,9 +4,14 @@ import BarGraph from "./BarGraph";
 import { useNutrient } from "../Contexts/NutrientContext";
 import SpinnerComponent from "./SpinnerComponent";
 import NutrientsGraph from "./NutrientsGraph";
+import { useDetection } from "../Contexts/DetectionContext";
 
 const FoodRecomendationComponent = ({ foodScores }) => {
   const { nutrient, nutrientLoading } = useNutrient();
+  const { getDetections, detectionLoading } = useDetection();
+  const [detectedFoods, setDetectedFoods] = useState(null);
+  
+  
 
   // Memoize the sorted scores so sorting only occurs when foodScores changes
   const sortedScores = useMemo(() => {
@@ -16,9 +21,9 @@ const FoodRecomendationComponent = ({ foodScores }) => {
   }, [foodScores]);
 
   const [imageSrc, setImageSrc] = useState(null);
-  const [filteredNutrient, setFilteredNutrient] = useState(null); // New state to store the filtered nutrient data
+  const [filteredNutrient, setFilteredNutrient] = useState(null);
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -26,8 +31,45 @@ const FoodRecomendationComponent = ({ foodScores }) => {
         setImageSrc(reader.result);
       };
       reader.readAsDataURL(file);
+  
+      const { data } = await getDetections(file); // Get detection data
+      console.log(data);
+  
+      if (data && Array.isArray(data.items)) {
+        // Check if data.items is an array
+        const detectedFoodsData = data.items
+          .map((item) => {
+            // Find the food in foodScores that matches the detected item name
+            const foodScore = sortedScores.find(
+              (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
+            );
+            return foodScore ? { ...foodScore } : null; // Copy the full foodScore object
+          })
+          .filter(Boolean); // Filter out null values
+  
+        setDetectedFoods(detectedFoodsData);
+  
+        // Step 1: Ensure nutrient data is available before proceeding
+        if (nutrient && nutrient.length > 0 && data.items.length > 0) {
+          const firstDetectedFood = data.items[0].name.toLowerCase();
+  
+          // Step 2: Find the nutrient data for the detected food in the `nutrient` array
+          const matchedNutrient = nutrient.find(
+            (item) => item.name.toLowerCase() === firstDetectedFood
+          );
+  
+          // Step 3: Set the `filteredNutrient` state to the matched nutrient's array if found
+          if (matchedNutrient) {
+            setFilteredNutrient(matchedNutrient.nutrients); // Set the array of nutrients
+          } else {
+            setFilteredNutrient(null); // If no match found, set it to null
+          }
+        }
+      }
     }
   };
+  
+  
 
   const suggestionArray = nutrient ? nutrient.map((item) => item.name) : null;
   const [searchTerm, setSearchTerm] = useState("");
@@ -73,6 +115,8 @@ const FoodRecomendationComponent = ({ foodScores }) => {
       setFilteredNutrient(result.length > 0 ? result : null);
     }
   };
+console.log(nutrient);
+
 
   return (
     <div className="d-flex flex-column h-100">
@@ -86,7 +130,9 @@ const FoodRecomendationComponent = ({ foodScores }) => {
               style={{ border: "0px" }}
               className="w-50 p-0 h-100 card d-flex align-items-center justify-content-between"
             >
-              {imageSrc ? (
+              {detectionLoading ? (
+                <SpinnerComponent />
+              ) : imageSrc ? (
                 <div
                   style={{
                     width: "100%",
@@ -106,9 +152,6 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                     }}
                     alt="Uploaded"
                   />
-                  <button className="btn w-25 m-auto btn-primary mt-2">
-                    Analyze
-                  </button>
                 </div>
               ) : (
                 <input
@@ -126,17 +169,29 @@ const FoodRecomendationComponent = ({ foodScores }) => {
               md={6}
               className=" w-50 h-100 d-flex align-items-center justify-content-center"
             >
-              Left Top Right
+              {detectionLoading ? (
+                <SpinnerComponent />
+              ) : detectedFoods ? (
+                <div className="h-100 p-0 overflow-auto w-100">
+                  <BarGraph sortedScores={detectedFoods} />
+                </div>
+              ) : (
+                <div>Upload image</div>
+              )}
             </Col>
           </Row>
           <Row className="w-100 h-100 d-flex align-items-center justify-content-center">
-            
             {nutrientLoading ? (
               <SpinnerComponent />
             ) : nutrient ? (
               <div className="overflow-auto w-100 h-100 p-0 d-flex flex-column justify-content-center align-items-center">
                 <div
-                  style={{ width: "100%", height: "12%", position: "relative", left:'200px' }}
+                  style={{
+                    width: "100%",
+                    height: "12%",
+                    position: "relative",
+                    left: "200px",
+                  }}
                   className=" w-100 d-flex justify-content-center align-items-center"
                 >
                   <form
@@ -194,7 +249,9 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                 <div className=" w-100 h-100 d-flex justify-content-center align-items-center">
                   {filteredNutrient ? (
                     <NutrientsGraph nutrientData={filteredNutrient} />
-                  ):(<></>)}
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
             ) : (
