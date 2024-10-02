@@ -5,9 +5,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
+import uuid
+
 
 class BaseModel(models.Model):
-    id = models.BigAutoField(primary_key=True, unique=True)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True,editable=False)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:

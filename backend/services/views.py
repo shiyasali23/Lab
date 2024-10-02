@@ -37,62 +37,17 @@ def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
 
 
 # ------------------------------------------------------------------------------
-
-
 def fetch_user_data(user):
     try:
+        # Initialize variables at the start to avoid UnboundLocalError
+        biometrics_data_list = []
+        latest_biometrics_data = []
+        health_scores_data = []
+        conditions = set()
+        food_scores = []
+
+        # Fetch biometrics entries for the user
         biometrics_entries = BiometricsEntry.objects.filter(user=user)
-        
-        if not biometrics_entries.exists():
-            return None, 'No biometrics entries found for the user.'
-        
-        latest_entry = biometrics_entries.latest('created')
-        biometrics = Biometrics.objects.filter(biometricsentry__user=user)
-        food_scores = FoodScore.objects.filter(biometricsentry=latest_entry)
-        
-        
-        
-        biometrics_data_dict = {}
-        
-        for biometric in biometrics:
-            bio_name = biometric.biochemical.name
-            
-            if bio_name not in biometrics_data_dict:
-                biometrics_data_dict[bio_name] = {
-                    'values': [],
-                    'healthy_min': (
-                        biometric.biochemical.female_min if user.gender == 'female'
-                        else biometric.biochemical.male_min
-                    ),
-                    'healthy_max': (
-                        biometric.biochemical.female_max if user.gender == 'female'
-                        else biometric.biochemical.male_max
-                    ),
-                    'category': biometric.biochemical.category.name,
-                }
-            
-            biometrics_data_dict[bio_name]['values'].append({
-                'value': biometric.value,
-                'scaled_value': biometric.scaled_value,
-                'expired_date': biometric.expired_date,
-                'created': biometric.biometricsentry.created
-            })
-
-        # Convert the dictionary to the desired list format
-        biometrics_data_list = [{name: data} for name, data in biometrics_data_dict.items()]
-        
-      
-        
-        # Process health scores data
-        health_scores_data = [
-            {
-                'id': entry.id,
-                'health_score': entry.health_score,
-                'created': entry.created,
-            }
-            for entry in biometrics_entries
-        ]
-
         biochemicals = Biochemical.objects.prefetch_related(
             Prefetch(
                 'biometrics',
@@ -101,13 +56,61 @@ def fetch_user_data(user):
             )
         )
 
-        
-        latest_biometrics_data = []
-        conditions = set()
+        if biometrics_entries.exists():
+            latest_entry = biometrics_entries.latest('created')
+            biometrics = Biometrics.objects.filter(biometricsentry__user=user)
+            food_scores = FoodScore.objects.filter(biometricsentry=latest_entry)
+
+            biometrics_data_dict = {}
+
+            # Process each biometric data for the user
+            for biometric in biometrics:
+                bio_name = biometric.biochemical.name
+
+                if bio_name not in biometrics_data_dict:
+                    biometrics_data_dict[bio_name] = {
+                        'values': [],
+                        'healthy_min': (
+                            biometric.biochemical.female_min if user.gender == 'female'
+                            else biometric.biochemical.male_min
+                        ),
+                        'healthy_max': (
+                            biometric.biochemical.female_max if user.gender == 'female'
+                            else biometric.biochemical.male_max
+                        ),
+                        'category': biometric.biochemical.category.name,
+                    }
+
+                biometrics_data_dict[bio_name]['values'].append({
+                    'value': biometric.value,
+                    'scaled_value': biometric.scaled_value,
+                    'expired_date': biometric.expired_date,
+                    'created': biometric.biometricsentry.created
+                })
+
+            # Convert the dictionary to the desired list format
+            biometrics_data_list = [{name: data} for name, data in biometrics_data_dict.items()]
+
+            # Process health scores data
+            health_scores_data = [
+                {
+                    'id': entry.id,
+                    'health_score': entry.health_score,
+                    'created': entry.created,
+                }
+                for entry in biometrics_entries
+            ]
+
+        else:
+            # No biometrics entries, provide all biochemicals with placeholder values
+            biometrics_data_list = []
+            food_scores = []
+
+        # Process all biochemicals, filling in with either latest values or None
         time_now = timezone.now()
         for biochemical in biochemicals:
             if biochemical.user_biometrics:
-                latest_biometric = biochemical.user_biometrics[-1]  
+                latest_biometric = biochemical.user_biometrics[-1]
                 latest_biometrics_data.append({
                     'biochemical': {
                         'name': biochemical.name,
@@ -118,7 +121,7 @@ def fetch_user_data(user):
                     'scaled_value': latest_biometric.scaled_value,
                     'expired_date': latest_biometric.expired_date,
                 })
-                
+
                 if latest_biometric.expired_date > time_now:
                     if latest_biometric.scaled_value < -1:
                         conditions.update(
@@ -145,20 +148,19 @@ def fetch_user_data(user):
                     'scaled_value': None,
                     'expired_date': None,
                 })
-        
+
         return {
             'user': UserSerializer(user).data,
             'biometrics': biometrics_data_list,
-            'latest_biometrics': latest_biometrics_data,
             'food_scores': FoodScoreSerializer(food_scores, many=True).data,
             'health_score': health_scores_data,
-            'conditions': list(conditions)
+            'conditions': list(conditions),
+            'latest_biometrics': latest_biometrics_data,
         }, None
 
     except Exception as exc:
         logger.exception(f"Error fetching user biometrics entry details: {exc}")
         return None, 'Error fetching user biometrics entry details.'
-
 
 # ------------------------------------------------------------------------------
 

@@ -1,7 +1,9 @@
 from django.db import models
+import uuid
+
 
 class BaseModel(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True,editable=False,)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:

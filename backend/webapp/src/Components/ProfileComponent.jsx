@@ -20,10 +20,10 @@ const ProfileComponent = ({
     : { category: "N/A", color: "black" };
 
   const hyperBiochemicals =
-    latestBiometrics?.filter((bio) => bio && bio.scaled_value < -1) || [];
+    latestBiometrics?.filter((bio) => bio && bio.scaled_value > 1) || [];
 
   const hypoBiochemicals =
-    latestBiometrics?.filter((bio) => bio && bio.scaled_value > 1) || [];
+    latestBiometrics?.filter((bio) => bio && bio.scaled_value < -1) || [];
 
   const renderBiochemicalList = (biochemicals) => {
     return biochemicals.map((bio) => {

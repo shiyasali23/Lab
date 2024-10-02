@@ -31,15 +31,11 @@ class ConditionSerializer(serializers.ModelSerializer):
 
 
 class BiochemicalSerializer(serializers.ModelSerializer):
-    category_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), source='category', write_only=True
-    )  
-
     category_name = serializers.CharField(source='category.name', read_only=True)
 
     class Meta:
         model = Biochemical
-        fields = ['name', 'id', 'category_name','category_id']  
+        fields = ['name', 'category_name', 'id', 'female_min', 'female_max', 'male_min', 'male_max']  
 
 
 class BiochemicalConditionSerializer(serializers.ModelSerializer):
