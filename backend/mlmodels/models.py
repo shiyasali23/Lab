@@ -40,7 +40,7 @@ class MachineLearningModel(models.Model):
 
 
 class Prediction(models.Model):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True,editable=False,)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True,editable=False)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     model = models.ForeignKey(MachineLearningModel, on_delete=models.CASCADE, related_name="predictions")
     user = models.ForeignKey('services.User', on_delete=models.CASCADE, related_name="predictions")
@@ -62,7 +62,7 @@ class Prediction(models.Model):
 
 
 class ImageInput(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True,editable=False)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     image = models.ImageField(upload_to='predictions/') 
     

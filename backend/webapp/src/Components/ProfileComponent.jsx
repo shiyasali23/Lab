@@ -4,7 +4,7 @@ import HealthScoreGraph from "./HealthScoreGraph";
 const ProfileComponent = ({
   userData,
   latestBiometrics,
-  conditions = [], // Default to an empty array
+  conditions = [],
   healthScore,
 }) => {
   const bmi = userData.bmi || null;
@@ -107,10 +107,11 @@ const ProfileComponent = ({
         </div>
         <div
           style={{ overflow: "auto" }}
-          className=" w-100 card p-1 h-50  d-flex align-items-center justify-content-center"
+          className=" w-100 card p-1 h-100  d-flex align-items-center justify-content-center"
         >
-          {conditions.length > 0 ? (
-            <div style={{ overflow: "auto" }}>
+          {Array.isArray(conditions) && conditions.length > 0 ? (
+            <div className="p-2" style={{ overflow: "auto" }}>
+              <h6 className="card-header">You may have</h6>
               {conditions.map((condition, index) => (
                 <span
                   key={index}

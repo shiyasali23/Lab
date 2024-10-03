@@ -58,15 +58,15 @@ const Header = () => {
     </div>
   );
 };
-
 const styles = {
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '10px 20px',
-    position: 'relative',
+    position: 'relative',  
     height: '12vh',
+    zIndex: 1,  
   },
   logo: {
     position: 'absolute',
@@ -83,5 +83,6 @@ const styles = {
     textAlign: 'center',
   },
 };
+
 
 export default Header;

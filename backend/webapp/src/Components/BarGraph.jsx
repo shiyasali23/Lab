@@ -1,17 +1,21 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, } from "react";
 import Chart from "chart.js/auto";
 
-const BarGraph = ({ sortedScores }) => {
+const BarGraph = ({ scoreData, passedHeight }) => {
+
+  
+  const [chartData, setChartData] = useState(null);
   const chartRef = useRef(null); // Reference to the canvas element
   const chartInstanceRef = useRef(null); // Reference to the Chart.js instance
+
 
   useEffect(() => {
     if (!chartRef.current) return;
 
 
     // Extract labels and data
-    const labels = sortedScores.map((food) => food.food_name);
-    const data = sortedScores.map((food) => food.score);
+    const labels = scoreData.map((food) => food.food_name);
+    const data = scoreData.map((food) => food.score);
 
     const ctx = chartRef.current.getContext("2d"); // Get the context for the canvas
 
@@ -189,13 +193,13 @@ const BarGraph = ({ sortedScores }) => {
         chartInstanceRef.current.destroy();
       }
     };
-  }, [sortedScores]);
+  }, [scoreData]);
 
   return (
-    <div style={{ width: "100%", height: `${sortedScores.length * 30}px`, overflow: "auto" }}>
+    <div style={{ width: "100%", height: `${scoreData.length * 35}px` }}>
       <canvas
         ref={chartRef}
-        style={{ width: "100%", height: `${sortedScores.length * 30}px`,  overflow: "auto" }}
+        style={{ width: "100%" }}
       />
     </div>
   );

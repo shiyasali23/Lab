@@ -10,6 +10,10 @@ import SpinnerComponent from "../Components/SpinnerComponent";
 import { useNutrient } from "../Contexts/NutrientContext";
 
 const MainPage = () => {
+
+  
+
+
   const navigate = useNavigate();
   const { getUser, user, userLoading } = useUser();
   const { getNutrients } = useNutrient();

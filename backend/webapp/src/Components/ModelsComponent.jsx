@@ -112,7 +112,11 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
                           : latestBiometrics.find(
                               (b) => b.biochemical.name === feature
                             )?.value || "");
-                      const isMissing = isPredictClicked && value === "";
+                      
+                      // Fix: Ensure value is never null or undefined
+                      const displayValue = value ?? "";
+
+                      const isMissing = isPredictClicked && displayValue === "";
 
                       return (
                         <Form.Group
@@ -129,7 +133,7 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
                           </Form.Label>
                           <Form.Control
                             type="text"
-                            value={value}
+                            value={displayValue}  // Fix: Ensure empty string is used instead of null/undefined
                             onChange={(e) =>
                               handleChange(feature, e.target.value, model.id)
                             }
@@ -232,7 +236,5 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
     </div>
   );
 };
-
-
 
 export default ModelsComponent;
