@@ -38,7 +38,6 @@ class DetectionResponse(BaseModel):
         bbox: list
 
     items: list[Item]
-    message: str = None
 
 @app.post("/detect/", response_model=DetectionResponse)
 async def predict(file: UploadFile = File(...)):
@@ -78,7 +77,7 @@ async def predict(file: UploadFile = File(...)):
             return DetectionResponse(items=response_items)
         else:
             logger.info("No items detected.")
-            return DetectionResponse(items=[], message="No objects detected.")
+            return DetectionResponse(items=[])
 
     except Exception as e:
         logger.error("Error during detection: %s", e)

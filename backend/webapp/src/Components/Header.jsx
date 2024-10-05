@@ -31,7 +31,17 @@ const Header = () => {
 
       {/* Right-aligned components */}
       <div style={styles.rightComponents}>
-        {/* Component 1: Profile */}
+        {isLoggedIn && (
+          <Link
+            to="/consult"
+            className="text-dark text-center text-decoration-none"
+            style={styles.component}
+          >
+            <i className="fa-solid fa-stethoscope d-block mb-1"></i>
+            <h6>Consult</h6>
+          </Link>
+        )}
+        
         {isLoggedIn && (
           <Link
             to="/profile"
@@ -76,8 +86,8 @@ const styles = {
   },
   rightComponents: {
     display: 'flex',
-    gap: '35px',
-    marginLeft: '1000px',
+    gap: '40px',
+    marginLeft: '900px',
   },
   component: {
     textAlign: 'center',

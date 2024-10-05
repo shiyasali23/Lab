@@ -7,13 +7,12 @@ import BarGraph from "./BarGraph";
 
 const FoodRecomendationComponent = ({ foodScores }) => {
   const { nutrient, nutrientLoading } = useNutrient();
-  const { getDetections, detectionLoading } = useDetection();
+  const { getDetections, detectionsLoading } = useDetection();
   const [imageSrc, setImageSrc] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
-  const [nutrientData, setnutrientData] = useState(null);
-  const suggestionArray = nutrient ? nutrient.map((item) => item.name) : null;
+  const [nutrientData, setNutrientData] = useState(null);
+  const suggestionArray = nutrient ? nutrient.map((item) => item.name) : [];
   const [detectedFoods, setDetectedFoods] = useState(null);
 
   const sortedScores = useMemo(() => {
@@ -32,71 +31,105 @@ const FoodRecomendationComponent = ({ foodScores }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setDetectedFoods(null);
     const file = document.getElementById("imageUpload").files[0];
     const { data } = await getDetections(file);
 
-    if (data && Array.isArray(data.items)) {
-        const detectedFoodsData = data.items
-            .map((item) => {
-                const foodScore = foodScores.find(
-                    (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
-                );
-                return foodScore ? { ...foodScore } : null;
-            })
-            .filter(Boolean);
+    if (data && Array.isArray(data.items) && data.items.length > 0) {
+      const detectedFoodsData = [];
 
-        const sortedDetectedFoods = detectedFoodsData.sort((a, b) => b.score - a.score);
-        setSearchTerm(sortedDetectedFoods[0].food_name);
-        setDetectedFoods(sortedDetectedFoods);
-    } 
+      data.items.forEach((item) => {
+        const foodScore = foodScores.find(
+          (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
+        );
+
+        if (
+          foodScore &&
+          !detectedFoodsData.some(
+            (food) =>
+              food.food_name.toLowerCase() ===
+              foodScore.food_name.toLowerCase()
+          )
+        ) {
+          detectedFoodsData.push({ ...foodScore });
+        }
+      });
+
+      const sortedDetectedFoods = detectedFoodsData.sort(
+        (a, b) => b.score - a.score
+      );
+      setDetectedFoods(sortedDetectedFoods);
+
+      // If there are detected foods, set the highest score food as searchTerm
+      if (sortedDetectedFoods.length > 0) {
+        const highestScoreFood = sortedDetectedFoods[0].food_name;
+        setSearchTerm(highestScoreFood); // Set the search term to the highest score food name
+
+        // Automatically show the nutrient graph for the highest score food
+        handleSearchSubmit(highestScoreFood);
+      }
+    }
+  };
+
+  const handleSearchSubmit = (term) => {
+    const searchValue = term || searchTerm;
+
+    // Ensure searchValue is a string before proceeding
+    if (typeof searchValue !== 'string') {
+      setNutrientData(null);
+      return;
+    }
+
+    if (nutrient && searchValue) {
+      const result = nutrient.filter(
+        (item) => item.name.toLowerCase() === searchValue.toLowerCase()
+      );
+      setNutrientData(result.length > 0 ? result : null);
+    } else {
+      setNutrientData(null);
+    }
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchTerm(query);
+
+    if (query) {
+        const filteredSuggestions = suggestionArray.filter((item) =>
+            item.toLowerCase().includes(query.toLowerCase())
+        );
+
+        setSuggestions(
+            filteredSuggestions.length ? filteredSuggestions : ["No items found"]
+        );
+
+        const queryExists = filteredSuggestions
+            .map((item) => item.toLowerCase())
+            .includes(query.toLowerCase());
+        
+        if (!queryExists) {
+            console.log("Query not found in suggestions");
+        }
+    } else {
+        setSuggestions([]);
+    }
 };
 
 
-const handleSearch = (e) => {
-  const query = e.target.value;
-  setSearchTerm(query);
-
-  if (query) {
-    const filteredSuggestions = suggestionArray.filter((item) =>
-      item.toLowerCase().includes(query.toLowerCase())
-    );
-    setSuggestions(
-      filteredSuggestions.length ? filteredSuggestions : ["No items found"]
-    );
-
-    setIsButtonDisabled(!filteredSuggestions.includes(query.toLowerCase()));
-  } else {
+  const handleSelect = (item) => {
+    if (item !== "No items found") {
+      setSearchTerm(item);
+      handleSearchSubmit(item); 
+    }
     setSuggestions([]);
-    setIsButtonDisabled(true);
-  }
-};
-
-const handleSelect = (item) => {
-  if (item !== "No items found") {
-    setSearchTerm(item);
-    setIsButtonDisabled(false);
-  }
-  setSuggestions([]);
-};
-
-const handleSearchSubmit = () => {
-  if (nutrient && searchTerm) {
-    const result = nutrient.filter((item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setnutrientData(result.length > 0 ? result : null);
-  } else {
-    setnutrientData(null);
-  }
-};
-  
+  };
 
   return (
     <div className="w-100 h-100 border d-flex justify-content-center align-items-center">
       <div className="w-100 h-100 border d-flex flex-column align-items-center justify-content-center overflow-auto">
         <div className="w-100 h-100 border d-flex">
           <div className="w-100 h-100 border d-flex flex-column">
-            {detectionLoading ? (
+            {detectionsLoading ? (
               <SpinnerComponent />
             ) : (
               <div className="w-100 h-100 border d-flex flex-column justify-content-center align-items-center">
@@ -136,7 +169,10 @@ const handleSearchSubmit = () => {
                     className="border form-control w-50 m-auto"
                   />
                   {imageSrc && (
-                    <button type="submit" className="btn btn-primary m-auto">
+                    <button
+                      type="submit"
+                      className="btn btn-primary m-auto"
+                    >
                       Analyze
                     </button>
                   )}
@@ -145,10 +181,13 @@ const handleSearchSubmit = () => {
             )}
           </div>
           <div className="w-100 h-100 border d-flex overflow-auto">
-            {detectionLoading ? (
+            {detectionsLoading ? (
               <SpinnerComponent />
             ) : detectedFoods && detectedFoods.length > 0 ? (
-              <BarGraph scoreData={detectedFoods} passedHeight={"30px"} />
+              <BarGraph
+                scoreData={detectedFoods}
+                passedHeight={"30px"}
+              />
             ) : (
               <h6 className="m-auto text-center">Nothing to detect</h6>
             )}
@@ -169,7 +208,10 @@ const handleSearchSubmit = () => {
               >
                 <form
                   className="border d-flex p-0 h-100"
-                  onSubmit={(e) => e.preventDefault()}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSearchSubmit(); // Ensure it runs on submit
+                  }}
                   style={{ position: "absolute", right: "5%" }}
                 >
                   <input
@@ -179,14 +221,6 @@ const handleSearchSubmit = () => {
                     value={searchTerm}
                     onChange={handleSearch}
                   />
-                  <button
-                    className="border btn btn-dark btn-sm my-2 my-sm-0"
-                    type="submit"
-                    onClick={handleSearchSubmit}
-                    disabled={isButtonDisabled}
-                  >
-                    Search
-                  </button>
                 </form>
                 {suggestions.length > 0 && (
                   <ul
@@ -226,7 +260,7 @@ const handleSearchSubmit = () => {
         className="h-100 border d-flex align-items-center justify-content-center overflow-auto"
       >
         {foodScores ? (
-          <BarGraph scoreData={sortedScores}/>
+          <BarGraph scoreData={sortedScores} />
         ) : (
           <div className="border d-flex align-items-center justify-content-center flex-grow-1">
             <span className="border badge rounded-pill bg-secondary">

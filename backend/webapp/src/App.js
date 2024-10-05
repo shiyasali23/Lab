@@ -5,6 +5,7 @@ import SignUpPage from "./Pages/SignUpPage";
 import ProfilePage from "./Pages/ProfilePage";
 import AlertComponent from "./Components/AlertComponent";
 import MainPage from "./Pages/MainPage";
+import ConsultPage from "./Pages/ConsultPage";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/consult" element={<ConsultPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />}/>
           </Routes>
