@@ -76,7 +76,7 @@ def register_model(request):
 def models_list(request):
     try:
         models = MachineLearningModel.objects.all()
-        serializer = MachineLearningModelSerializer(models, many=True, fields=['name', 'id', 'feature_names', 'status', 'output_maps','accuracy'])
+        serializer = MachineLearningModelSerializer(models, many=True, fields=['name', 'id', 'feature_names', 'status', 'output_maps','accuracy','highest_feature_impact'])
         return handle_response(data=serializer.data, status_code=200)
     except Exception as e:
         logger.error(f"An error occurred while fetching models: {str(e)}")

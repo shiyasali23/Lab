@@ -93,7 +93,7 @@ const NutrientsGraph = ({ data }) => {
   }, [data]); // Update when `data` changes
 
   return (
-    <div style={{ width: "100%", height: `241px`}} className="p-0 d-flex border flex-column justify-content-center align-items-center">
+    <div style={{ width: "100%", height: `241px`}} className="p-0 d-flex flex-column justify-content-center align-items-center">
       <canvas className="p-0" style={{ width: "100%", height: `100%`}} ref={chartRef} /> 
     </div>
   );

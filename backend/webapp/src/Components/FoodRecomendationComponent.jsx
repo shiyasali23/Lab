@@ -59,13 +59,9 @@ const FoodRecomendationComponent = ({ foodScores }) => {
         (a, b) => b.score - a.score
       );
       setDetectedFoods(sortedDetectedFoods);
-
-      // If there are detected foods, set the highest score food as searchTerm
       if (sortedDetectedFoods.length > 0) {
         const highestScoreFood = sortedDetectedFoods[0].food_name;
-        setSearchTerm(highestScoreFood); // Set the search term to the highest score food name
-
-        // Automatically show the nutrient graph for the highest score food
+        setSearchTerm(highestScoreFood); 
         handleSearchSubmit(highestScoreFood);
       }
     }
@@ -74,7 +70,6 @@ const FoodRecomendationComponent = ({ foodScores }) => {
   const handleSearchSubmit = (term) => {
     const searchValue = term || searchTerm;
 
-    // Ensure searchValue is a string before proceeding
     if (typeof searchValue !== 'string') {
       setNutrientData(null);
       return;
@@ -127,14 +122,14 @@ const FoodRecomendationComponent = ({ foodScores }) => {
   return (
     <div className="w-100 h-100 border d-flex justify-content-center align-items-center">
       <div className="w-100 h-100 border d-flex flex-column align-items-center justify-content-center overflow-auto">
-        <div className="w-100 h-100 border d-flex">
+        <div className="w-100 h-100 d-flex">
           <div className="w-100 h-100 border d-flex flex-column">
             {detectionsLoading ? (
               <SpinnerComponent />
             ) : (
-              <div className="w-100 h-100 border d-flex flex-column justify-content-center align-items-center">
-                {/* Image Display */}
+              <div className="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
                 <div
+                className="d-flex flex-column justify-content-center align-items-center"
                   style={{
                     width: "200px",
                     height: "200px",
@@ -158,7 +153,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                 <form
                   style={{ height: "20%" }}
                   onSubmit={handleSubmit}
-                  className="w-100 border d-flex justify-content-center"
+                  className="w-100 d-flex justify-content-center"
                 >
                   <input
                     type="file"
@@ -193,7 +188,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
             )}
           </div>
         </div>
-        <div className="w-100 h-100 p-0 border d-flex flex-column justify-content-space-between align-items-center">
+        <div className="w-100 h-100 p-0 d-flex flex-column justify-content-space-between align-items-center">
           {nutrientLoading ? (
             <SpinnerComponent />
           ) : (
@@ -204,18 +199,18 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                   height: "12%",
                   position: "relative",
                 }}
-                className="border w-100 d-flex justify-content-center align-items-center"
+                className="w-100 d-flex justify-content-center align-items-center"
               >
                 <form
-                  className="border d-flex p-0 h-100"
+                  className="d-flex h-100 mt-2"
                   onSubmit={(e) => {
                     e.preventDefault();
-                    handleSearchSubmit(); // Ensure it runs on submit
+                    handleSearchSubmit(); 
                   }}
-                  style={{ position: "absolute", right: "5%" }}
+                  style={{ position: "absolute" }}
                 >
                   <input
-                    className="border form-control p-0 me-sm-2"
+                    className="form-control p-0 text-center"
                     type="search"
                     placeholder="Search"
                     value={searchTerm}

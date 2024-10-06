@@ -196,7 +196,7 @@ const BarGraph = ({ scoreData, passedHeight }) => {
   }, [scoreData]);
 
   return (
-    <div style={{ width: "100%", height: `${scoreData.length * 35}px` }}>
+    <div style={{ width: "100%", height: `${scoreData.length * 32}px` }}>
       <canvas
         ref={chartRef}
         style={{ width: "100%" }}

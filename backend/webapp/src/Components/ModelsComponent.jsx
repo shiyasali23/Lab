@@ -96,7 +96,9 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
                 className="p-3 border overflow-auto d-flex flex-column"
                 key={model.id}
               >
-                <h6 className="ml-50 mb-2 w-100">{model.name}:</h6>
+                <h6 className="ml-50 mb-2 w-100">
+                  {model.name}:- {model.accuracy.toFixed(3)}% accurate
+                </h6>
                 {latestBiometrics && userData && (
                   <Row>
                     {featureNames.map((feature, index) => {
@@ -112,18 +114,27 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
                           : latestBiometrics.find(
                               (b) => b.biochemical.name === feature
                             )?.value || "");
-                      
+
                       // Fix: Ensure value is never null or undefined
                       const displayValue = value ?? "";
 
                       const isMissing = isPredictClicked && displayValue === "";
+
+                      // Determine if the current feature is the highest feature impact
+                      const isHighestImpact =
+                        feature === model.highest_feature_impact;
 
                       return (
                         <Form.Group
                           className="mb-3 col-lg-4 col-sm-12 col-sm-3"
                           key={index}
                         >
-                          <Form.Label className="form-label-small">
+                          <Form.Label
+                            className="form-label-small"
+                            style={{
+                              color: isHighestImpact ? "red" : "inherit",
+                            }}
+                          >
                             {feature}
                             {isMissing && (
                               <span className="text-danger ms-1">
@@ -133,19 +144,18 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
                           </Form.Label>
                           <Form.Control
                             type="text"
-                            value={displayValue}  // Fix: Ensure empty string is used instead of null/undefined
+                            value={displayValue}
                             onChange={(e) =>
                               handleChange(feature, e.target.value, model.id)
                             }
                             className="form-input-small"
-                            disabled={feature === "Age" || feature === "Gender"}
                           />
                         </Form.Group>
                       );
                     })}
                   </Row>
                 )}
-                <div className="d-flex flex-row p-3" style={{ width: "100%" }}>
+                <div className="d-flex p-3" style={{ width: "100%" }}>
                   <Button
                     type="button"
                     style={{

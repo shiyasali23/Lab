@@ -122,7 +122,7 @@ def fetch_user_data(user):
                     'expired_date': latest_biometric.expired_date,
                 })
 
-                if latest_biometric.expired_date > time_now:
+                if latest_biometric.expired_date is not None and latest_biometric.expired_date > time_now:
                     if latest_biometric.scaled_value < -1:
                         conditions.update(
                             BiochemicalCondition.objects.filter(
