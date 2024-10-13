@@ -1,7 +1,8 @@
 import pandas as pd
+import os
 from data.biochemicals_conditions_data import biochemicals_conditions
 
-biochemical_units_df = pd.read_csv("csv/biochemical_units.csv")
+biochemical_units_df = pd.read_csv(os.path.join("csv", "biochemical_units.csv"))
 biochemical_conditions_df = biochemical_units_df[['name']].copy()
 
 # Collect all unique conditions

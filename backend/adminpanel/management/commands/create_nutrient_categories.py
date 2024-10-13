@@ -1,13 +1,17 @@
 from django.core.management.base import BaseCommand
-import pandas as pd
 from django.db import transaction
 from adminpanel.models import Nutrient, Category
+
+import pandas as pd
+import os
+
 
 class Command(BaseCommand):
     help = 'Create nutrient categories from CSV file'
 
     def handle(self, *args, **kwargs):
-        csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/nutrients_categories.csv'
+        csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/nutrients_categories.csv')
+
         nutrients_categories = pd.read_csv(csv_path) 
 
         with transaction.atomic():

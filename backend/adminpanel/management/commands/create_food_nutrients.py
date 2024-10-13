@@ -1,13 +1,17 @@
 from django.core.management.base import BaseCommand
-import pandas as pd
 from django.db import transaction
 from adminpanel.models import Food, Category, SubCategory, Nutrient, FoodNutrient
+
+import os
+import pandas as pd
+
 
 class Command(BaseCommand):
     help = 'Import foods and their nutrient values from CSV file'
 
     def handle(self, *args, **kwargs):
-        csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/food_nutrients.csv'
+        csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/food_nutrients.csv')
+
         
         try:
             data = pd.read_csv(csv_path)

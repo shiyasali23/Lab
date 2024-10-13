@@ -35,21 +35,19 @@ def fetch_and_validate_models():
         item['status'] = 'active'
     return data
 
-def prepare_input_data(request_data, feature_maps):
-    input_data = {}
-    for key, value in model_input_maps.items():
-        feature_value = request_data.get(value)
-        if feature_value:
-            if key in feature_maps:
-                feature_map = feature_maps[key]
-                if feature_value in feature_map:
-                    input_data[key] = feature_map[feature_value]
-                else:
-                    logger.error(f"Value '{feature_value}' not found in feature_maps for '{key}'.")
-                    raise ValueError(f"Invalid value '{feature_value}' for '{key}'")
-            else:
-                input_data[key] = feature_value
+def prepare_input_data(request_data, feature_names, feature_maps):
+    input_data = []
+    feature_map_dict = {feature: value_map for feature, value_map in feature_maps.items()}
+
+    for feature in feature_names:
+        raw_value = request_data.get(feature, None)
+        if feature in feature_map_dict and raw_value in feature_map_dict[feature]:
+            input_data.append(feature_map_dict[feature][raw_value])
+        else:
+            input_data.append(raw_value)  
+    
     return input_data
+
 
 def get_prediction_from_service(model_id, input_data):
     response = requests.post(f'http://localhost:8001/predict/{model_id}', json=input_data)
@@ -82,27 +80,7 @@ def models_list(request):
         logger.error(f"An error occurred while fetching models: {str(e)}")
         return handle_response(error="An error occurred while fetching models", status_code=500)
 
-model_input_maps = {
-    'gender': 'Gender',
-    'age': 'Age',
-    'blood_urea_nitrogen': 'Blood Urea Nitrogen',
-    'creatinine': 'Creatinine',
-    'hemoglobin_a1c': 'Hemoglobin A1c',
-    'total_cholesterol': 'Total Cholesterol',
-    'triglycerides': 'Triglycerides',
-    'hdl_cholesterol': 'HDL Cholesterol',
-    'ldl_cholesterol': 'LDL Cholesterol',
-    'vldl': 'Very Low-Density Lipoprotein',
-    'bmi': 'BMI',
-    'albumin': 'Albumin',
-    'alkaline_phosphatase': 'Alkaline Phosphatase',
-    'alanine_aminotransferase': 'Alanine Aminotransferase',
-    'aspartate_aminotransferase': 'Aspartate Aminotransferase',
-    'bilirubin': 'Bilirubin',
-    'cholinesterase': 'Cholinesterase',
-    'gamma_glutamyl_transferase': 'Gamma-Glutamyl Transferase',
-    'total_protein': 'Total Protein',
-}
+
 
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])
@@ -116,10 +94,13 @@ def get_prediction(request):
             return handle_response(error="Model ID is required", status_code=400)
 
         model = get_object_or_404(MachineLearningModel, id=model_id)
+        
+        feature_names = json.loads(model.feature_names)
         feature_maps = json.loads(model.feature_maps)
         output_maps = json.loads(model.output_maps)
+        
 
-        input_data = prepare_input_data(request.data, feature_maps)
+        input_data = prepare_input_data(request.data, feature_names, feature_maps)
         input_data["model_id"] = model_id
 
         response_data = get_prediction_from_service(model_id, input_data)

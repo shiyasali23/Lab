@@ -1,13 +1,15 @@
 from django.core.management.base import BaseCommand
-import pandas as pd
 from django.db import transaction
 from adminpanel.models import Biochemical, Category
+
+import pandas as pd
+import os
 
 class Command(BaseCommand):
     help = 'Create biochemicals from CSV file'
 
     def handle(self, *args, **kwargs):
-        csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/biochemical_units.csv'
+        csv_path = os.path.join(os.path.dirname(__file__), '../../../../datasets/csv/biochemical_units.csv')
         biochemical_units_df = pd.read_csv(csv_path) 
 
         with transaction.atomic():

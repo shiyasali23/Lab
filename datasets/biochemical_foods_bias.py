@@ -1,8 +1,9 @@
 
 import pandas as pd
+import os
 from data.biochemical_foods_bias_data import biochemicals_fruits, biochemicals_vegetables, biochemicals_seeds, biochemicals_seafoods, biochemicals_diarys, biochemicals_meats, biochemicals_nosh
 
-food_nutrients_df = pd.read_csv("csv/food_nutrients.csv")
+food_nutrients_df = pd.read_csv(os.path.join('csv', 'food_nutrients.csv'))
 
 import pandas as pd
 

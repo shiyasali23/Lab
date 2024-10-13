@@ -1,14 +1,16 @@
-import pandas as pd
 from django.core.management.base import BaseCommand
 from adminpanel.models import Food, Biochemical, FoodWeight
 from django.db import transaction
+
+import pandas as pd
+import os
 
 class Command(BaseCommand):
     help = 'Create Food Weights from CSV data'
 
     def handle(self, *args, **kwargs):
-        bias_csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/biochemical_foods_bias_df.csv'
-        weight_csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/biochemical_foods_weights.csv'
+        bias_csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/biochemical_foods_bias_df.csv')
+        weight_csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/biochemical_foods_weights.csv')
 
         try:
             bias_data = pd.read_csv(bias_csv_path)

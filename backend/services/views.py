@@ -11,6 +11,7 @@ from django.utils import timezone
 from .models import User, Biometrics, FoodScore, BiometricsEntry
 from adminpanel.models import Biochemical, BiochemicalCondition
 from adminpanel.serializers import BiochemicalSerializer, BiochemicalConditionSerializer
+from mlmodels.views import handle_response
 from .serializers import UserSerializer, BiometricsSerializer, FoodScoreSerializer, BiometricsEntrySerializer
 
 logger = logging.getLogger(__name__)

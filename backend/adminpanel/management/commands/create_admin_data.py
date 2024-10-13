@@ -50,7 +50,6 @@ class Command(BaseCommand):
             call_command('create_biochemical_conditions')
             call_command('create_food_nutrients')
             call_command('create_food_bias_weights')
-            call_command('create_food_images')
             call_command('create_nutrients_bias_weights')
             call_command('normalize_nutriscore_nutreint')
             call_command('check_normalized_nutrients')

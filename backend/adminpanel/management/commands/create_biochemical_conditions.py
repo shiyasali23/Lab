@@ -1,13 +1,16 @@
 from django.core.management.base import BaseCommand
-import pandas as pd
 from django.db import transaction
+
+import pandas as pd
+import os
+
 from adminpanel.models import Biochemical, Condition, BiochemicalCondition
 
 class Command(BaseCommand):
     help = 'Create biochemical conditions from CSV file'
 
     def handle(self, *args, **kwargs):
-        csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/biochemical_conditions.csv'
+        csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/biochemical_conditions.csv')
         
         try:
             data = pd.read_csv(csv_path)

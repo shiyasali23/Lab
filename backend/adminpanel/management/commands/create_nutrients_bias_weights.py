@@ -1,4 +1,6 @@
 import pandas as pd
+import os
+
 from django.core.management.base import BaseCommand
 from adminpanel.models import Nutrient, Biochemical, NutrientWeight
 from django.db import transaction
@@ -6,9 +8,10 @@ from django.db import transaction
 class Command(BaseCommand):
     help = 'Create Nutrient Weights from CSV data'
 
-    def handle(self, *args, **kwargs):
-        bias_csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/biochemical_nutrients_bias.csv'
-        weight_csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/biochemical_nutrients_weights.csv'
+    def handle(self, *args, **kwargs):        
+        bias_csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/biochemical_nutrients_bias.csv')
+        weight_csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/biochemical_nutrients_weights.csv')
+
 
         try:
             bias_data = pd.read_csv(bias_csv_path)

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'services.apps.ServicesConfig',
     'adminpanel.apps.AdminpanelConfig',
     'mlmodels.apps.MlmodelsConfig',
+    'diagnosis.apps.DiagnosisConfig',
     
     'rest_framework',
     'rest_framework.authtoken',

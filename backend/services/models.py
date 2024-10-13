@@ -5,15 +5,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
+
+from adminpanel.models import BaseModel
+
 import uuid
 
-
-class BaseModel(models.Model):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True,editable=False)
-    created = models.DateTimeField(auto_now_add=True, db_index=True)
-
-    class Meta:
-        abstract = True
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):

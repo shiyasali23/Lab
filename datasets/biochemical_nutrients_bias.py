@@ -1,10 +1,11 @@
 import pandas as pd
+import os
 from data.biochemical_nutrients_bias_data import biochemicals_nutrients_bias
 
-biochemical_units_df = pd.read_csv("csv/biochemical_units.csv")
-food_nutrients_df = pd.read_csv("csv/food_nutrients.csv")
-biochemical_nutrients_bias_df = biochemical_units_df[['name']].copy()
+biochemical_units_df = pd.read_csv(os.path.join("csv", "biochemical_units.csv"))
+food_nutrients_df = pd.read_csv(os.path.join("csv", "food_nutrients.csv"))
 
+biochemical_nutrients_bias_df = biochemical_units_df[['name']].copy()
 nutrients = food_nutrients_df.columns.difference(['name','category','sub_category', 'nutriscore'])
 
 for nutrient in nutrients:

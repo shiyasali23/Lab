@@ -1,4 +1,5 @@
 from data.biochemical_units_data import biochemicals_units
+import os
 import pandas as pd
 
 flatten_data = []
@@ -16,4 +17,4 @@ for biochemichals, data in biochemicals_units.items():
   flatten_data.append(row)
 
 biochemical_units_df = pd.DataFrame(flatten_data)
-biochemical_units_df.to_csv("csv/biochemical_units.csv", index=False)
+biochemical_units_df.to_csv(os.path.join("csv", "biochemical_units.csv"), index=False)

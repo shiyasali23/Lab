@@ -1,5 +1,6 @@
 import pandas as pd 
 from data.food_nutrients_data import fruit
+import os
 
 flattened_nutrients = []
 seen_nutrients = set()  # Initialize a set to keep track of unique nutrient entries
@@ -22,4 +23,4 @@ for food_category, data in fruit.items():
 
 # Convert the list to a DataFrame
 nutrients_categories_df = pd.DataFrame(flattened_nutrients)
-nutrients_categories_df.to_csv('csv/nutrients_categories.csv', index=False)
+nutrients_categories_df.to_csv(os.path.join("csv", "nutrients_categories.csv"), index=False)

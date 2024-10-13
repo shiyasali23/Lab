@@ -1,6 +1,7 @@
 from data.food_nutrients_data import fruit, vegetable, seed, seafood, meat, dairy, nosh
 from data.food_nutriscore_data import food_nutriscore
 
+import os
 import pandas as pd
 
 food_nutrients_dict = {
@@ -37,4 +38,4 @@ food_nutrients_df['nutriscore'] = food_nutrients_df.name.map(food_nutriscore)
 nutrient_columns = food_nutrients_df.columns.difference(['name', 'category', 'sub_category'])
 food_nutrients_df[nutrient_columns] = food_nutrients_df[nutrient_columns].astype('float16')
 
-food_nutrients_df.to_csv('csv/food_nutrients.csv', index=False)
+food_nutrients_df.to_csv(os.path.join("csv", "food_nutrients.csv"), index=False)
