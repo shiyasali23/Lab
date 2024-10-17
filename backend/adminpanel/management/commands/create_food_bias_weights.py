@@ -52,6 +52,6 @@ class Command(BaseCommand):
 
                 except Exception as e:
                     self.stderr.write(self.style.ERROR(f"Error processing biochemical row {index}: {e}"))
-                    raise  # Ensure rollback on error
+                    raise  
 
         self.stdout.write(self.style.SUCCESS("Food biases and weights import completed successfully."))

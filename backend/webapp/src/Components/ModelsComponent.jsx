@@ -86,124 +86,84 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
             AI models are not available
           </span>
         ) : (
-          models.map((model) => {
-            const featureNames = JSON.parse(model.feature_names);
-            const isPredictClicked = predictClickedForModel === model.id;
-            const outputMaps = JSON.parse(model.output_maps);
+          models
+            .filter((model) => model.id !== "tdsevgg53h5f53e6") // Filter out specific model ID
+            .map((model) => {
+              const featureNames = JSON.parse(model.feature_names);
+              const isPredictClicked = predictClickedForModel === model.id;
+              const outputMaps = JSON.parse(model.output_maps);
 
-            return (
-              <div
-                className="p-3 border overflow-auto d-flex flex-column"
-                key={model.id}
-              >
-                <h6 className="ml-50 mb-2 w-100">
-                  {model.name}:- {model.accuracy.toFixed(3)}% accurate
-                </h6>
-                {latestBiometrics && userData && (
-                  <Row>
-                    {featureNames.map((feature, index) => {
-                      const modelInputValues = inputValues[model.id] || {};
-                      const value =
-                        modelInputValues[feature] ||
-                        (feature === "Age"
-                          ? userData.age
-                          : feature === "Gender"
-                          ? userData.gender
-                          : feature === "BMI"
-                          ? userData.bmi
-                          : latestBiometrics.find(
-                              (b) => b.biochemical.name === feature
-                            )?.value || "");
+              return (
+                <div
+                  className="p-3 border overflow-auto d-flex flex-column"
+                  key={model.id}
+                >
+                  <h6 className="ml-50 mb-2 w-100">
+                    {model.name}: {model.accuracy.toFixed(3)}% accurate
+                  </h6>
+                  {latestBiometrics && userData && (
+                    <Row>
+                      {featureNames.map((feature, index) => {
+                        const modelInputValues = inputValues[model.id] || {};
+                        const value =
+                          modelInputValues[feature] ||
+                          (feature === "Age"
+                            ? userData.age
+                            : feature === "Gender"
+                            ? userData.gender
+                            : feature === "BMI"
+                            ? userData.bmi
+                            : latestBiometrics.find(
+                                (b) => b.biochemical.name === feature
+                              )?.value || "");
 
-                      // Fix: Ensure value is never null or undefined
-                      const displayValue = value ?? "";
+                        const displayValue = value ?? ""; // Ensure value is never null or undefined
+                        const isMissing =
+                          isPredictClicked && displayValue === "";
+                        const isHighestImpact =
+                          feature === model.highest_feature_impact;
 
-                      const isMissing = isPredictClicked && displayValue === "";
-
-                      // Determine if the current feature is the highest feature impact
-                      const isHighestImpact =
-                        feature === model.highest_feature_impact;
-
-                      return (
-                        <Form.Group
-                          className="mb-3 col-lg-4 col-sm-12 col-sm-3"
-                          key={index}
-                        >
-                          <Form.Label
-                            className="form-label-small"
-                            style={{
-                              color: isHighestImpact ? "red" : "inherit",
-                            }}
+                        return (
+                          <Form.Group
+                            className="mb-3 col-lg-4 col-sm-12 col-sm-3"
+                            key={index}
                           >
-                            {feature}
-                            {isMissing && (
-                              <span className="text-danger ms-1">
-                                * missing
-                              </span>
-                            )}
-                          </Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={displayValue}
-                            onChange={(e) =>
-                              handleChange(feature, e.target.value, model.id)
-                            }
-                            className="form-input-small"
-                          />
-                        </Form.Group>
-                      );
-                    })}
-                  </Row>
-                )}
-                <div className="d-flex p-3" style={{ width: "100%" }}>
-                  <Button
-                    type="button"
-                    style={{
-                      width: "100px",
-                      borderRadius: 0,
-                      margin: "0 20px",
-                    }}
-                    className="btn btn-dark"
-                    onClick={() => handleClickPredict(model.id)}
-                    disabled={predictionLoading}
-                  >
-                    {predictionLoading ? (
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <Spinner
-                          animation="border"
-                          size="sm"
-                          style={{ marginRight: "8px" }}
-                        />
-                        <p style={{ margin: 0 }}>Predicting</p>
-                      </div>
-                    ) : (
-                      "Predict"
-                    )}
-                  </Button>
-                  {Object.entries(outputMaps).map(([name, value], index) => (
+                            <Form.Label
+                              className="form-label-small"
+                              style={{
+                                color: isHighestImpact ? "red" : "inherit",
+                              }}
+                            >
+                              {feature}
+                              {isMissing && (
+                                <span className="text-danger ms-1">
+                                  * missing
+                                </span>
+                              )}
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={displayValue}
+                              onChange={(e) =>
+                                handleChange(feature, e.target.value, model.id)
+                              }
+                              className="form-input-small"
+                            />
+                          </Form.Group>
+                        );
+                      })}
+                    </Row>
+                  )}
+                  <div className="d-flex p-3" style={{ width: "100%" }}>
                     <Button
-                      key={value}
                       type="button"
-                      className={`btn btn-sm${
-                        prediction.some(
-                          (pred) =>
-                            pred.model_id === model.id &&
-                            pred.prediction === name
-                        )
-                          ? ""
-                          : "disabled"
-                      }
-
-                    ${
-                      prediction?.some(
-                        (pred) =>
-                          pred.model_id === model.id && pred.prediction === name
-                      )
-                        ? index === 0
-                          ? "btn-success"
-                          : "btn-danger"
-                        : "btn-secondary"
-                    } me-2`}
+                      style={{
+                        width: "100px",
+                        borderRadius: 0,
+                        margin: "0 20px",
+                      }}
+                      className="btn btn-dark"
+                      onClick={() => handleClickPredict(model.id)}
                       disabled={predictionLoading}
                     >
                       {predictionLoading ? (
@@ -213,17 +173,52 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
                             size="sm"
                             style={{ marginRight: "8px" }}
                           />
-                          {name}
+                          <p style={{ margin: 0 }}>Predicting</p>
                         </div>
                       ) : (
-                        name
+                        "Predict"
                       )}
                     </Button>
-                  ))}
+                    {Object.entries(outputMaps).map(([name, value], index) => {
+                      const isPredictionActive = prediction.some(
+                        (pred) =>
+                          pred.model_id === model.id && pred.prediction === name
+                      );
+
+                      return (
+                        <Button
+                          key={value}
+                          type="button"
+                          className={`btn btn-sm ${
+                            isPredictionActive
+                              ? index === 0
+                                ? "btn-success"
+                                : "btn-danger"
+                              : "btn-secondary"
+                          } ${isPredictionActive ? "" : "disabled"} me-2`}
+                          disabled={predictionLoading}
+                        >
+                          {predictionLoading ? (
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Spinner
+                                animation="border"
+                                size="sm"
+                                style={{ marginRight: "8px" }}
+                              />
+                              {name}
+                            </div>
+                          ) : (
+                            name
+                          )}
+                        </Button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })
         )}
       </div>
       <div className="w-100 h-20 d-flex border align-items-center justify-content-evenly">

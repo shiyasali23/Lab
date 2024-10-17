@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 """)
 
             # Remove all migration files that start with '00'
-            migrations_dirs = ['services/migrations/', 'adminpanel/migrations/', 'mlmodels/migrations/']
+            migrations_dirs = ['services/migrations/', 'adminpanel/migrations/', 'mlmodels/migrations/', 'diagnosis/migrations/']
             for migrations_dir in migrations_dirs:
                 for file in os.listdir(migrations_dir):
                     if file.endswith('.py') and file.startswith('00'):
@@ -53,6 +53,7 @@ class Command(BaseCommand):
             call_command('create_nutrients_bias_weights')
             call_command('normalize_nutriscore_nutreint')
             call_command('check_normalized_nutrients')
+            call_command('create_diagnosis')
             call_command('register_ml_models')
 
             # Create superuser if it doesn't already exist

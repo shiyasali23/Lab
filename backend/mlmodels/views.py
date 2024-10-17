@@ -27,6 +27,8 @@ def handle_response(data=None, error=None, status_code=status.HTTP_200_OK):
         return Response({'error': error_message}, status=status_code)
     return Response(data, status=status_code)
 
+
+#_______--------------------------------------------------------------------------------_______
 def fetch_and_validate_models():
     response = requests.get('http://localhost:8001/register_models/')
     response.raise_for_status()
@@ -35,24 +37,6 @@ def fetch_and_validate_models():
         item['status'] = 'active'
     return data
 
-def prepare_input_data(request_data, feature_names, feature_maps):
-    input_data = []
-    feature_map_dict = {feature: value_map for feature, value_map in feature_maps.items()}
-
-    for feature in feature_names:
-        raw_value = request_data.get(feature, None)
-        if feature in feature_map_dict and raw_value in feature_map_dict[feature]:
-            input_data.append(feature_map_dict[feature][raw_value])
-        else:
-            input_data.append(raw_value)  
-    
-    return input_data
-
-
-def get_prediction_from_service(model_id, input_data):
-    response = requests.post(f'http://localhost:8001/predict/{model_id}', json=input_data)
-    response.raise_for_status()
-    return response.json()
 
 @api_view(['POST'])
 def register_model(request):
@@ -81,6 +65,29 @@ def models_list(request):
         return handle_response(error="An error occurred while fetching models", status_code=500)
 
 
+
+
+#_______--------------------------------------------------------------------------------_______
+def prepare_input_data(request_data, feature_names, feature_maps):
+    input_data = {
+        'data':[]
+    }
+    feature_map_dict = {feature: value_map for feature, value_map in feature_maps.items()}
+
+    for feature in feature_names:
+        raw_value = request_data.get(feature, None)
+        if feature in feature_map_dict and raw_value in feature_map_dict[feature]:
+            input_data['data'].append(feature_map_dict[feature][raw_value])
+        else:
+            input_data['data'].append(raw_value)  
+    
+    return input_data
+
+
+def get_prediction_from_service(model_id, input_data):
+    response = requests.post(f'http://localhost:8001/predict/{model_id}', json=input_data)
+    response.raise_for_status()
+    return response.json()
 
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])

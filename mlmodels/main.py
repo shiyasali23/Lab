@@ -5,6 +5,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import numpy as np
 from typing import List
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,61 +34,62 @@ for model_name, model_filename in model_files.items():
         logger.error(f"Failed to load {model_name} model: {e}")
         raise RuntimeError(f"Failed to load model: {e}")
 
-# Define input models
 class DiabetesInput(BaseModel):
-    features: List[float]
+    data: List[float]
+    
+
 
 class LiverConditionInput(BaseModel):
-    features: List[float]
+    data: List[float]
+
 
 class DiseaseInput(BaseModel):
-    features: List[float]
+    data: List[float]
+    
 
-# Prediction endpoint for diabetes
-@app.post(f"/predict/diabetes", status_code=200)
+
+@app.post(f"/predict/{models['diabetes']['metadata']['id']}", status_code=200)
 def predict_diabetes(data: DiabetesInput):
     try:
-        input_data = np.array([data.features], dtype=float)
-        prediction = models['diabetes'].predict(input_data)
-        probabilities = models['diabetes'].predict_proba(input_data)
+        input_data = np.array(data.data).reshape(1, -1)
+        prediction = models['diabetes']['model'].predict(input_data)
+        probabilities = models['diabetes']['model'].predict_proba(input_data)
 
         return {
-            "prediction": int(prediction[0]),  # Convert to int
-            'probabilities': probabilities[0].tolist()  # Convert to list
+            "prediction": int(prediction[0]),  
+            'probabilities': probabilities[0].tolist()  
         }
 
     except ValueError as e:
         logger.error(f"Value error: {e}")
         raise HTTPException(status_code=422, detail=f"Value error: {e}")
 
-# Prediction endpoint for liver condition
-@app.post(f"/predict/liver_condition", status_code=200)
+@app.post(f"/predict/{models['liver_condition']['metadata']['id']}", status_code=200)
 def predict_liver_condition(data: LiverConditionInput):
     try:
-        input_data = np.array([data.features], dtype=float)
-        prediction = models['liver_condition'].predict(input_data)
-        probabilities = models['liver_condition'].predict_proba(input_data)
+        input_data = np.array(data.data).reshape(1, -1)
+        prediction = models['liver_condition']['model'].predict(input_data)
+        probabilities = models['liver_condition']['model'].predict_proba(input_data)
 
         return {
-            "prediction": int(prediction[0]),  # Convert to int
-            'probabilities': probabilities[0].tolist()  # Convert to list
+            "prediction": int(prediction[0]),  
+            'probabilities': probabilities[0].tolist()  
         }
 
     except ValueError as e:
         logger.error(f"Value error: {e}")
         raise HTTPException(status_code=422, detail=f"Value error: {e}")
 
-# Prediction endpoint for disease
-@app.post(f"/predict/disease", status_code=200)
+@app.post(f"/predict/{models['disease']['metadata']['id']}", status_code=200)
 def predict_disease(data: DiseaseInput):
     try:
-        input_data = np.array([data.features], dtype=float)
-        prediction = models['disease'].predict(input_data)
-        probabilities = models['disease'].predict_proba(input_data)
+        input_data = np.array(data.data).reshape(1, -1)
+        prediction = models['disease']['model'].predict(input_data)
+        probabilities = models['disease']['model'].predict_proba(input_data)
 
         return {
-            "prediction": int(prediction[0]),  # Convert to int
-            'probabilities': probabilities[0].tolist()  # Convert to list
+            "prediction": int(prediction[0]),  
+            'probabilities': probabilities[0].tolist()  
         }
 
     except ValueError as e:
@@ -105,7 +110,7 @@ def register_models():
                 'framework': metadata.get('framework', None),
                 'accuracy': metadata.get('accuracy', None),
                 'precision': metadata.get('precision', None),
-                'recall': metadata.get('recall'),
+                'recall': metadata.get('recall', None),
                 'feature_names': metadata.get('feature_names', None),
                 'feature_impacts': metadata.get('feature_impacts', None),
                 'feature_maps': metadata.get('feature_maps', None),

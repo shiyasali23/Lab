@@ -1,12 +1,15 @@
 from django.core.management.base import BaseCommand
-import pandas as pd
 from adminpanel.models import Food, Nutrient, FoodNutrient
+
+import pandas as pd
+import os
 
 class Command(BaseCommand):
     help = 'Check normalized nutrient values from a CSV file against the database.'
 
     # Hardcoded CSV path
-    csv_path = '/Users/shiyas/Desktop/code-red/Lab/datasets/csv/normalized_nutrients.csv'
+    csv_path = os.path.join(os.path.dirname(__file__),'../../../../datasets/csv/normalized_nutrients.csv')
+
 
     # Tolerance level for comparing float values
     tolerance = 0.0001
