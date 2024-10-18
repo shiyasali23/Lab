@@ -9,6 +9,8 @@ from .views import (
     logout
 )
 
+app_name = 'services'
+
 urlpatterns = [
     # User authentication
     path('signup/', signup, name='signup'),

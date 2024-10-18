@@ -85,8 +85,8 @@ const ProfileComponent = ({
               )}
             </strong>
           </div>
-          <div className=" w-100 h-100  d-flex flex-column align-items-center justify-content-center">
-            <div style={{ overflow: "auto" }} className="w-100 h-100  d-flex">
+          <div className=" w-100 h-100   d-flex flex-column align-items-center justify-content-center">
+            <div style={{ overflow: "auto" }} className="w-100 p-1  d-flex">
               <strong>Low</strong>
               <div style={{ overflow: "auto" }}>
                 {hypoBiochemicals.length > 0
@@ -95,7 +95,7 @@ const ProfileComponent = ({
               </div>
             </div>
 
-            <div style={{ overflow: "auto" }} className=" w-100 h-100  d-flex">
+            <div style={{ overflow: "auto" }} className=" w-100 p-1  d-flex">
               <strong>High</strong>
               <div style={{ overflow: "auto" }}>
                 {hyperBiochemicals.length > 0

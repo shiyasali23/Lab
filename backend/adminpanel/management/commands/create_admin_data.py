@@ -65,6 +65,7 @@ class Command(BaseCommand):
                     last_name="s",
                     date_of_birth="1111-11-11",
                     gender="male",
+                    phone_number=1111111111,
                     password="x"
                 )
 

@@ -4,8 +4,6 @@ from django.urls import reverse
 from adminpanel.models import Biochemical
 import json
 
-from adminpanel.models import Biochemical
-
 class Command(BaseCommand):
     help = 'Creating user biometrics'
 
@@ -98,25 +96,22 @@ class Command(BaseCommand):
                                     'value': first_value
                                 }
                             )
-
-                data = {
-                    'Headers': {
-                        'Authorization': f'Token {token}',
-                    },
-                    'Body': input_list
+                
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Token {token}',
                 }
-                self.stdout.write(self.style.INFO(f"{count} Set of biometrics creating..."))
-                response = client.post(reverse('services:create-biometrics'), json.dumps(data), content_type='application/json')
+                json_input_list = json.dumps(input_list)
+                print(json_input_list)
+                
+                self.stdout.write(self.style.SUCCESS(f"{count} Set of biometrics creating..."))
+ 
+                response = client.post(reverse('services:create-biometrics'), json=json_input_list, headers=headers)
                 
                 if response.status_code in [200, 201]:
                     self.stdout.write(self.style.SUCCESS(f"{count} Set of biometrics creation successful."))
                 else:
-                    self.stdout.write(self.style.ERROR(f"Biometrics creation failed in {count} set: {response.content.decode()}"))
-        
-            self.stdout.write(self.style.SUCCESS("Biometrics created successfully."))
-        
+                    self.stdout.write(self.style.ERROR(f"Biometrics creation failed in set {count}: {response.content.decode()}"))
+                
         else:
             self.stdout.write(self.style.ERROR(f"Login failed: {token_response.content.decode()}"))
-
-
-

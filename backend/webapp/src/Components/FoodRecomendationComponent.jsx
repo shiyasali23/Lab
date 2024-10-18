@@ -33,39 +33,52 @@ const FoodRecomendationComponent = ({ foodScores }) => {
     event.preventDefault();
     setDetectedFoods(null);
     const file = document.getElementById("imageUpload").files[0];
-    const { data } = await getDetections(file);
 
-    if (data && Array.isArray(data.items) && data.items.length > 0) {
-      const detectedFoodsData = [];
+    try {
+        const response = await getDetections(file);
+        
+        // Check if response is valid and has the 'data' property
+        if (response && response.data) {
+            const { data } = response;
 
-      data.items.forEach((item) => {
-        const foodScore = foodScores.find(
-          (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
-        );
+            if (data && Array.isArray(data.items) && data.items.length > 0) {
+                const detectedFoodsData = [];
 
-        if (
-          foodScore &&
-          !detectedFoodsData.some(
-            (food) =>
-              food.food_name.toLowerCase() ===
-              foodScore.food_name.toLowerCase()
-          )
-        ) {
-          detectedFoodsData.push({ ...foodScore });
+                data.items.forEach((item) => {
+                    const foodScore = foodScores.find(
+                        (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
+                    );
+
+                    if (
+                        foodScore &&
+                        !detectedFoodsData.some(
+                            (food) =>
+                                food.food_name.toLowerCase() ===
+                                foodScore.food_name.toLowerCase()
+                        )
+                    ) {
+                        detectedFoodsData.push({ ...foodScore });
+                    }
+                });
+
+                const sortedDetectedFoods = detectedFoodsData.sort(
+                    (a, b) => b.score - a.score
+                );
+                setDetectedFoods(sortedDetectedFoods);
+                if (sortedDetectedFoods.length > 0) {
+                    const highestScoreFood = sortedDetectedFoods[0].food_name;
+                    setSearchTerm(highestScoreFood); 
+                    handleSearchSubmit(highestScoreFood);
+                }
+            }
+        } else {
+            console.error('No data returned from getDetections');
         }
-      });
-
-      const sortedDetectedFoods = detectedFoodsData.sort(
-        (a, b) => b.score - a.score
-      );
-      setDetectedFoods(sortedDetectedFoods);
-      if (sortedDetectedFoods.length > 0) {
-        const highestScoreFood = sortedDetectedFoods[0].food_name;
-        setSearchTerm(highestScoreFood); 
-        handleSearchSubmit(highestScoreFood);
-      }
+    } catch (error) {
+        console.error('Error during detection:', error);
     }
-  };
+};
+
 
   const handleSearchSubmit = (term) => {
     const searchValue = term || searchTerm;

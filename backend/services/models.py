@@ -69,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'date_of_birth', 'gender']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'date_of_birth', 'gender','phone_number']
 
     class Meta:
         db_table = 'services_user'
