@@ -277,32 +277,4 @@ def login(request):
 
 
 
-# biometrics_data = [{
-#     'glucose':{ #biometric.biochemical.name
-#         'values':[
-#             {
-#                 'value':23, #biometric.value
-#                 'scaled_value':0.73, #biometric.scaled_value
-#                 'created':'2022-01-01 00:00:00', #biometric.biometricsentry.created,
-                
-#             },
-#             {
-#                 'value':34,#biometric.value
-#                 'scaled_value':0.33,#biometric.scaled_value
-#                 'created':'2022-05-01 00:00:00',#biometric.biometricsentry.created,
-                
-#             },
-#             {
-#                 'value':53,#biometric.value
-#                 'scaled_value':0.3,#biometric.scaled_value
-#                 'created':'2022-03-01 00:00:00',#biometric.biometricsentry.created,
-                
-#             },
-#         ],
-#         'healthy_min':100, #biometric.biochemical.f"{user.gender}_min"
-#         'healthy_max':200,#biometric.biochemical.f"{user.gender}_max"
-#         'category':'glucose',#biometric.biochemical.category
-#     }
-# }]
-
 

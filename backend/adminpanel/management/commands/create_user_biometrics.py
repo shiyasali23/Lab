@@ -68,21 +68,21 @@ class Command(BaseCommand):
             {"Partial Thromboplastin Time": [34.7, 33.8, 32.9, 32.1]},
             {"Fibrinogen": [387.4, 372.8, 358.3, 344.6]}
         ]
-        
+
         client = Client()
-        
+
         token_response = client.post(reverse('services:login'), {'email': 'm@g.com', 'password': 'x'})
-        
+
         if token_response.status_code == 200:
             self.stdout.write(self.style.SUCCESS("Login successful."))
             token_response_json = json.loads(token_response.content)
             token = token_response_json.get('token')
 
             for count in range(4):
-                input_list = []              
+                input_list = []
                 for item in user_biometrics:
                     for biochemical_name, values in item.items():
-                        if count < len(values):  
+                        if count < len(values):
                             first_value = values[count]
                             try:
                                 biochemical_id = Biochemical.objects.get(name=biochemical_name).id
@@ -96,22 +96,21 @@ class Command(BaseCommand):
                                     'value': first_value
                                 }
                             )
-                
+
                 headers = {
                     'Content-Type': 'application/json',
                     'Authorization': f'Token {token}',
                 }
                 json_input_list = json.dumps(input_list)
-                print(json_input_list)
-                
+
                 self.stdout.write(self.style.SUCCESS(f"{count} Set of biometrics creating..."))
- 
-                response = client.post(reverse('services:create-biometrics'), json=json_input_list, headers=headers)
-                
+
+                response = client.post(reverse('services:create-biometrics'), data=json_input_list, content_type='application/json', headers=headers)
+
                 if response.status_code in [200, 201]:
                     self.stdout.write(self.style.SUCCESS(f"{count} Set of biometrics creation successful."))
                 else:
                     self.stdout.write(self.style.ERROR(f"Biometrics creation failed in set {count}: {response.content.decode()}"))
-                
+
         else:
             self.stdout.write(self.style.ERROR(f"Login failed: {token_response.content.decode()}"))

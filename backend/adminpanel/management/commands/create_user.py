@@ -13,7 +13,10 @@ class Command(BaseCommand):
                 first_name = "Muhsina",
                 last_name = "hashim",
                 date_of_birth = "1985-07-30",  
+                phone_number=2222222222,
                 gender = "female",
+                height_cm = 175.0,
+                weight_kg = 68.0
             )
             self.stdout.write(self.style.SUCCESS(f'User "{user.get_full_name()}" created successfully with email "{user.email}".'))
 

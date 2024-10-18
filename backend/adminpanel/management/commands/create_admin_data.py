@@ -55,6 +55,9 @@ class Command(BaseCommand):
             call_command('check_normalized_nutrients')
             call_command('create_diagnosis')
             call_command('register_ml_models')
+            
+            call_command('create_user')
+            call_command('create_user_biometrics')
 
             # Create superuser if it doesn't already exist
             User = get_user_model()
@@ -66,10 +69,12 @@ class Command(BaseCommand):
                     date_of_birth="1111-11-11",
                     gender="male",
                     phone_number=1111111111,
+                    height_cm=175.0,
+                    weight_kg=68.0,
                     password="x"
                 )
 
-            self.stdout.write(self.style.SUCCESS('Admin data and superuser created successfully.'))
+            self.stdout.write(self.style.SUCCESS('Admin data and superuser created successfully.Now you can continue'))
 
         except Exception as e:
             raise CommandError(f'Error creating admin data: {str(e)}')
