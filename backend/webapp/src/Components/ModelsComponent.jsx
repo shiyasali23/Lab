@@ -32,6 +32,7 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
       },
     }));
   };
+console.log(models);
 
   const preparePredictionData = (model, modelInputValues) => {
     const featureNames = JSON.parse(model.feature_names);
@@ -87,7 +88,6 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
           </span>
         ) : (
           models
-            .filter((model) => model.id !== "tdsevgg53h5f53e6") // Filter out specific model ID
             .map((model) => {
               const featureNames = JSON.parse(model.feature_names);
               const isPredictClicked = predictClickedForModel === model.id;
@@ -117,7 +117,7 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
                                 (b) => b.biochemical.name === feature
                               )?.value || "");
 
-                        const displayValue = value ?? ""; // Ensure value is never null or undefined
+                        const displayValue = value ?? ""; 
                         const isMissing =
                           isPredictClicked && displayValue === "";
                         const isHighestImpact =

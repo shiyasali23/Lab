@@ -29,18 +29,8 @@ const Header = () => {
         <h2 className="text-dark">Biolabs</h2>
       </Link>
 
-      {/* Right-aligned components */}
       <div style={styles.rightComponents}>
-        {isLoggedIn && (
-          <Link
-            to="/consult"
-            className="text-dark text-center text-decoration-none"
-            style={styles.component}
-          >
-            <i className="fa-solid fa-stethoscope d-block mb-1"></i>
-            <h6>Consult</h6>
-          </Link>
-        )}
+
         
         {isLoggedIn && (
           <Link
@@ -53,7 +43,6 @@ const Header = () => {
           </Link>
         )}
 
-        {/* Component 2: Logout */}
         {isLoggedIn && (
           <button
             className="text-dark text-center text-decoration-none"
@@ -86,8 +75,8 @@ const styles = {
   },
   rightComponents: {
     display: 'flex',
-    gap: '40px',
-    marginLeft: '900px',
+    gap: '30px',
+    marginLeft: '1050px',
   },
   component: {
     textAlign: 'center',

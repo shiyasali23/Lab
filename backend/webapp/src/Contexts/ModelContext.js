@@ -11,6 +11,8 @@ export const ModelProvider = ({ children }) => {
   const [model, setModel] = useState(null);
   const [prediction, setPrediction] = useState([]);
 
+  
+
 
   const resetState = useCallback(() => {
     setModelLoading(false);

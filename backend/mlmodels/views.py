@@ -2,12 +2,15 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework import authentication, permissions, status
 from django.shortcuts import get_object_or_404
+
 import json
 import requests
 import logging
 
 from .serializers import MachineLearningModelSerializer, PredictionSerializer
 from .models import MachineLearningModel, Prediction
+
+from diagnosis.models import Symptom
 
 logger = logging.getLogger(__name__)
 
@@ -54,15 +57,54 @@ def register_model(request):
         logger.error(f"Failed to register model: {e}")
         return handle_response(error="Failed to connect to FastAPI service", status_code=500)
 
+def fetch_and_serialize_models(model_id, is_diagnosis_model):
+    try:
+        fields = ['name', 'id', 'feature_names', 'status', 'output_maps', 'accuracy', 'highest_feature_impact']
+
+        if is_diagnosis_model:
+            queryset = MachineLearningModel.objects.get(id=model_id)
+        else:
+            queryset = MachineLearningModel.objects.exclude(id=model_id)
+
+        serializer = MachineLearningModelSerializer(queryset, many=not is_diagnosis_model, fields=fields)
+
+        if is_diagnosis_model:
+            dignosis_model_data = serializer.data
+            feature_names = dignosis_model_data.pop('feature_names', [])
+
+            symptoms_obj = {symptom.name: symptom for symptom in Symptom.objects.all()}
+
+            symptoms_data = []
+            for symptom_name in feature_names:
+                symptom = symptoms_obj.get(symptom_name)
+                if symptom:
+                    symptoms_data.append({
+                        symptom.category.name: symptom_name
+                    })
+
+            dignosis_model_data['feature_names'] = symptoms_data
+            return handle_response(data=dignosis_model_data, status_code=200)
+        else:
+            return handle_response(data=serializer.data, status_code=200)
+
+    except MachineLearningModel.DoesNotExist:
+        return handle_response(error="Model not found", status_code=404)
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
+        return handle_response(error="An error occurred while fetching the model(s)", status_code=500)
+
+
+
+
 @api_view(['GET'])
 def models_list(request):
-    try:
-        models = MachineLearningModel.objects.all()
-        serializer = MachineLearningModelSerializer(models, many=True, fields=['name', 'id', 'feature_names', 'status', 'output_maps','accuracy','highest_feature_impact'])
-        return handle_response(data=serializer.data, status_code=200)
-    except Exception as e:
-        logger.error(f"An error occurred while fetching models: {str(e)}")
-        return handle_response(error="An error occurred while fetching models", status_code=500)
+    return fetch_and_serialize_models(model_id="tdsevgg53h5f53e6", is_diagnosis_model=False)
+
+@api_view(['GET'])
+def get_diagnosis_model(request):
+    return fetch_and_serialize_models(model_id="tdsevgg53h5f53e6", is_diagnosis_model=True)
+
+
 
 
 

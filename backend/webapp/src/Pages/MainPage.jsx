@@ -8,12 +8,9 @@ import ModelsComponent from "../Components/ModelsComponent";
 import FoodRecomendationComponent from "../Components/FoodRecomendationComponent";
 import SpinnerComponent from "../Components/SpinnerComponent";
 import { useNutrient } from "../Contexts/NutrientContext";
+import DiagnosisComponent from "../Components/DiagnosisComponent";
 
 const MainPage = () => {
-
-  
-
-
   const navigate = useNavigate();
   const { getUser, user, userLoading } = useUser();
   const { getNutrients } = useNutrient();
@@ -24,7 +21,7 @@ const MainPage = () => {
   const [latestBiometrics, setLatestBiometrics] = useState(null);
   const [biometrics, setBiometrics] = useState([]);
   const [foodScores, setFoodScores] = useState(null);
-  const [activeTab, setActiveTab] = useState("profile"); 
+  const [activeTab, setActiveTab] = useState("profile");
 
   const token = localStorage.getItem("token");
 
@@ -94,6 +91,17 @@ const MainPage = () => {
       ),
     },
     {
+      id: "diagnosis",
+      label: "Diagnosis",
+      icon: " fa-stethoscope",
+      component: (
+        <DiagnosisComponent
+          userData={userData}
+          latestBiometrics={latestBiometrics}
+        />
+      ),
+    },
+    {
       id: "food-recommendation",
       label: "Food Recommendation",
       icon: "fa-bowl-rice",
@@ -122,7 +130,7 @@ const MainPage = () => {
   return (
     <div>
       <Header />
-      <div className="container" style={styles.container}>
+      <div className="p-3" style={styles.container}>
         <ul
           className="d-flex justify-content-center align-items-center nav"
           role="tablist"
