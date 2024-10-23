@@ -24,60 +24,48 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Load the YOLO model
 try:
-    model = YOLO('./models/yolov8n.pt')
+    model = YOLO('./models/yolov8n.pt')  # Adjust model path if needed
     logger.info("YOLO model initialized successfully.")
 except Exception as e:
     logger.error("Error initializing YOLO model: %s", e)
     raise
 
+# Pydantic response model
 class DetectionResponse(BaseModel):
-    class Item(BaseModel):
-        name: str
-        confidence: float
-        bbox: list
-
-    items: list[Item]
+    data: list[str]  # Renamed to match what you're returning
 
 @app.post("/detect/", response_model=DetectionResponse)
 async def predict(file: UploadFile = File(...)):
     try:
+        # Read and decode the uploaded image
         image = await file.read()
         np_image = np.frombuffer(image, np.uint8)
         img = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
 
+        # YOLO inference
         results = model(img)
 
-        detections = {}
+        detected_items = set()
         for result in results:
             for detection in result.boxes:
                 name = model.names[int(detection.cls)]
                 confidence = detection.conf
-                bbox = detection.xyxy[0].tolist()
 
-                if name not in detections:
-                    detections[name] = {
-                        "confidence": confidence,
-                        "bbox": bbox
-                    }
-                else:
-                    if confidence > detections[name]["confidence"]:
-                        detections[name] = {
-                            "confidence": confidence,
-                            "bbox": bbox
-                        }
+                # Only include detections with confidence > 0.5
+                if confidence > 0.5:
+                    detected_items.add(name)
 
-        response_items = [
-            DetectionResponse.Item(name=name, confidence=det["confidence"], bbox=det["bbox"])
-            for name, det in detections.items()
-        ]
+        response_items = list(detected_items)  # Convert set to list
 
+        # Return the detection results
         if response_items:
             logger.info("Detection successful: %d items detected.", len(response_items))
-            return DetectionResponse(items=response_items)
+            return DetectionResponse(data=response_items)  # Correct return field
         else:
             logger.info("No items detected.")
-            return DetectionResponse(items=[])
+            return DetectionResponse(data=[])  # Correct return field
 
     except Exception as e:
         logger.error("Error during detection: %s", e)

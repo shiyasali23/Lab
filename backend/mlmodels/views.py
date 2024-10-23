@@ -152,7 +152,7 @@ def get_prediction(request):
         output_maps = json.loads(model.output_maps)
         
 
-        input_data = prepare_input_data(request.data, feature_names, feature_maps)
+        input_data = prepare_input_data(request.data.get("input_data"), feature_names, feature_maps)
         input_data["model_id"] = model_id
 
         response_data = get_prediction_from_service(model_id, input_data)

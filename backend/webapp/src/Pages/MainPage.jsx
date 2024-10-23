@@ -97,7 +97,6 @@ const MainPage = () => {
       component: (
         <DiagnosisComponent
           userData={userData}
-          latestBiometrics={latestBiometrics}
         />
       ),
     },

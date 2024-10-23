@@ -23,7 +23,7 @@ export const DetectionProvider = ({ children }) => {
       const response = await apiCall();      
       setSuccess(successMessage); 
       setDetection(response.data);       
-      return {data: response.data};
+      return response.data;
     } catch (err) {
       setDetectionError(err.response?.data?.detail || 'An error occurred.');
       return null;

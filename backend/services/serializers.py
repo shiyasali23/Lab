@@ -213,26 +213,24 @@ class BiometricsSerializer(serializers.ModelSerializer):
 
 
 class FoodScoreSerializer(serializers.ModelSerializer):
-    food_name = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
+    sub_category = serializers.SerializerMethodField()
 
     class Meta:
         model = FoodScore
         fields = [
-            'id', 'category' ,'food_name', 'image' ,'score', 
+             'category','sub_category' ,'name' ,'score', 
         ]
 
-    def get_food_name(self, obj):
+    def get_name(self, obj):
         return obj.food.name if obj.food else None
 
     def get_category(self, obj):
         return obj.food.subcategory.category.name if obj.food and obj.food.subcategory.category else None
     
-    def get_image(self, obj):
-        if obj.food and hasattr(obj.food, 'image') and obj.food.image:
-            return obj.food.image.image.url  
-        return None
+    def get_sub_category(self, obj):
+        return obj.food.subcategory.name if obj.food and obj.food.subcategory else None
     
 
 

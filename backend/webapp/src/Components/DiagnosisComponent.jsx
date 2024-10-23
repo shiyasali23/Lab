@@ -53,8 +53,8 @@ const DiagnosisComponent = ({ userData }) => {
       });
 
       const formData = {
-        model_id: diagnosisModel.id,
-        input_data: inputData,
+        model: diagnosisModel.id,
+        data: inputData,
       };
       setPredictionData("hi"); 
       setModalOpen(true); 

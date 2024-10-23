@@ -3,7 +3,8 @@ import { useNutrient } from "../Contexts/NutrientContext";
 import SpinnerComponent from "./SpinnerComponent";
 import { useDetection } from "../Contexts/DetectionContext";
 import NutrientsGraph from "./NutrientsGraph";
-import BarGraph from "./BarGraph";
+import FoodBars from "./FoodBars";
+import FoodAccordion from "./FoodAccordion";
 
 const FoodRecomendationComponent = ({ foodScores }) => {
   const { nutrient, nutrientLoading } = useNutrient();
@@ -15,11 +16,9 @@ const FoodRecomendationComponent = ({ foodScores }) => {
   const suggestionArray = nutrient ? nutrient.map((item) => item.name) : [];
   const [detectedFoods, setDetectedFoods] = useState(null);
 
-  const sortedScores = useMemo(() => {
-    return Array.isArray(foodScores)
-      ? [...foodScores].sort((a, b) => b.score - a.score)
-      : [];
-  }, [foodScores]);
+  const sortedFoodScores = foodScores?.sort((a, b) => b.score - a.score);
+  const length = sortedFoodScores ? sortedFoodScores.length : 0;
+
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -31,59 +30,53 @@ const FoodRecomendationComponent = ({ foodScores }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setDetectedFoods(null);
+    setDetectedFoods(null); // Reset detected foods
     const file = document.getElementById("imageUpload").files[0];
-
+  
     try {
-        const response = await getDetections(file);
+      const response = await getDetections(file);
+      
+      if (response && response.data) {
+        const detectedFoodsData = [];
+        const { data } = response; 
+        console.log("data", data);
         
-        // Check if response is valid and has the 'data' property
-        if (response && response.data) {
-            const { data } = response;
+        if (data && data.length > 0) {
+          data.forEach((item) => {
+            const matchedFoodIndex = sortedFoodScores.findIndex(
+              foodItem => foodItem.name.toLowerCase() === item.toLowerCase()
+            );
 
-            if (data && Array.isArray(data.items) && data.items.length > 0) {
-                const detectedFoodsData = [];
-
-                data.items.forEach((item) => {
-                    const foodScore = foodScores.find(
-                        (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
-                    );
-
-                    if (
-                        foodScore &&
-                        !detectedFoodsData.some(
-                            (food) =>
-                                food.food_name.toLowerCase() ===
-                                foodScore.food_name.toLowerCase()
-                        )
-                    ) {
-                        detectedFoodsData.push({ ...foodScore });
-                    }
-                });
-
-                const sortedDetectedFoods = detectedFoodsData.sort(
-                    (a, b) => b.score - a.score
-                );
-                setDetectedFoods(sortedDetectedFoods);
-                if (sortedDetectedFoods.length > 0) {
-                    const highestScoreFood = sortedDetectedFoods[0].food_name;
-                    setSearchTerm(highestScoreFood); 
-                    handleSearchSubmit(highestScoreFood);
-                }
+            if (matchedFoodIndex !== -1) { 
+              const matchedFood = sortedFoodScores[matchedFoodIndex];
+              detectedFoodsData.push({
+                name: matchedFood.name,
+                index: matchedFoodIndex 
+              });
             }
-        } else {
-            console.error('No data returned from getDetections');
+          });
+  
+          const sortedDetectedFoods = detectedFoodsData.sort(
+            (a, b) => b.score - a.score
+          );
+          setDetectedFoods(sortedDetectedFoods);
+          if (sortedDetectedFoods.length > 0) {
+            const highestScoreFood = sortedDetectedFoods[0].name;
+            setSearchTerm(highestScoreFood);
+            handleSearchSubmit(highestScoreFood);
+          } 
         }
+      }
     } catch (error) {
-        console.error('Error during detection:', error);
+      console.error("Error detecting foods:", error);
     }
-};
-
+  };
+  
 
   const handleSearchSubmit = (term) => {
     const searchValue = term || searchTerm;
 
-    if (typeof searchValue !== 'string') {
+    if (typeof searchValue !== "string") {
       setNutrientData(null);
       return;
     }
@@ -103,31 +96,30 @@ const FoodRecomendationComponent = ({ foodScores }) => {
     setSearchTerm(query);
 
     if (query) {
-        const filteredSuggestions = suggestionArray.filter((item) =>
-            item.toLowerCase().includes(query.toLowerCase())
-        );
+      const filteredSuggestions = suggestionArray.filter((item) =>
+        item.toLowerCase().includes(query.toLowerCase())
+      );
 
-        setSuggestions(
-            filteredSuggestions.length ? filteredSuggestions : ["No items found"]
-        );
+      setSuggestions(
+        filteredSuggestions.length ? filteredSuggestions : ["No items found"]
+      );
 
-        const queryExists = filteredSuggestions
-            .map((item) => item.toLowerCase())
-            .includes(query.toLowerCase());
-        
-        if (!queryExists) {
-            console.log("Query not found in suggestions");
-        }
+      const queryExists = filteredSuggestions
+        .map((item) => item.toLowerCase())
+        .includes(query.toLowerCase());
+
+      if (!queryExists) {
+        console.log("Query not found in suggestions");
+      }
     } else {
-        setSuggestions([]);
+      setSuggestions([]);
     }
-};
-
+  };
 
   const handleSelect = (item) => {
     if (item !== "No items found") {
       setSearchTerm(item);
-      handleSearchSubmit(item); 
+      handleSearchSubmit(item);
     }
     setSuggestions([]);
   };
@@ -142,7 +134,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
             ) : (
               <div className="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
                 <div
-                className="d-flex flex-column justify-content-center align-items-center"
+                  className="d-flex flex-column justify-content-center align-items-center"
                   style={{
                     width: "200px",
                     height: "200px",
@@ -177,10 +169,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                     className="border form-control w-50 m-auto"
                   />
                   {imageSrc && (
-                    <button
-                      type="submit"
-                      className="btn btn-primary m-auto"
-                    >
+                    <button type="submit" className="btn btn-primary m-auto">
                       Analyze
                     </button>
                   )}
@@ -192,11 +181,13 @@ const FoodRecomendationComponent = ({ foodScores }) => {
             {detectionsLoading ? (
               <SpinnerComponent />
             ) : detectedFoods && detectedFoods.length > 0 ? (
-              <BarGraph
-                scoreData={detectedFoods}
-                passedHeight={"30px"}
-              />
+              <div className="w-100 p-5 d-flex flex-column overflow-auto ">
+                {detectedFoods.map((food, index) => (
+                  <FoodBars length={length} food={food.name} index={food.index} />
+                ))}
+              </div>
             ) : (
+
               <h6 className="m-auto text-center">Nothing to detect</h6>
             )}
           </div>
@@ -218,7 +209,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                   className="d-flex h-100 mt-2"
                   onSubmit={(e) => {
                     e.preventDefault();
-                    handleSearchSubmit(); 
+                    handleSearchSubmit();
                   }}
                   style={{ position: "absolute" }}
                 >
@@ -265,10 +256,10 @@ const FoodRecomendationComponent = ({ foodScores }) => {
       </div>
       <div
         style={{ width: "40%" }}
-        className="h-100 border d-flex align-items-center justify-content-center overflow-auto"
+        className="h-100 p-1 border d-flex align-items-center justify-content-center overflow-auto"
       >
         {foodScores ? (
-          <BarGraph scoreData={sortedScores} />
+          <FoodAccordion foodScores={sortedFoodScores} />
         ) : (
           <div className="border d-flex align-items-center justify-content-center flex-grow-1">
             <span className="border badge rounded-pill bg-secondary">

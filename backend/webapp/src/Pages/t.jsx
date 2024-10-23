@@ -1,290 +1,208 @@
-import React, { useState, useMemo } from "react";
-import { Row, Col } from "react-bootstrap";
-import BarGraph from "./BarGraph";
-import { useNutrient } from "../Contexts/NutrientContext";
-import SpinnerComponent from "./SpinnerComponent";
-import NutrientsGraph from "./NutrientsGraph";
-import { useDetection } from "../Contexts/DetectionContext";
+import React, { useRef, useEffect, useState, } from "react";
+import Chart from "chart.js/auto";
 
-const FoodRecomendationComponent = ({ foodScores }) => {
-  const { nutrient, nutrientLoading } = useNutrient();
-  const { getDetections, detectionLoading } = useDetection();
-  const [detectedFoods, setDetectedFoods] = useState(null);
-  
-  
+const BarGraph = ({ scoreData, passedHeight }) => {
 
-  // Memoize the sorted scores so sorting only occurs when foodScores changes
-  const sortedScores = useMemo(() => {
-    return Array.isArray(foodScores)
-      ? [...foodScores].sort((a, b) => b.score - a.score)
-      : [];
-  }, [foodScores]);
+  
+  const [chartData, setChartData] = useState(null);
+  const chartRef = useRef(null); // Reference to the canvas element
+  const chartInstanceRef = useRef(null); // Reference to the Chart.js instance
 
-  const [imageSrc, setImageSrc] = useState(null);
-  const [filteredNutrient, setFilteredNutrient] = useState(null);
 
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageSrc(reader.result);
-      };
-      reader.readAsDataURL(file);
-  
-      const { data } = await getDetections(file); 
-  
-      if (data && Array.isArray(data.items)) {
-        // Check if data.items is an array
-        const detectedFoodsData = data.items
-          .map((item) => {
-            // Find the food in foodScores that matches the detected item name
-            const foodScore = sortedScores.find(
-              (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
-            );
-            return foodScore ? { ...foodScore } : null; // Copy the full foodScore object
-          })
-          .filter(Boolean); // Filter out null values
-  
-        setDetectedFoods(detectedFoodsData);
-  
-        // Step 1: Ensure nutrient data is available before proceeding
-        if (nutrient && nutrient.length > 0 && data.items.length > 0) {
-          const firstDetectedFood = data.items[0].name.toLowerCase();
-  
-          // Step 2: Find the nutrient data for the detected food in the `nutrient` array
-          const matchedNutrient = nutrient.find(
-            (item) => item.name.toLowerCase() === firstDetectedFood
-          );
-  
-          // Step 3: Set the `filteredNutrient` state to the matched nutrient's array if found
-          if (matchedNutrient) {
-            setFilteredNutrient(matchedNutrient.nutrients); // Set the array of nutrients
-          } else {
-            setFilteredNutrient(null); // If no match found, set it to null
-          }
-        }
+  useEffect(() => {
+    if (!chartRef.current) return;
+
+
+    // Extract labels and data
+    const labels = scoreData.map((food) => food.food_name);
+    const data = scoreData.map((food) => food.score);
+
+    const ctx = chartRef.current.getContext("2d"); // Get the context for the canvas
+
+    // Clean up the previous chart instance if it exists
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.destroy();
+    }
+
+    // Create the new chart instance
+    chartInstanceRef.current = new Chart(ctx, {
+      type: "bar", // Chart type: 'bar'
+      data: {
+        labels: labels, // X-axis labels (food names)
+        datasets: [
+          {
+            label: "Food Score", // Label for the dataset
+            data: data, // Y-axis data (food scores)
+            backgroundColor: data.map(
+              (value) => `rgba(${255 - value * 50}, ${value * 50}, 0, 0.7)`
+            ), // Background color of bars
+            borderColor: "rgba(0, 0, 0, 0.1)", // Border color of bars
+            borderWidth: 0, // Border width of bars
+            barThickness: "6", // Bar thickness ('flex' adjusts thickness to fit the chart area)
+            maxBarThickness: undefined, // Maximum bar thickness (default is undefined)
+            minBarLength: 0, // Minimum bar length (default is 0)
+            borderRadius: 0, // Bar corner radius (default is 0)
+            borderSkipped: "bottom", // Border not drawn on the specified edge (default is 'bottom')
+          },
+        ],
+      },
+      options: {
+        indexAxis: "y", // Set the chart orientation to horizontal
+        responsive: true, // Make the chart responsive (default is true)
+        maintainAspectRatio: false, // Maintain the aspect ratio (default is true)
+        plugins: {
+          legend: {
+            display: false, // Display legend (default is true)
+            position: "top", // Position of the legend (default is 'top')
+            align: "center", // Alignment of the legend (default is 'center')
+            labels: {
+              boxWidth: 40, // Width of the legend box (default is 40)
+              padding: 10, // Padding between legend items (default is 10)
+              color: "#666", // Color of legend text (default is '#666')
+              font: {
+                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Font family (default)
+                size: 12, // Font size (default is 12)
+                style: "normal", // Font style (default is 'normal')
+                lineHeight: 1.2, // Line height (default is 1.2)
+                weight: null, // Font weight (default is null)
+              },
+            },
+          },
+          tooltip: {
+            enabled: true, // Enable tooltips (default is true)
+            mode: "nearest", // Interaction mode (default is 'nearest')
+            intersect: true, // Tooltip appears when hovering over an item (default is true)
+            callbacks: {
+              label: (context) => `Score: ${context.raw.toFixed(2)}`, // Customize tooltip label
+            },
+            backgroundColor: "rgba(0, 0, 0, 0.8)", // Tooltip background color (default is 'rgba(0, 0, 0, 0.8)')
+            titleFont: {
+              family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Font family for the title (default)
+              size: 12, // Font size for the title (default is 12)
+              style: "bold", // Font style for the title (default is 'bold')
+              weight: null, // Font weight for the title (default is null)
+              lineHeight: 1.2, // Line height for the title (default is 1.2)
+            },
+            titleColor: "#fff", // Tooltip title color (default is '#fff')
+            bodyFont: {
+              family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Font family for the body (default)
+              size: 12, // Font size for the body (default is 12)
+              style: "normal", // Font style for the body (default is 'normal')
+              weight: null, // Font weight for the body (default is null)
+              lineHeight: 1.2, // Line height for the body (default is 1.2)
+            },
+            bodyColor: "#fff", // Tooltip body color (default is '#fff')
+          },
+        },
+        scales: {
+          x: {
+            display: false, // Hide the x-axis
+            beginAtZero: true, // Start x-axis at zero (default is true)
+            grid: {
+              display: false, // Hide x-axis grid lines (default is true)
+              color: "rgba(0, 0, 0, 0.1)", // Color of grid lines (default is 'rgba(0, 0, 0, 0.1)')
+              lineWidth: 1, // Grid line width (default is 1)
+              drawBorder: false, // Draw border on the axis (default is true)
+              drawOnChartArea: true, // Draw grid lines on the chart area (default is true)
+              drawTicks: true, // Draw ticks on the axis (default is true)
+              tickLength: 8, // Length of ticks (default is 8)
+              tickColor: "#666", // Color of ticks (default is '#666')
+              tickWidth: 1, // Width of ticks (default is 1)
+              offset: false, // Offset grid lines (default is false)
+            },
+            ticks: {
+              display: false, // Hide x-axis ticks
+              autoSkip: true, // Automatically skip ticks (default is true)
+              maxRotation: 50, // Maximum rotation for ticks (default is 50)
+              minRotation: 0, // Minimum rotation for ticks (default is 0)
+              mirror: false, // Flip the tick labels (default is false)
+              padding: 3, // Padding between ticks and chart (default is 3)
+              align: "center", // Alignment of ticks (default is 'center')
+              crossAlign: "near", // Cross alignment of ticks (default is 'near')
+            },
+          },
+          y: {
+            display: true, // Display the y-axis (default is true)
+            grid: {
+              display: false, // Hide y-axis grid lines (default is true)
+              color: "rgba(0, 0, 0, 0.1)", // Color of grid lines (default is 'rgba(0, 0, 0, 0.1)')
+              lineWidth: 1, // Grid line width (default is 1)
+              drawBorder: false, // Draw border on the axis (default is true)
+              drawOnChartArea: true, // Draw grid lines on the chart area (default is true)
+              drawTicks: true, // Draw ticks on the axis (default is true)
+              tickLength: 8, // Length of ticks (default is 8)
+              tickColor: "#666", // Color of ticks (default is '#666')
+              tickWidth: 1, // Width of ticks (default is 1)
+              offset: false, // Offset grid lines (default is false)
+            },
+            ticks: {
+              display: true, // Display y-axis ticks (default is true)
+              autoSkip: true, // Automatically skip ticks (default is true)
+              maxRotation: 50, // Maximum rotation for ticks (default is 50)
+              minRotation: 0, // Minimum rotation for ticks (default is 0)
+              mirror: false, // Flip the tick labels (default is false)
+              padding: 10, // Padding between ticks and chart (default is 3)
+              align: "center", // Alignment of ticks (default is 'center')
+              crossAlign: "near", // Cross alignment of ticks (default is 'near')
+              font: {
+                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Font family for y-axis labels (default)
+                size: 12, // Font size for y-axis labels (default is 12)
+                style: "normal", // Font style for y-axis labels (default is 'normal')
+                lineHeight: 1.2, // Line height for y-axis labels (default is 1.2)
+                weight: "bold", // Font weight for y-axis labels (customized to bold)
+              },
+            },
+          },
+        },
+        layout: {
+          padding: {
+            left: 0, // Padding on the left side of the chart (default is 0)
+            right: 0, // Padding on the right side of the chart (default is 0)
+            top: 0, // Padding on the top of the chart (default is 0)
+            bottom: 0, // Padding on the bottom of the chart (default is 0)
+          },
+        },
+        animation: {
+          duration: 1000, // Animation duration in milliseconds (default is 1000)
+          easing: "easeOutQuart", // Easing function for the animation (default is 'easeOutQuart')
+          delay: 0, // Delay before starting the animation (default is 0)
+          loop: false, // Whether to loop the animation (default is false)
+        },
+        interaction: {
+          mode: "nearest", // Interaction mode (default is 'nearest')
+          intersect: true, // Interaction only when the cursor intersects an element (default is true)
+        },
+        elements: {
+          bar: {
+            backgroundColor: "rgba(0, 0, 0, 0.1)", // Default background color for bars
+            borderColor: "rgba(0, 0, 0, 0.1)", // Default border color for bars
+            borderWidth: 0, // Default border width for bars
+            borderRadius: 0, // Default border radius for bars
+            borderSkipped: "bottom", // Default skipped border (bottom)
+            barThickness: "flex", // Default bar thickness ('flex' to adjust based on chart size)
+            maxBarThickness: undefined, // Maximum bar thickness (default is undefined)
+            minBarLength: 0, // Minimum bar length (default is 0)
+          },
+        },
+      },
+    });
+
+    // Cleanup function to destroy the chart instance
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
       }
-    }
-  };
-  
-  
-
-  const suggestionArray = nutrient ? nutrient.map((item) => item.name) : null;
-  const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-
-  const handleSearch = (e) => {
-    const query = e.target.value;
-    setSearchTerm(query);
-
-    if (query) {
-      const filteredSuggestions = suggestionArray.filter((item) =>
-        item.toLowerCase().includes(query.toLowerCase())
-      );
-      setSuggestions(
-        filteredSuggestions.length ? filteredSuggestions : ["No items found"]
-      );
-
-      setIsButtonDisabled(!filteredSuggestions.includes(query.toLowerCase()));
-    } else {
-      setSuggestions([]);
-      setIsButtonDisabled(true);
-    }
-  };
-
-  const handleSelect = (item) => {
-    if (item !== "No items found") {
-      setSearchTerm(item);
-      setIsButtonDisabled(false);
-    }
-    setSuggestions([]);
-  };
-
-  const handleSearchSubmit = () => {
-    if (nutrient && searchTerm) {
-      const result = nutrient.filter((item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredNutrient(result.length > 0 ? result : null);
-    }
-  };
-
+    };
+  }, [scoreData]);
 
   return (
-    <div className="border d-flex flex-column h-100">
-      <Row style={{ overflow: "auto" }} className="border flex-grow-1">
-        {/* Left Side (70% width) */}
-        <Col md={8} className="border d-flex flex-column">
-          <Row className="border d-flex flex-column justify-content-between h-100 w-100 align-items-center">
-            {/* Left Top (split into two sections) */}
-            <form
-              md={6}
-              style={{ border: "0px" }}
-              className="border w-50 p-0 h-100 card d-flex align-items-center justify-content-between"
-            >
-              {detectionLoading ? (
-                <SpinnerComponent />
-              ) : imageSrc ? (
-                <div
-                  style={{
-                    width: "160px",
-                    height: "160px",
-                    margin: "0px",
-                  }}
-                  className="border card p-1"
-                >
-                  <img
-                    src={imageSrc}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      padding: "0px",
-                      margin: "0",
-                      objectFit: "fill",
-                    }}
-                    alt="Uploaded"
-                  />
-                </div>
-              ) : (
-                <input
-                  type="file"
-                  id="imageUpload"
-                  name="image"
-                  accept="image/*"
-                  className="border form-control m-auto w-75"
-                  onChange={handleFileChange}
-                />
-              )}
-            </form>
-
-            <Col
-              md={6}
-              className="border  w-50 h-100 d-flex align-items-center justify-content-center"
-            >
-              {detectionLoading ? (
-                <SpinnerComponent />
-              ) : detectedFoods ? (
-                <div className="border h-100 p-0 overflow-auto w-100">
-                  <BarGraph sortedScores={detectedFoods} />
-                </div>
-              ) : (
-                <div>Upload image</div>
-              )}
-            </Col>
-          </Row>
-          <Row className="border w-100 h-100 d-flex align-items-center justify-content-center">
-            {nutrientLoading ? (
-              <SpinnerComponent />
-            ) : nutrient ? (
-              <div className="border overflow-auto w-100 h-100 p-0 d-flex flex-column justify-content-center align-items-center">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "12%",
-                    position: "relative",
-                    left: "200px",
-                  }}
-                  className="border  w-100 d-flex justify-content-center align-items-center"
-                >
-                  <form
-                    // style={{height:'85%'}}
-                    className="border d-flex p-0 h-100"
-                    onSubmit={(e) => e.preventDefault()}
-                  >
-                    <input
-                      className="border form-control w-75 me-sm-2"
-                      type="search"
-                      placeholder="Search"
-                      value={searchTerm}
-                      onChange={handleSearch}
-                    />
-                    <button
-                      className="border btn btn-dark btn-sm my-2 my-sm-0"
-                      type="submit"
-                      onClick={handleSearchSubmit} // Call search submit function
-                      disabled={isButtonDisabled}
-                    >
-                      Search
-                    </button>
-                  </form>
-
-                  {/* Suggestions Dropdown */}
-                  {suggestions.length > 0 && (
-                    <ul
-                      className="border list-group position-absolute"
-                      style={{
-                        top: "100%",
-                        left: "25%",
-                        width: "50%",
-                        zIndex: 1,
-                      }}
-                    >
-                      {suggestions.map((suggestion, index) => (
-                        <li
-                          key={index}
-                          className="border list-group-item"
-                          onClick={() => handleSelect(suggestion)}
-                          style={{
-                            cursor:
-                              suggestion !== "No items found"
-                                ? "pointer"
-                                : "default",
-                          }}
-                        >
-                          {suggestion}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className="border  w-100 h-100 d-flex justify-content-center align-items-center">
-                  {filteredNutrient ? (
-                    <NutrientsGraph nutrientData={filteredNutrient} />
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="border d-flex align-items-center justify-content-center flex-grow-1">
-                <span className="border badge rounded-pill bg-secondary">
-                  User Data not available
-                </span>
-              </div>
-            )}
-          </Row>
-        </Col>
-
-        {/* Right Side (30% width) */}
-        <Col
-          md={4}
-          style={{ maxHeight: "76.5vh" }}
-          className="border d-flex flex-column card p-0"
-        >
-          {foodScores ? (
-            <div
-              style={{
-                height: `${sortedScores.length * 20}px`,
-                width: "100%",
-                overflow: "auto",
-              }}
-            >
-              <BarGraph sortedScores={sortedScores} />
-            </div>
-          ) : (
-            <div className="border d-flex align-items-center justify-content-center flex-grow-1">
-              <span className="border badge rounded-pill bg-secondary">
-                User Data not available
-              </span>
-            </div>
-          )}
-        </Col>
-      </Row>
+    <div style={{ width: "100%", height: `${scoreData.length * 32}px` }}>
+      <canvas
+        ref={chartRef}
+        style={{ width: "100%" }}
+      />
     </div>
   );
 };
 
-export default FoodRecomendationComponent;
+export default BarGraph;
