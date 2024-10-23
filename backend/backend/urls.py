@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/adminpanel/', include('adminpanel.urls')),
     path('api/services/', include('services.urls')), 
     path('api/mlmodels/', include('mlmodels.urls')), 
+    path('api/diagnosis/', include('diagnosis.urls')), 
    
 ]
 

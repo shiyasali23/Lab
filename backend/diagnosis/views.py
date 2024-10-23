@@ -15,4 +15,4 @@ logger = logging.getLogger(__name__)
 
 @api_view(['GET'])
 def symptoms_list(request):
-    return generic_list_view(request, Symptom, SymptomsSerializer)
+    return generic_list_view(request, Symptom, SymptomSerializer)

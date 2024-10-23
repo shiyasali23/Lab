@@ -32,7 +32,6 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
       },
     }));
   };
-console.log(models);
 
   const preparePredictionData = (model, modelInputValues) => {
     const featureNames = JSON.parse(model.feature_names);

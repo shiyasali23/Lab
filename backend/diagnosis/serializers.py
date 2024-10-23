@@ -2,10 +2,14 @@ from rest_framework import serializers
 from .models import Symptom
 
 
-class SymptomsSerializer(serializers.ModelSerializer):
+class SymptomSerializer(serializers.ModelSerializer):
+    category= serializers.SerializerMethodField()  
     
     class Meta:
         model = Symptom
-        fields = ['name']
+        fields = ['name', 'category']
+        
+    def get_category(self, obj):
+        return obj.category.name
 
 

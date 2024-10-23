@@ -69,21 +69,24 @@ def fetch_and_serialize_models(model_id, is_diagnosis_model):
         serializer = MachineLearningModelSerializer(queryset, many=not is_diagnosis_model, fields=fields)
 
         if is_diagnosis_model:
-            dignosis_model_data = serializer.data
-            feature_names = dignosis_model_data.pop('feature_names', [])
+            diagnosis_model_data = serializer.data
+            feature_names = diagnosis_model_data.pop('feature_names')
+            if isinstance(feature_names, str):
+                feature_names = json.loads(feature_names)
 
-            symptoms_obj = {symptom.name: symptom for symptom in Symptom.objects.all()}
-
-            symptoms_data = []
+            symptoms_obj = {symptom.name: symptom.category.name for symptom in Symptom.objects.all()}
+            symptoms_data = {}
             for symptom_name in feature_names:
-                symptom = symptoms_obj.get(symptom_name)
-                if symptom:
-                    symptoms_data.append({
-                        symptom.category.name: symptom_name
-                    })
+                category = symptoms_obj.get(symptom_name, "Other")
+                if category:
+                    if category not in symptoms_data:
+                        symptoms_data[category] = []
+                    symptoms_data[category].append(symptom_name)
 
-            dignosis_model_data['feature_names'] = symptoms_data
-            return handle_response(data=dignosis_model_data, status_code=200)
+
+
+            diagnosis_model_data['feature_names'] = symptoms_data
+            return handle_response(data=diagnosis_model_data, status_code=200)
         else:
             return handle_response(data=serializer.data, status_code=200)
 

@@ -3,12 +3,14 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useModel } from "../Contexts/ModelContext";
 import { useUser } from "../Contexts/UserContext";
 import { useDetection } from "../Contexts/DetectionContext";
+import { useDiagnosis } from "../Contexts/DiagnosisContext";
 
 const AlertComponent = () => {
   const { authError, setAuthError } = useAuth();
   const { modelError, setModelError } = useModel();
   const { userError, setUserError } = useUser();
   const { detectionError, setDetectionError } = useDetection();
+  const { diagnosisError, setDiagnosisError } = useDiagnosis();
 
   // Handler to reset all errors
   const handleClose = () => {
@@ -16,10 +18,11 @@ const AlertComponent = () => {
     setModelError('');
     setUserError('');
     setDetectionError('');
+    setDiagnosisError('');
   };
 
   // Determine which error to display
-  const displayError = authError || modelError || userError || detectionError;
+  const displayError = authError || modelError || userError || detectionError || diagnosisError;
 
   return (
     displayError ? (

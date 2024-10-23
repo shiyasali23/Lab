@@ -90,7 +90,7 @@ const NutrientsGraph = ({ data }) => {
         chartInstanceRef.current.destroy();
       }
     };
-  }, [data]); // Update when `data` changes
+  }, [data]); 
 
   return (
     <div style={{ width: "100%", height: `241px`}} className="p-0 d-flex flex-column justify-content-center align-items-center">

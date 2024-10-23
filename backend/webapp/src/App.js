@@ -6,6 +6,7 @@ import ProfilePage from "./Pages/ProfilePage";
 import AlertComponent from "./Components/AlertComponent";
 import MainPage from "./Pages/MainPage";
 import ConsultPage from "./Pages/ConsultPage";
+import LandingPage from "./Pages/LandingPage";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <HashRouter>
           <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/consult" element={<ConsultPage />} />
           <Route path="/login" element={<LoginPage />} />
