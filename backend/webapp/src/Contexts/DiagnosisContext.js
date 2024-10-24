@@ -40,7 +40,7 @@ export const DiagnosisProvider = ({ children }) => {
       if (isPrediction) {
         setDiagnosisPrediction(response.data);
         setDiagnosisError('');
-        return { data: response.data };
+        return response.data;
       } else {
         setDiagnosisModel(response.data);
         setSuccess(successMessage);

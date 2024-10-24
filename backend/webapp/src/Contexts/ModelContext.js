@@ -71,6 +71,8 @@ export const ModelProvider = ({ children }) => {
   [handleApiCall]);
 
   const getPrediction = useCallback(async (predictionData) => {    
+    console.log(predictionData);
+    
     return handleApiCall(() => axios.post('api/mlmodels/predict/', predictionData), '', true);
   }, [handleApiCall]);
   

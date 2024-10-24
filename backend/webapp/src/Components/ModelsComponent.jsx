@@ -58,15 +58,13 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
     const model = models.find((m) => m.id === modelId);
     const modelInputValues = inputValues[modelId] || {};
     const predictionData = preparePredictionData(model, modelInputValues);
-
-    if (
-      Object.keys(predictionData).every((feature) => predictionData[feature])
-    ) {
+  
+    if (Object.keys(predictionData).every((feature) => predictionData[feature])) {
       setPredictClickedForModel(modelId);
       try {
-        getPrediction({
-          ...predictionData,
-          model_id: modelId,
+        await getPrediction({
+          data: predictionData,
+          model: modelId,
         });
       } catch (error) {
         console.error("Error fetching prediction:", error);
@@ -75,6 +73,7 @@ const ModelsComponent = ({ userData, latestBiometrics }) => {
       setPredictClickedForModel(modelId);
     }
   };
+  
 
   return (
     <div className="w-100 h-100">

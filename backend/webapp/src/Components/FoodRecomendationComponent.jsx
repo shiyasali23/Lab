@@ -30,7 +30,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setDetectedFoods(null); // Reset detected foods
+    setDetectedFoods(null); 
     const file = document.getElementById("imageUpload").files[0];
   
     try {
@@ -38,9 +38,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
       
       if (response && response.data) {
         const detectedFoodsData = [];
-        const { data } = response; 
-        console.log("data", data);
-        
+        const { data } = response;         
         if (data && data.length > 0) {
           data.forEach((item) => {
             const matchedFoodIndex = sortedFoodScores.findIndex(
@@ -177,17 +175,16 @@ const FoodRecomendationComponent = ({ foodScores }) => {
               </div>
             )}
           </div>
-          <div className="w-100 h-100 border d-flex overflow-auto">
+          <div className="w-100 border d-flex overflow-auto">
             {detectionsLoading ? (
               <SpinnerComponent />
             ) : detectedFoods && detectedFoods.length > 0 ? (
               <div className="w-100 p-5 d-flex flex-column overflow-auto ">
                 {detectedFoods.map((food, index) => (
-                  <FoodBars length={length} food={food.name} index={food.index} />
+                  <FoodBars key={index} length={length} food={food.name} FoodIndex={food.index} />
                 ))}
               </div>
             ) : (
-
               <h6 className="m-auto text-center">Nothing to detect</h6>
             )}
           </div>

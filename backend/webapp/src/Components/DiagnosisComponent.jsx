@@ -56,8 +56,10 @@ const DiagnosisComponent = ({ userData }) => {
         model: diagnosisModel.id,
         data: inputData,
       };
-      setPredictionData("hi"); 
-      setModalOpen(true); 
+      console.log(formData);
+      
+      // setPredictionData("hi"); 
+      // setModalOpen(true); 
 
       // const prediction = await getDiagnosisPrediction(formData);
 

@@ -107,10 +107,10 @@ const ProfileComponent = ({
         </div>
         <div
           style={{ overflow: "auto" }}
-          className=" w-100 card p-1 h-100  d-flex align-items-center justify-content-center"
+          className=" w-100 card p-1 h-100  d-flex align-items-center"
         >
           {Array.isArray(conditions) && conditions.length > 0 ? (
-            <div className="p-2" style={{ overflow: "auto" }}>
+            <div  style={{ overflow: "auto" }}>
               <h6 className="card-header">You may have</h6>
               {conditions.map((condition, index) => (
                 <span

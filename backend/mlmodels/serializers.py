@@ -43,16 +43,9 @@ class MachineLearningModelSerializer(serializers.ModelSerializer):
 
 
 class PredictionSerializer(serializers.ModelSerializer):
-    accuracy = serializers.SerializerMethodField()  
-    model_id = serializers.SerializerMethodField()  
 
     class Meta:
         model = Prediction
-        fields = ('prediction', 'probability', 'accuracy','model_id', 'created_at') 
+        fields = '__all__'
 
-    def get_accuracy(self, obj):
-        return obj.model.accuracy
-    
-    def get_model_id(self, obj):
-        return obj.model.id
 

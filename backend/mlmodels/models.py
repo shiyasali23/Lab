@@ -46,10 +46,9 @@ class Prediction(models.Model):
     user = models.ForeignKey('services.User', on_delete=models.CASCADE, related_name="predictions")
     
     input_data = models.JSONField(null=True, blank=True)
-    image_input = models.OneToOneField('ImageInput', on_delete=models.SET_NULL, null=True, blank=True)
 
     prediction = models.TextField()
-    probability = models.FloatField(null=True, blank=True, default=0.0)  
+    probability = models.JSONField(null=True, blank=True)  
 
     class Meta:
         indexes = [
@@ -61,15 +60,4 @@ class Prediction(models.Model):
         return f'Prediction by {self.user.get_full_name()} using {self.model.name} on {self.created_at}'
 
 
-class ImageInput(models.Model):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True,editable=False)
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    image = models.ImageField(upload_to='predictions/') 
-    
-    def __str__(self):
-        return f'Image uploaded at {self.created_at}'
 
-    class Meta:
-        indexes = [
-            models.Index(fields=['created_at']),
-        ]

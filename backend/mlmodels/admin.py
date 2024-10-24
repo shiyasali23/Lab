@@ -1,18 +1,19 @@
+# mlmodels/admin.py
 from django.contrib import admin
-from .models import MachineLearningModel, Prediction, ImageInput
+from .models import MachineLearningModel, Prediction
 
 @admin.register(MachineLearningModel)
 class MachineLearningModelAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'version', 'algorithm', 'framework', 
-        'accuracy', 'precision', 'recall', 'status', 
+        'name', 'version', 'algorithm', 'framework',
+        'accuracy', 'precision', 'recall', 'status',
         'created_at', 'updated_at'
     )
     list_filter = ('algorithm', 'framework', 'status', 'created_at')
     search_fields = ('name', 'version', 'algorithm', 'framework')
     ordering = ('-created_at',)
     readonly_fields = ('created_at', 'updated_at')
-    
+
     fieldsets = (
         (None, {'fields': ('id', 'name', 'version')}),
         ('Model Details', {'fields': ('algorithm', 'framework', 'model_file_url', 'status')}),
@@ -28,24 +29,11 @@ class PredictionAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'model__name')
     search_fields = ('user__first_name', 'user__last_name', 'model__name', 'prediction', 'probability')
     ordering = ('-created_at',)
-    raw_id_fields = ('user', 'model', 'image_input')
+    raw_id_fields = ('user', 'model')
     autocomplete_fields = ('user', 'model')
     readonly_fields = ('created_at',)
     fieldsets = (
         (None, {'fields': ('user', 'model', 'created_at')}),
-        ('Input Data', {'fields': ('input_data', 'image_input')}),
+        ('Input Data', {'fields': ('input_data',)}),
         ('Prediction Result', {'fields': ('prediction', 'probability')}),
-    )
-
-
-@admin.register(ImageInput)
-class ImageInputAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created_at', 'image')
-    list_filter = ('created_at',)
-    search_fields = ('id',)
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at',)
-    fieldsets = (
-        (None, {'fields': ('image',)}),
-        ('Timestamps', {'fields': ('created_at',)}),
     )

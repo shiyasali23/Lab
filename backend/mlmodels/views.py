@@ -10,7 +10,7 @@ import logging
 from .serializers import MachineLearningModelSerializer, PredictionSerializer
 from .models import MachineLearningModel, Prediction
 
-from diagnosis.models import Symptom
+from diagnosis.models import Symptom, Medication, Precaution, Diet
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +56,9 @@ def register_model(request):
     except requests.RequestException as e:
         logger.error(f"Failed to register model: {e}")
         return handle_response(error="Failed to connect to FastAPI service", status_code=500)
+
+#_______--------------------------------------------------------------------------------_______
+
 
 def fetch_and_serialize_models(model_id, is_diagnosis_model):
     try:
@@ -108,11 +111,9 @@ def get_diagnosis_model(request):
     return fetch_and_serialize_models(model_id="tdsevgg53h5f53e6", is_diagnosis_model=True)
 
 
-
-
-
-
 #_______--------------------------------------------------------------------------------_______
+
+
 def prepare_input_data(request_data, feature_names, feature_maps):
     input_data = {
         'data':[]
@@ -138,9 +139,9 @@ def get_prediction_from_service(model_id, input_data):
 @authentication_classes([authentication.TokenAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def get_prediction(request):
-    user = request.user
     try:
-        model_id = request.data.get("model_id")
+        user = request.user
+        model_id = request.data.get("model")
         if not model_id:
             logger.error("Model ID is missing from the request.")
             return handle_response(error="Model ID is required", status_code=400)
@@ -152,24 +153,45 @@ def get_prediction(request):
         output_maps = json.loads(model.output_maps)
         
 
-        input_data = prepare_input_data(request.data.get("input_data"), feature_names, feature_maps)
+        input_data = prepare_input_data(request.data.get("data"), feature_names, feature_maps)
         input_data["model_id"] = model_id
-
-        response_data = get_prediction_from_service(model_id, input_data)
+        response_data = get_prediction_from_service(model_id, input_data)        
+        
         prediction = response_data.get("prediction")
+        probabilities = response_data.get("probabilities")
+        
         mapped_prediction = {v: k for k, v in output_maps.items()}.get(prediction, "Unknown")
-
-        prediction_instance = Prediction(
-            user=user,
-            model=model,
-            input_data=input_data,
-            prediction=mapped_prediction,
-            probability=max(response_data.get("probabilities", []), default=0.0)
-        )
-        prediction_instance.save()
-
-        serializer = PredictionSerializer(prediction_instance)
-        return handle_response(serializer.data, status_code=200)
+        class_probabilities = {class_label: round(prob * 100, 2) for class_label, prob in zip(output_maps.keys(), probabilities)}
+         
+        prediction_data = {
+            "user": user.id,
+            "model": model.id,
+            "input_data": input_data,
+            "prediction": mapped_prediction,
+            "probability": class_probabilities  
+        }
+        serializer = PredictionSerializer(data=prediction_data)
+        if serializer.is_valid():
+            serializer.save()
+            predicted_data = {
+                "prediction": mapped_prediction,
+                "probability": class_probabilities
+            }
+            
+            if model_id == "tdsevgg53h5f53e6":
+                medications = Medication.objects.filter(diseases__name=mapped_prediction).values_list('name', flat=True)
+                precautions = Precaution.objects.filter(diseases__name=mapped_prediction).values_list('name', flat=True)
+                diets = Diet.objects.filter(diseases__name=mapped_prediction).values_list('name', flat=True)
+                
+                predicted_data['medications'] = medications
+                predicted_data['precautions'] = precautions
+                predicted_data['diets'] = diets
+                
+            
+            return handle_response(predicted_data, status_code=200)
+        else:
+            return handle_response(error=serializer.errors, status_code=400)
+            logger.error(f"Failed to save prediction: {serializer.errors}")       
     except (requests.RequestException, ValueError) as e:
         logger.error(f"Failed to get prediction: {e}")
         return handle_response(error="Failed to connect to FastAPI service or process data", status_code=500)

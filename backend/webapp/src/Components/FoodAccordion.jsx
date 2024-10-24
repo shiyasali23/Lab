@@ -35,7 +35,7 @@ const FoodAccordion = ({ foodScores }) => {
                   {groupedScores[category][subCategory].map((foodItem, foodIndex) => {
                     const itemIndex = foodScores.findIndex(item => item.name === foodItem.name);
                     return (
-                        <FoodBars length={length} food={foodItem.name} index={itemIndex} />
+                        <FoodBars key={foodIndex} length={length} food={foodItem.name} FoodIndex={itemIndex} />
                     );
                   })}
                 </ul>

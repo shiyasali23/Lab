@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         user_biometrics = [
-            {"Blood Glucose": [102.4, 98.7, 94.3, 91.8]},
+            {"Blood Glucose": [102.4, 98.7, 94.3, 102.4]},
             {"Hemoglobin A1c": [5.8, 5.7, 5.5, 5.4]},
             {"Glycated Albumin": [13.8, 14.2, 13.9, 13.5]},
             {"Total Cholesterol": [213.6, 208.4, 204.7, 198.3]},

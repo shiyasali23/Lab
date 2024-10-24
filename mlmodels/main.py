@@ -85,7 +85,9 @@ def predict_disease(data: DiseaseInput):
     try:
         input_data = np.array(data.data).reshape(1, -1)
         prediction = models['disease']['model'].predict(input_data)
-        probabilities = models['disease']['model'].predict_proba(input_data)
+        scores = models['disease']['model'].decision_function(input_data)
+        exp_scores = np.exp(scores - np.max(scores))
+        probabilities = exp_scores / np.sum(exp_scores)
 
         return {
             "prediction": int(prediction[0]),  
