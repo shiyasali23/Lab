@@ -60,7 +60,7 @@ export const DiagnosisProvider = ({ children }) => {
   }, [resetState]);
 
   const getDiagnosis = useCallback(() => 
-    handleApiCall(() => axios.get('api/mlmodels/get_diagnosis_model/'), 'Diagnosis fetch successful!'),
+    handleApiCall(() => axios.get('api/mlmodels/diagnosis/'), 'Diagnosis fetch successful!'),
   [handleApiCall]);
 
   const getDiagnosisPrediction = useCallback(async (predictionData) => {

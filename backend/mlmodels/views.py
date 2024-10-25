@@ -174,6 +174,7 @@ def get_prediction(request):
         if serializer.is_valid():
             serializer.save()
             predicted_data = {
+                "model" : model_id,
                 "prediction": mapped_prediction,
                 "probability": class_probabilities
             }

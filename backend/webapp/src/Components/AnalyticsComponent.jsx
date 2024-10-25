@@ -73,9 +73,9 @@ const AnalyticsComponent = ({ biometrics }) => {
         className=" d-flex align-items-center justify-content-center p-3"
         style={{ width: "50%", height: "100%", overflow: "auto" }}
       >
-        <Accordion className="w-100 h-100" style={styles.accordian}>
+        <Accordion className="w-100 h-100 border-none" >
           {Object.keys(categorizedBiometrics).map((category, index) => (
-            <Accordion.Item style={styles.accordian} eventKey={index.toString()} key={index}>
+            <Accordion.Item className="border-none" eventKey={index.toString()} key={index}>
               <Accordion.Header>
                 <strong>{category}</strong>
               </Accordion.Header>
@@ -113,17 +113,5 @@ const AnalyticsComponent = ({ biometrics }) => {
   );
 };
 
-const styles = {
-  centeredMessage: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
-  },
-  accordian:{
-    border: 'none',
-  }
-};
 
 export default AnalyticsComponent;

@@ -296,6 +296,16 @@ font-size: 1.6rem;
   color: #fff;
 }
 
+.centered-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+
+
 /* body {
   background-color: #f0f8ff; 
   font-family: 'Arial', sans-serif;

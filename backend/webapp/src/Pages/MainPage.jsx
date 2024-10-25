@@ -9,6 +9,7 @@ import FoodRecomendationComponent from "../Components/FoodRecomendationComponent
 import SpinnerComponent from "../Components/SpinnerComponent";
 import { useNutrient } from "../Contexts/NutrientContext";
 import DiagnosisComponent from "../Components/DiagnosisComponent";
+import CenteredMessage from "../Components/CenteredMessage";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -37,8 +38,8 @@ const MainPage = () => {
   useEffect(() => {
     if (user) {
       const { weight_kg, height_cm, date_of_birth } = user.user || {};
-      const bmi =
-        weight_kg && height_cm ? weight_kg / (height_cm / 100) ** 2 : null;
+      const bmi = weight_kg && height_cm ? Math.floor(weight_kg / (height_cm / 100) ** 2) : null;
+
       const age = date_of_birth
         ? Math.floor(
             (new Date() - new Date(date_of_birth)) /
@@ -46,7 +47,7 @@ const MainPage = () => {
           )
         : null;
 
-      setUserData({ ...user.user, bmi: bmi ? bmi.toFixed(2) : null, age });
+      setUserData({ ...user.user, bmi: bmi ? parseFloat(bmi.toFixed(2)) : null, age });
       setHealthScore(user.health_score || null);
       setConditions(user.conditions || null);
       setLatestBiometrics(user.latest_biometrics || null);
@@ -54,6 +55,9 @@ const MainPage = () => {
       setBiometrics(user.biometrics || []);
     }
   }, [user]);
+
+  
+  
 
   const handleTabClick = (id) => {
     setActiveTab(id);
@@ -143,11 +147,7 @@ const MainPage = () => {
           {userLoading ? (
             <SpinnerComponent />
           ) : !userData ? (
-            <div style={styles.centeredMessage}>
-              <span className="badge rounded-pill bg-secondary">
-                User Data not available
-              </span>
-            </div>
+            <CenteredMessage text={"User Data not available"}/>
           ) : (
             tabs.map((tab) => (
               <div
@@ -193,13 +193,6 @@ const styles = {
   content: {
     width: "100%",
     height: "88%",
-  },
-  centeredMessage: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
   },
   label: {
     fontSize: "18px",

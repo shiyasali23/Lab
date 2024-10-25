@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDiagnosis } from "../Contexts/DiagnosisContext";
 import SpinnerComponent from "./SpinnerComponent";
 import PredictionModal from "./PredictionModal"; 
+import CenteredMessage from "./CenteredMessage";
 
 const DiagnosisComponent = ({ userData }) => {
   const {
@@ -82,11 +83,7 @@ const DiagnosisComponent = ({ userData }) => {
       {diagnosisLoading ? (
         <SpinnerComponent />
       ) : !diagnosisModel ? (
-        <div style={styles.centeredMessage}>
-          <span className="badge rounded-pill bg-secondary">
-            Diagnosis model not available
-          </span>
-        </div>
+        <CenteredMessage text={"Diagnosis model not available"}/>
       ) : (
         <form onSubmit={handleSubmit} className="overflow-auto p-1 m-auto h-100 border position-relative">
           <div style={{ paddingBottom: "18px" }}>
@@ -143,13 +140,6 @@ const DiagnosisComponent = ({ userData }) => {
 };
 
 const styles = {
-  centeredMessage: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
-  },
   featureGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",

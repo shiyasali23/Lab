@@ -1,5 +1,6 @@
 import React from "react";
 import HealthScoreGraph from "./HealthScoreGraph";
+import CenteredMessage from "./CenteredMessage";
 
 const ProfileComponent = ({
   userData,
@@ -123,11 +124,7 @@ const ProfileComponent = ({
               ))}
             </div>
           ) : (
-            <div style={styles.centeredMessage}>
-              <span className="badge rounded-pill bg-secondary">
-                Conditions not available
-              </span>
-            </div>
+            <CenteredMessage text={"Conditions not available"}/>
           )}
         </div>
       </div>
@@ -135,24 +132,11 @@ const ProfileComponent = ({
         {healthScore ? (
           <HealthScoreGraph healthScore={healthScore} />
         ) : (
-          <div style={styles.centeredMessage}>
-            <span className="badge rounded-pill bg-secondary">
-              User Data not available
-            </span>
-          </div>
+          <CenteredMessage text={"User Data not available"}/>
         )}
       </div>
     </div>
   );
 };
 
-const styles = {
-  centeredMessage: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
-  },
-};
 export default ProfileComponent;

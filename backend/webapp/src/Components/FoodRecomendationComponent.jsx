@@ -5,6 +5,7 @@ import { useDetection } from "../Contexts/DetectionContext";
 import NutrientsGraph from "./NutrientsGraph";
 import FoodBars from "./FoodBars";
 import FoodAccordion from "./FoodAccordion";
+import CenteredMessage from "./CenteredMessage";
 
 const FoodRecomendationComponent = ({ foodScores }) => {
   const { nutrient, nutrientLoading } = useNutrient();
@@ -150,7 +151,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                       }}
                     />
                   ) : (
-                    <h6 className="m-auto text-center">Uploaded Image</h6>
+                    <CenteredMessage text={"Upload an image"}/>
                   )}
                 </div>
                 <form
@@ -175,7 +176,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
               </div>
             )}
           </div>
-          <div className="w-100 border d-flex overflow-auto">
+          <div className="w-100 border d-flex align-items-center justify-content-center overflow-auto">
             {detectionsLoading ? (
               <SpinnerComponent />
             ) : detectedFoods && detectedFoods.length > 0 ? (
@@ -185,7 +186,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                 ))}
               </div>
             ) : (
-              <h6 className="m-auto text-center">Nothing to detect</h6>
+              <CenteredMessage text={"No detections found"}/>
             )}
           </div>
         </div>
@@ -258,11 +259,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
         {foodScores ? (
           <FoodAccordion foodScores={sortedFoodScores} />
         ) : (
-          <div className="border d-flex align-items-center justify-content-center flex-grow-1">
-            <span className="border badge rounded-pill bg-secondary">
-              User Data not available
-            </span>
-          </div>
+          <CenteredMessage text={"User Data not available"}/>
         )}
       </div>
     </div>

@@ -47,7 +47,7 @@ export const ModelProvider = ({ children }) => {
           return [...updatedPredictions, newPrediction];
         });
         setModelError('');
-        return { data: response.data };
+        return response.data;
       } else {
         setModel(response.data);
         setSuccess(successMessage);
@@ -67,12 +67,10 @@ export const ModelProvider = ({ children }) => {
   }, [resetState]);
 
   const getModels = useCallback(() => 
-    handleApiCall(() => axios.get('api/mlmodels/models_list/'), 'Models fetch successful!'),
+    handleApiCall(() => axios.get('api/mlmodels/list/'), 'Models fetch successful!'),
   [handleApiCall]);
 
-  const getPrediction = useCallback(async (predictionData) => {    
-    console.log(predictionData);
-    
+  const getPrediction = useCallback(async (predictionData) => {        
     return handleApiCall(() => axios.post('api/mlmodels/predict/', predictionData), '', true);
   }, [handleApiCall]);
   

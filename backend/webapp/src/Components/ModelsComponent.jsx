@@ -1,243 +1,174 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { useModel } from "../Contexts/ModelContext";
 import SpinnerComponent from "./SpinnerComponent";
+import CenteredMessage from "./CenteredMessage";
 
 const ModelsComponent = ({ userData, latestBiometrics }) => {
-  const {
-    getModels,
-    modelLoading,
-    predictionLoading,
-    getPrediction,
-    prediction,
-  } = useModel();
-  const [models, setModels] = useState([]);
-  const [predictClickedForModel, setPredictClickedForModel] = useState(null);
-  const [inputValues, setInputValues] = useState({});
+  const { getModels, modelLoading, predictionLoading, getPrediction } =
+    useModel();
+
+  const [models, setModels] = useState(null);
+  const [userInputs, setUserInputs] = useState([]); 
 
   useEffect(() => {
     const fetchModels = async () => {
-      const fetchedModels = await getModels();
-      if (fetchedModels) setModels(fetchedModels);
+      const data = await getModels();
+      if (data) {
+        setModels(data);
+        const newUserInputs = data.map((items) => {
+          const newitems = {
+            model: items.id,
+            data: {},
+          };
+
+          JSON.parse(items.feature_names).forEach((featureName) => {
+            newitems.data[featureName] = findInputValue(featureName);
+          });
+
+          return newitems;
+        });
+        setUserInputs(newUserInputs);
+      }
     };
+
     fetchModels();
   }, [getModels]);
 
-  const handleChange = (feature, value, modelId) => {
-    setInputValues((prev) => ({
-      ...prev,
-      [modelId]: {
-        ...(prev[modelId] || {}),
-        [feature]: value,
-      },
-    }));
-  };
+  const findInputValue = (featureName) => {
+    const userAttributes = {
+      Age: userData.age,
+      Gender: userData.gender,
+      BMI: userData.bmi,
+    };
 
-  const preparePredictionData = (model, modelInputValues) => {
-    const featureNames = JSON.parse(model.feature_names);
-    return featureNames.reduce((acc, feature) => {
-      let value = modelInputValues[feature] || "";
-      if (!value) {
-        value =
-          feature === "Age"
-            ? userData.age
-            : feature === "Gender"
-            ? userData.gender.toLowerCase()
-            : feature === "BMI"
-            ? userData.bmi
-            : latestBiometrics.find((b) => b.biochemical.name === feature)
-                ?.value || "";
-      }
-      acc[feature] =
-        feature !== "Age" && feature !== "Gender" ? parseFloat(value) : value;
-      return acc;
-    }, {});
-  };
-
-  const handleClickPredict = async (modelId) => {
-    const model = models.find((m) => m.id === modelId);
-    const modelInputValues = inputValues[modelId] || {};
-    const predictionData = preparePredictionData(model, modelInputValues);
-  
-    if (Object.keys(predictionData).every((feature) => predictionData[feature])) {
-      setPredictClickedForModel(modelId);
-      try {
-        await getPrediction({
-          data: predictionData,
-          model: modelId,
-        });
-      } catch (error) {
-        console.error("Error fetching prediction:", error);
-      }
-    } else {
-      setPredictClickedForModel(modelId);
+    if (featureName in userAttributes) {
+      return userAttributes[featureName] || "";
     }
+
+    const matchedBiometric = latestBiometrics.find(
+      (biometric) => biometric.biochemical.name === featureName
+    );
+
+    return matchedBiometric ? matchedBiometric.value : "";
+  };
+
+  const handleChange = (e, featureName, modelId) => {
+    const newValue = e.target.value;
+
+    setUserInputs((prevInputs) => {
+      const updatedInputs = [...prevInputs];
+      const modelIndex = updatedInputs.findIndex(
+        (item) => item.model === modelId
+      );
+
+      if (modelIndex !== -1) {
+        updatedInputs[modelIndex].data[featureName] =
+          featureName === "Gender" ? newValue : parseFloat(newValue);
+      }
+
+      return updatedInputs;
+    });
+  };
+
+
+  const renderInputs = (featureName, featureValue, modelId) => {
+    return (
+      <Form.Group className="" key={featureName}>
+        <Form.Label className="form-label-small">{featureName}</Form.Label>
+        <Form.Control
+          value={featureValue}
+          type={featureName === "Gender" ? "text" : "number"}
+          className="form-input-small"
+          readOnly={featureName === "Age" || featureName === "Gender" ? true : false}
+          onChange={(e) => handleChange(e, featureName, modelId)}
+          required
+        />
+      </Form.Group>
+    );
+  };
+  
+  const renderPredictions = (modelId) => {
+    const model = models.find((model) => model.id === modelId);
+    const outputMap = JSON.parse(model.output_maps); 
+  
+    return (
+      <div className="w-100 p-2 gap-2 d-flex justify-content-center align-items-center">
+        {Object.keys(outputMap).map((prediction) => (
+          <button key={prediction} className="btn btn-primary">
+            {prediction}
+          </button>
+        ))}
+      </div>
+    );
   };
   
 
   return (
-    <div className="w-100 h-100">
-      <div className="d-flex gap-2" style={{ overflow: "auto" }}>
+    <div className="w-100 h-100 d-flex gap-2 flex-column ">
+      <div className="w-100 h-100 d-flex gap-2 justify-content-center align-items-center">
         {modelLoading ? (
           <SpinnerComponent />
-        ) : models.length === 0 ? (
-          <span className="badge m-auto rounded-pill bg-secondary">
-            AI models are not available
-          </span>
+        ) : userInputs.length === 0 ? (
+          <CenteredMessage text={"Models not found"} />
         ) : (
-          models
-            .map((model) => {
-              const featureNames = JSON.parse(model.feature_names);
-              const isPredictClicked = predictClickedForModel === model.id;
-              const outputMaps = JSON.parse(model.output_maps);
-
-              return (
-                <div
-                  className="p-3 border overflow-auto d-flex flex-column"
-                  key={model.id}
-                >
-                  <h6 className="ml-50 mb-2 w-100">
-                    {model.name}: {model.accuracy.toFixed(3)}% accurate
-                  </h6>
-                  {latestBiometrics && userData && (
-                    <Row>
-                      {featureNames.map((feature, index) => {
-                        const modelInputValues = inputValues[model.id] || {};
-                        const value =
-                          modelInputValues[feature] ||
-                          (feature === "Age"
-                            ? userData.age
-                            : feature === "Gender"
-                            ? userData.gender
-                            : feature === "BMI"
-                            ? userData.bmi
-                            : latestBiometrics.find(
-                                (b) => b.biochemical.name === feature
-                              )?.value || "");
-
-                        const displayValue = value ?? ""; 
-                        const isMissing =
-                          isPredictClicked && displayValue === "";
-                        const isHighestImpact =
-                          feature === model.highest_feature_impact;
-
-                        return (
-                          <Form.Group
-                            className="mb-3 col-lg-4 col-sm-12 col-sm-3"
-                            key={index}
-                          >
-                            <Form.Label
-                              className="form-label-small"
-                              style={{
-                                color: isHighestImpact ? "red" : "inherit",
-                              }}
-                            >
-                              {feature}
-                              {isMissing && (
-                                <span className="text-danger ms-1">
-                                  * missing
-                                </span>
-                              )}
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={displayValue}
-                              onChange={(e) =>
-                                handleChange(feature, e.target.value, model.id)
-                              }
-                              className="form-input-small"
-                            />
-                          </Form.Group>
-                        );
-                      })}
-                    </Row>
+          <>
+            {userInputs.map((items, index) => (
+              <div
+                key={index}
+                style={{ width: "50%" }}
+                className="h-100 card d-flex flex-column border"
+              >
+                <h6 className="card-header text-center w-100">
+                  {models.find((model) => model.id === items.model).name}:{" "}
+                  {models
+                    .find((model) => model.id === items.model)
+                    .accuracy.toFixed(2)}
+                  % accurate
+                </h6>
+                <form style={styles.featureGrid} className="w-100 h-100 p-2">
+                  {Object.entries(items.data).map(
+                    ([featureName, featureValue]) =>
+                      renderInputs(featureName, featureValue, items.model)
                   )}
-                  <div className="d-flex p-3" style={{ width: "100%" }}>
-                    <Button
-                      type="button"
-                      style={{
-                        width: "100px",
-                        borderRadius: 0,
-                        margin: "0 20px",
-                      }}
-                      className="btn btn-dark"
-                      onClick={() => handleClickPredict(model.id)}
-                      disabled={predictionLoading}
-                    >
-                      {predictionLoading ? (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <Spinner
-                            animation="border"
-                            size="sm"
-                            style={{ marginRight: "8px" }}
-                          />
-                          <p style={{ margin: 0 }}>Predicting</p>
-                        </div>
-                      ) : (
-                        "Predict"
-                      )}
-                    </Button>
-                    {Object.entries(outputMaps).map(([name, value], index) => {
-                      const isPredictionActive = prediction.some(
-                        (pred) =>
-                          pred.model_id === model.id && pred.prediction === name
-                      );
-
-                      return (
-                        <Button
-                          key={value}
-                          type="button"
-                          className={`btn btn-sm ${
-                            isPredictionActive
-                              ? index === 0
-                                ? "btn-success"
-                                : "btn-danger"
-                              : "btn-secondary"
-                          } ${isPredictionActive ? "" : "disabled"} me-2`}
-                          disabled={predictionLoading}
-                        >
-                          {predictionLoading ? (
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Spinner
-                                animation="border"
-                                size="sm"
-                                style={{ marginRight: "8px" }}
-                              />
-                              {name}
-                            </div>
-                          ) : (
-                            name
-                          )}
-                        </Button>
-                      );
-                    })}
-                  </div>
+                </form>
+                <div
+                  style={{ height: "15%" }}
+                  className="w-100 d-flex flex-column p-2"
+                >
+                  {predictionLoading ? (
+                    <SpinnerComponent />
+                  ) : (
+                    <div className="w-100 d-flex justify-content-center align-items-center">
+                      <button
+                        style={{ width: "30%" }}
+                        className="btn btn-primary m-auto"
+                      >
+                        Predict
+                      </button>
+                      {renderPredictions(items.model)}
+                    </div>
+                  )}
                 </div>
-              );
-            })
+              </div>
+            ))}
+          </>
         )}
       </div>
-      <div className="w-100 h-20 d-flex border align-items-center justify-content-evenly">
-        <h6 className="m-3 text-center">Upcoming models:-</h6>
-        {[
-          "Alzheimers Detection",
-          "Kidney Condition",
-          "Parkinsons Detection",
-          "Cancer Detection",
-        ].map((model, index) => (
-          <strong
-            key={index}
-            className="p-2 m-3 border text-center"
-            style={{ fontSize: "16px" }}
-          >
-            {model}
-          </strong>
-        ))}
+      <div style={{ height: "15%" }} className="w-100 border">
+        bottom
       </div>
     </div>
   );
+};
+
+const styles = {
+  featureGrid: {
+    display: "grid",
+    gap: "10px",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    alignItems: "center",
+  },
 };
 
 export default ModelsComponent;

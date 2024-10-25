@@ -1,274 +1,240 @@
-import React, { useMemo, useState } from "react";
-import { useNutrient } from "../Contexts/NutrientContext";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Row, Spinner } from "react-bootstrap";
+import { useModel } from "../Contexts/ModelContext";
 import SpinnerComponent from "./SpinnerComponent";
-import { useDetection } from "../Contexts/DetectionContext";
-import NutrientsGraph from "./NutrientsGraph";
-import FoodBars from "./FoodBars";
-import FoodAccordion from "./FoodAccordion";
 
-const FoodRecomendationComponent = ({ foodScores }) => {
-  const { nutrient, nutrientLoading } = useNutrient();
-  const { getDetections, detectionsLoading } = useDetection();
-  const [imageSrc, setImageSrc] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [nutrientData, setNutrientData] = useState(null);
-  const suggestionArray = nutrient ? nutrient.map((item) => item.name) : [];
-  const [detectedFoods, setDetectedFoods] = useState(null);
+const ModelsComponent = ({ userData, latestBiometrics }) => {
+  const { getModels, modelLoading, predictionLoading, getPrediction } =
+    useModel();
 
-  const sortedScores = useMemo(() => {
-    return Array.isArray(foodScores)
-      ? [...foodScores].sort((a, b) => b.score - a.score)
-      : [];
-  }, [foodScores]);
+  const [models, setModels] = useState([]);
+  const [predictClickedForModel, setPredictClickedForModel] = useState(null);
+  const [inputValues, setInputValues] = useState({});
+  const [prediction, setPrediction] = useState(null);
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImageSrc(imageUrl);
-    }
+  useEffect(() => {
+    const fetchModels = async () => {
+      const fetchedModels = await getModels();
+      if (fetchedModels) setModels(fetchedModels);
+    };
+    fetchModels();
+  }, [getModels]);
+
+  const handleChange = (feature, value, modelId) => {
+    setInputValues((prev) => ({
+      ...prev,
+      [modelId]: {
+        ...(prev[modelId] || {}),
+        [feature]: value,
+      },
+    }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setDetectedFoods(null);
-    const file = document.getElementById("imageUpload").files[0];
-
-    const response = await getDetections(file);
-    
-    if (response && response.data) {
-      const { data } = response['items'];
-
-      if (data && data.length > 0) {
-        const detectedFoodsData = [];
-
-        data.forEach((item) => {
-          const foodScore = foodScores.find(
-            (food) => food.food_name.toLowerCase() === item.name.toLowerCase()
-          );
-
-          if (
-            foodScore &&
-            !detectedFoodsData.some(
-              (food) =>
-                food.food_name.toLowerCase() ===
-                foodScore.food_name.toLowerCase()
-            )
-          ) {
-            detectedFoodsData.push({ ...foodScore });
-          }
-        });
-
-        const sortedDetectedFoods = detectedFoodsData.sort(
-          (a, b) => b.score - a.score
-        );
-        setDetectedFoods(sortedDetectedFoods);
-        if (sortedDetectedFoods.length > 0) {
-          const highestScoreFood = sortedDetectedFoods[0].food_name;
-          setSearchTerm(highestScoreFood);
-          handleSearchSubmit(highestScoreFood);
-        }
+  const preparePredictionData = (model, modelInputValues) => {
+    const featureNames = JSON.parse(model.feature_names);
+    return featureNames.reduce((acc, feature) => {
+      let value = modelInputValues[feature] || "";
+      if (!value) {
+        value =
+          feature === "Age"
+            ? userData.age
+            : feature === "Gender"
+            ? userData.gender.toLowerCase()
+            : feature === "BMI"
+            ? userData.bmi
+            : latestBiometrics.find((b) => b.biochemical.name === feature)
+                ?.value || "";
       }
-    }
+      acc[feature] =
+        feature !== "Age" && feature !== "Gender" ? parseFloat(value) : value;
+      return acc;
+    }, {});
   };
 
-  const handleSearchSubmit = (term) => {
-    const searchValue = term || searchTerm;
+  const handleClickPredict = async (modelId) => {
+    const model = models.find((m) => m.id === modelId);
+    const modelInputValues = inputValues[modelId] || {};
+    const predictionData = preparePredictionData(model, modelInputValues);
 
-    if (typeof searchValue !== "string") {
-      setNutrientData(null);
-      return;
-    }
-
-    if (nutrient && searchValue) {
-      const result = nutrient.filter(
-        (item) => item.name.toLowerCase() === searchValue.toLowerCase()
-      );
-      setNutrientData(result.length > 0 ? result : null);
-    } else {
-      setNutrientData(null);
-    }
-  };
-
-  const handleSearch = (e) => {
-    const query = e.target.value;
-    setSearchTerm(query);
-
-    if (query) {
-      const filteredSuggestions = suggestionArray.filter((item) =>
-        item.toLowerCase().includes(query.toLowerCase())
-      );
-
-      setSuggestions(
-        filteredSuggestions.length ? filteredSuggestions : ["No items found"]
-      );
-
-      const queryExists = filteredSuggestions
-        .map((item) => item.toLowerCase())
-        .includes(query.toLowerCase());
-
-      if (!queryExists) {
-        console.log("Query not found in suggestions");
+    if (
+      Object.keys(predictionData).every((feature) => predictionData[feature])
+    ) {
+      setPredictClickedForModel(modelId);
+      const { data } = await getPrediction({
+        data: predictionData,
+        model: modelId,
+      });
+      if (data) {
+        setPrediction(data);
       }
     } else {
-      setSuggestions([]);
+      setPredictClickedForModel(modelId);
     }
-  };
-
-  const handleSelect = (item) => {
-    if (item !== "No items found") {
-      setSearchTerm(item);
-      handleSearchSubmit(item);
-    }
-    setSuggestions([]);
   };
 
   return (
-    <div className="w-100 h-100 border d-flex justify-content-center align-items-center">
-      <div className="w-100 h-100 border d-flex flex-column align-items-center justify-content-center overflow-auto">
-        <div className="w-100 h-100 d-flex">
-          <div className="w-100 h-100 border d-flex flex-column">
-            {detectionsLoading ? (
-              <SpinnerComponent />
-            ) : (
-              <div className="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{
-                    width: "200px",
-                    height: "200px",
-                    margin: "auto",
-                  }}
-                >
-                  {imageSrc ? (
-                    <img
-                      src={imageSrc}
-                      alt="Uploaded"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "fill",
-                      }}
-                    />
-                  ) : (
-                    <h6 className="m-auto text-center">Uploaded Image</h6>
-                  )}
-                </div>
-                <form
-                  style={{ height: "20%" }}
-                  onSubmit={handleSubmit}
-                  className="w-100 d-flex justify-content-center"
-                >
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    name="image"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="border form-control w-50 m-auto"
-                  />
-                  {imageSrc && (
-                    <button type="submit" className="btn btn-primary m-auto">
-                      Analyze
-                    </button>
-                  )}
-                </form>
-              </div>
-            )}
-          </div>
-          <div className="w-100 h-100 border d-flex overflow-auto">
-            {detectionsLoading ? (
-              <SpinnerComponent />
-            ) : detectedFoods && detectedFoods.length > 0 ? (
-              <></>
-            ) : (
-              // <BarGraph
-              //   scoreData={detectedFoods}
-              //   passedHeight={"30px"}
-              // />
-              <h6 className="m-auto text-center">Nothing to detect</h6>
-            )}
-          </div>
-        </div>
-        <div className="w-100 h-100 p-0 d-flex flex-column justify-content-space-between align-items-center">
-          {nutrientLoading ? (
-            <SpinnerComponent />
-          ) : (
-            <>
-              <div
-                style={{
-                  width: "100%",
-                  height: "12%",
-                  position: "relative",
-                }}
-                className="w-100 d-flex justify-content-center align-items-center"
-              >
-                <form
-                  className="d-flex h-100 mt-2"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSearchSubmit();
-                  }}
-                  style={{ position: "absolute" }}
-                >
-                  <input
-                    className="form-control p-0 text-center"
-                    type="search"
-                    placeholder="Search"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                  />
-                </form>
-                {suggestions.length > 0 && (
-                  <ul
-                    className="border list-group position-absolute"
-                    style={{
-                      top: "100%",
-                      left: "25%",
-                      width: "50%",
-                      zIndex: 1,
-                    }}
-                  >
-                    {suggestions.map((suggestion, index) => (
-                      <li
-                        key={index}
-                        className="border list-group-item"
-                        onClick={() => handleSelect(suggestion)}
-                        style={{
-                          cursor:
-                            suggestion !== "No items found"
-                              ? "pointer"
-                              : "default",
-                        }}
-                      >
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              {nutrientData && <NutrientsGraph data={nutrientData} />}
-            </>
-          )}
-        </div>
-      </div>
-      <div
-        style={{ width: "40%" }}
-        className="h-100 p-1 border d-flex align-items-center justify-content-center overflow-auto"
-      >
-        {foodScores ? (
-          <FoodAccordion foodScores={foodScores} />
+    <div className="w-100 h-100">
+      <div className="d-flex gap-2" style={{ overflow: "auto" }}>
+        {modelLoading ? (
+          <SpinnerComponent />
+        ) : models.length === 0 ? (
+          <span className="badge m-auto rounded-pill bg-secondary">
+            AI models are not available
+          </span>
         ) : (
-          <div className="border d-flex align-items-center justify-content-center flex-grow-1">
-            <span className="border badge rounded-pill bg-secondary">
-              User Data not available
-            </span>
-          </div>
+          models.map((model) => {
+            const featureNames = JSON.parse(model.feature_names);
+            const isPredictClicked = predictClickedForModel === model.id;
+            const outputMaps = JSON.parse(model.output_maps);
+
+            return (
+              <div
+                className="p-3 border overflow-auto d-flex flex-column"
+                key={model.id}
+              >
+                <h6 className="ml-50 mb-2 w-100">
+                  {model.name}: {model.accuracy.toFixed(3)}% accurate
+                </h6>
+                {latestBiometrics && userData && (
+                  <Row>
+                    {featureNames.map((feature, index) => {
+                      const modelInputValues = inputValues[model.id] || {};
+                      const value =
+                        modelInputValues[feature] ||
+                        (feature === "Age"
+                          ? userData.age
+                          : feature === "Gender"
+                          ? userData.gender
+                          : feature === "BMI"
+                          ? userData.bmi
+                          : latestBiometrics.find(
+                              (b) => b.biochemical.name === feature
+                            )?.value || "");
+
+                      const displayValue = value ?? "";
+                      const isMissing = isPredictClicked && displayValue === "";
+                      const isHighestImpact =
+                        feature === model.highest_feature_impact;
+
+                      return (
+                        <Form.Group
+                          className="mb-3 col-lg-4 col-sm-12 col-sm-3"
+                          key={index}
+                        >
+                          <Form.Label
+                            className="form-label-small"
+                            style={{
+                              color: isHighestImpact ? "red" : "inherit",
+                            }}
+                          >
+                            {feature}
+                            {isMissing && (
+                              <span className="text-danger ms-1">
+                                * missing
+                              </span>
+                            )}
+                          </Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={displayValue}
+                            onChange={(e) =>
+                              handleChange(feature, e.target.value, model.id)
+                            }
+                            className="form-input-small"
+                          />
+                        </Form.Group>
+                      );
+                    })}
+                  </Row>
+                )}
+                <div className="d-flex p-3" style={{ width: "100%" }}>
+                  <Button
+                    type="button"
+                    style={{
+                      width: "100px",
+                      borderRadius: 0,
+                      margin: "0 20px",
+                    }}
+                    className="btn btn-dark"
+                    onClick={() => handleClickPredict(model.id)}
+                    disabled={predictionLoading}
+                  >
+                    {predictionLoading ? (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Spinner
+                          animation="border"
+                          size="sm"
+                          style={{ marginRight: "8px" }}
+                        />
+                        <p style={{ margin: 0 }}>Predicting</p>
+                      </div>
+                    ) : (
+                      "Predict"
+                    )}
+                  </Button>
+                  {Object.entries(outputMaps).map(([name, value], index) => {
+                    const isPredictionActive =
+                      prediction &&
+                      prediction.some(
+                        (pred) =>
+                          pred.model === model.id && pred.prediction === name
+                      );
+
+                    return (
+                      <Button
+                        key={value}
+                        type="button"
+                        className={`btn btn-sm ${
+                          isPredictionActive
+                            ? index === 0
+                              ? "btn-success"
+                              : "btn-danger"
+                            : "btn-secondary"
+                        } ${isPredictionActive ? "" : "disabled"} me-2`}
+                        disabled={predictionLoading}
+                      >
+                        {predictionLoading ? (
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <Spinner
+                              animation="border"
+                              size="sm"
+                              style={{ marginRight: "8px" }}
+                            />
+                            {name}
+                          </div>
+                        ) : (
+                          name
+                        )}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })
         )}
+      </div>
+      <div className="w-100 h-20 d-flex border align-items-center justify-content-evenly">
+        <h6 className="m-3 text-center">Upcoming models:-</h6>
+        {[
+          "Alzheimers Detection",
+          "Kidney Condition",
+          "Parkinsons Detection",
+          "Cancer Detection",
+        ].map((model, index) => (
+          <strong
+            key={index}
+            className="p-2 m-3 border text-center"
+            style={{ fontSize: "16px" }}
+          >
+            {model}
+          </strong>
+        ))}
       </div>
     </div>
   );
 };
 
-export default FoodRecomendationComponent;
+export default ModelsComponent;
