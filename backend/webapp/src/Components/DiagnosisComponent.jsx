@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDiagnosis } from "../Contexts/DiagnosisContext";
 import SpinnerComponent from "./SpinnerComponent";
-import PredictionModal from "./PredictionModal"; 
 import CenteredMessage from "./CenteredMessage";
+import DiagnosisModal from "./DiagnosisModal";
 
 const DiagnosisComponent = ({ userData }) => {
   const {
@@ -56,18 +56,14 @@ const DiagnosisComponent = ({ userData }) => {
       const formData = {
         model: diagnosisModel.id,
         data: inputData,
-      };
-      console.log(formData);
-      
-      // setPredictionData("hi"); 
-      // setModalOpen(true); 
+      };      
 
-      // const prediction = await getDiagnosisPrediction(formData);
+      const prediction = await getDiagnosisPrediction(formData);
 
-      // if (prediction) {
-      //   setPredictionData(prediction); 
-      //   setModalOpen(true); 
-      // }
+      if (prediction) {
+        setPredictionData(prediction); 
+        setModalOpen(true); 
+      }
     }
 
     setCheckedFeatures([]);
@@ -128,7 +124,7 @@ const DiagnosisComponent = ({ userData }) => {
             {diagnosisPredictionLoading ? <SpinnerComponent /> : "Diagnose"}
           </button>
           {isModalOpen && (
-            <PredictionModal
+            <DiagnosisModal
               prediction={predictionData}
               onClose={handleCloseModal}
             />

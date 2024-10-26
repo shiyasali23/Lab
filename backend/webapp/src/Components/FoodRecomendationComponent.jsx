@@ -212,7 +212,7 @@ const FoodRecomendationComponent = ({ foodScores }) => {
                   style={{ position: "absolute" }}
                 >
                   <input
-                    className="form-control p-0 text-center"
+                    className="form-control me-sm-2 p-0 text-center"
                     type="search"
                     placeholder="Search"
                     value={searchTerm}
