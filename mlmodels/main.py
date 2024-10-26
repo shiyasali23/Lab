@@ -1,11 +1,14 @@
 import os
 import joblib
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import numpy as np
 from typing import List
 import warnings
+import cv2
+from ultralytics import YOLO
 
 warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
 
@@ -19,20 +22,36 @@ app = FastAPI()
 models = {}
 base_model_dir = './models'  
 
+models = {}
+base_model_dir = './models'
+
 model_files = {
     'diabetes': 'diabetis_predictor.pkl',
     'liver_condition': 'liver_condition_predictor.pkl',
-    'disease': 'disease_predictor.pkl'
+    'disease': 'disease_predictor.pkl',
+    'detection': 'yolov8n.pt'
 }
 
+# Load models
 for model_name, model_filename in model_files.items():
     try:
         model_path = os.path.join(base_model_dir, model_filename)
-        models[model_name] = joblib.load(model_path)
+        if model_name == 'detection':
+            models[model_name] = YOLO(model_path)  
+        else:
+            models[model_name] = joblib.load(model_path)
         logger.info(f"{model_name} model loaded successfully from {model_path}.")
     except Exception as e:
         logger.error(f"Failed to load {model_name} model: {e}")
         raise RuntimeError(f"Failed to load model: {e}")
+
+try:
+    detection_model = models['detection']
+    logger.info("YOLO detection model loaded successfully.")
+except Exception as e:
+    logger.error(f"Failed to load detection model: {e}")
+    raise RuntimeError(f"Failed to load detection model: {e}")
+
 
 class DiabetesInput(BaseModel):
     data: List[float]
@@ -46,7 +65,8 @@ class LiverConditionInput(BaseModel):
 class DiseaseInput(BaseModel):
     data: List[float]
     
-
+class DetectionResponse(BaseModel):
+    data: list[str]
 
 @app.post(f"/predict/{models['diabetes']['metadata']['id']}", status_code=200)
 def predict_diabetes(data: DiabetesInput):
@@ -98,12 +118,49 @@ def predict_disease(data: DiseaseInput):
         logger.error(f"Value error: {e}")
         raise HTTPException(status_code=422, detail=f"Value error: {e}")
 
+
+@app.post("/detect/", response_model=DetectionResponse)
+async def detect(file: UploadFile = File(...)):
+    try:
+        image = await file.read()
+        np_image = np.frombuffer(image, np.uint8)
+        img = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
+
+        results = detection_model(img)
+
+        detected_items = set()
+        for result in results:
+            for detection in result.boxes:
+                name = detection_model.names[int(detection.cls)]
+                confidence = detection.conf
+
+                if confidence > 0.5:
+                    detected_items.add(name)
+
+        response_items = list(detected_items)  
+        if response_items:
+            logger.info("Detection successful: %d items detected.", len(response_items))
+            return DetectionResponse(data=response_items)  
+        else:
+            logger.info("No items detected.")
+            return DetectionResponse(data=[])
+
+    except Exception as e:
+        logger.error("Error during detection: %s", e)
+        return JSONResponse(status_code=500, content={"error": "An error occurred during detection."})
+    
+    
 @app.get("/register_models/", status_code=200)
 def register_models():
     models_metadata = []
     for model_name, model in models.items():
         try:
-            metadata = model.get('metadata', {})           
+            # Skip the YOLO model
+            if model_name == 'detection':
+                continue
+
+            # Gather metadata for non-YOLO models
+            metadata = model.get('metadata', {})
             model_data = {
                 'id': metadata.get('id', None),
                 'name': metadata.get('name', None),

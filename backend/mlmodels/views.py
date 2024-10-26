@@ -131,9 +131,31 @@ def prepare_input_data(request_data, feature_names, feature_maps):
 
 
 def get_prediction_from_service(model_id, input_data):
-    response = requests.post(f'http://localhost:8001/predict/{model_id}', json=input_data)
+    if model_id == "detect":
+        response = requests.post(f'http://localhost:8001/predict/{model_id}', files={'file': input_data})
+    else:
+        response = requests.post(f'http://localhost:8001/predict/{model_id}', json=input_data) 
     response.raise_for_status()
     return response.json()
+
+
+@api_view(['POST'])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def get_detection(request):
+    try:
+        if 'image' not in request.FILES:
+            return handle_response(error="No image file provided", status_code=400)
+        input_data = request.FILES['image']  
+        if not input_data.content_type.startswith('image/'):
+            return handle_response(error="Uploaded file is not a valid image", status_code=400)
+        response_data = get_prediction_from_service("detect", input_data)
+        return handle_response(data=response_data, status_code=200)
+    
+    except (requests.RequestException, ValueError) as e:
+        logger.error(f"Failed to get prediction: {e}")
+        return handle_response(error="Failed to connect to FastAPI service or process data", status_code=500)
+
 
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])

@@ -34,14 +34,18 @@ export const DetectionProvider = ({ children }) => {
 
   const getDetections = useCallback(async (file) => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('image', file); 
   
-    return handleApiCall(() => axios.post('http://localhost:8002/detect/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }), 'Detections fetched successfully!');
-  }, [handleApiCall]);
+    return handleApiCall(() => 
+        axios.post('api/mlmodels/detect/', formData, {  
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        }), 
+        'Detections fetched successfully!'
+    );
+}, [handleApiCall]);
+
   
 
   const value = {
