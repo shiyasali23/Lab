@@ -131,30 +131,32 @@ def prepare_input_data(request_data, feature_names, feature_maps):
 
 
 def get_prediction_from_service(model_id, input_data):
-    if model_id == "detect":
-        response = requests.post(f'http://localhost:8001/predict/{model_id}', files={'file': input_data})
-    else:
-        response = requests.post(f'http://localhost:8001/predict/{model_id}', json=input_data) 
-    response.raise_for_status()
-    return response.json()
-
-
-@api_view(['POST'])
-@authentication_classes([authentication.TokenAuthentication])
-@permission_classes([permissions.IsAuthenticated])
-def get_detection(request):
     try:
-        if 'image' not in request.FILES:
-            return handle_response(error="No image file provided", status_code=400)
-        input_data = request.FILES['image']  
-        if not input_data.content_type.startswith('image/'):
-            return handle_response(error="Uploaded file is not a valid image", status_code=400)
-        response_data = get_prediction_from_service("detect", input_data)
-        return handle_response(data=response_data, status_code=200)
+        response = requests.post(f'http://localhost:8001/predict/{model_id}', json=input_data) 
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        logger.error(f"Request failed for model {model_id}: {str(e)}, Response: {response.text if 'response' in locals() else 'No response'}")
+        raise  
+
+
+
+# @api_view(['POST'])
+# @authentication_classes([authentication.TokenAuthentication])
+# @permission_classes([permissions.IsAuthenticated])
+# def get_detection(request):
+#     try:
+#         if 'image' not in request.FILES:
+#             return handle_response(error="No image file provided", status_code=400)
+#         input_data = request.FILES['image']  
+#         if not input_data.content_type.startswith('image/'):
+#             return handle_response(error="Uploaded file is not a valid image", status_code=400)
+#         response_data = get_prediction_from_service("detect", input_data)
+#         return handle_response(data=response_data, status_code=200)
     
-    except (requests.RequestException, ValueError) as e:
-        logger.error(f"Failed to get prediction: {e}")
-        return handle_response(error="Failed to connect to FastAPI service or process data", status_code=500)
+#     except (requests.RequestException, ValueError) as e:
+#         logger.error(f"Failed to get prediction: {e}")
+#         return handle_response(error="Failed to connect to FastAPI service or process data", status_code=500)
 
 
 @api_view(['POST'])
@@ -173,7 +175,6 @@ def get_prediction(request):
         feature_names = json.loads(model.feature_names)
         feature_maps = json.loads(model.feature_maps)
         output_maps = json.loads(model.output_maps)
-        
 
         input_data = prepare_input_data(request.data.get("data"), feature_names, feature_maps)
         input_data["model_id"] = model_id
@@ -192,11 +193,12 @@ def get_prediction(request):
             "prediction": mapped_prediction,
             "probability": class_probabilities  
         }
+        
         serializer = PredictionSerializer(data=prediction_data)
         if serializer.is_valid():
             serializer.save()
             predicted_data = {
-                "model" : model_id,
+                "model": model_id,
                 "prediction": mapped_prediction,
                 "probability": class_probabilities
             }
@@ -209,12 +211,13 @@ def get_prediction(request):
                 predicted_data['medications'] = medications
                 predicted_data['precautions'] = precautions
                 predicted_data['diets'] = diets
-                
             
             return handle_response(predicted_data, status_code=200)
         else:
+            logger.error(f"Failed to save prediction: {serializer.errors}")  # Log before return
             return handle_response(error=serializer.errors, status_code=400)
-            logger.error(f"Failed to save prediction: {serializer.errors}")       
-    except (requests.RequestException, ValueError) as e:
+
+    except requests.RequestException as e:
         logger.error(f"Failed to get prediction: {e}")
         return handle_response(error="Failed to connect to FastAPI service or process data", status_code=500)
+

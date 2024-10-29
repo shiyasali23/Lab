@@ -9,7 +9,7 @@ import CenteredMessage from "./CenteredMessage";
 
 const FoodRecomendationComponent = ({ foodScores }) => {
   const { nutrient, nutrientLoading } = useNutrient();
-  const { getDetections, detectionsLoading } = useDetection();
+  const { getDetections, detectionsLoading, setDetectionError } = useDetection();
   const [imageSrc, setImageSrc] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -33,9 +33,12 @@ const FoodRecomendationComponent = ({ foodScores }) => {
     event.preventDefault();
     setDetectedFoods(null); 
     const file = document.getElementById("imageUpload").files[0];
+    if (!file) {
+      setDetectionError("No file selected");
+      return; 
+    }
   
-    try {
-      const response = await getDetections(file);
+    const response = await getDetections(file);
       
       if (response && response.data) {
         const detectedFoodsData = [];
@@ -66,9 +69,6 @@ const FoodRecomendationComponent = ({ foodScores }) => {
           } 
         }
       }
-    } catch (error) {
-      console.error("Error detecting foods:", error);
-    }
   };
   
 

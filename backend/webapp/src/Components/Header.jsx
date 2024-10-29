@@ -9,8 +9,7 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
   const handleLogout = () => {
-    // Immediately navigate to the login page
-    navigate('/login');
+    navigate('/');
 
     // Perform the logout operation in the background
     logout().then(() => {

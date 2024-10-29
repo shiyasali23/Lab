@@ -28,7 +28,7 @@ const MainPage = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate("/login");
+      navigate("/");
     } else {
       getUser();
       getNutrients();

@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState('');
   const [success, setSuccess] = useState('');
-  const [user, setUser] = useState(null);
 
   const resetState = useCallback(() => {
     setAuthLoading(false);
@@ -23,7 +22,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await apiCall();
       setSuccess(successMessage);
-      setUser(response.data);
       localStorage.setItem('token', response.data.token);
       return response.data;
     } catch (err) {
@@ -48,7 +46,6 @@ export const AuthProvider = ({ children }) => {
 
 
   const value = {
-    user,
     authLoading,
     authError,
     setAuthError,
